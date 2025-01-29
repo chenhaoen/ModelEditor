@@ -1,0 +1,26 @@
+project(VulkanContext CXX)
+set(CMAKE_CXX_STANDARD 20)
+
+find_package(Vulkan)
+
+set(VULKANCONTEXT_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/VulkanContext)
+set(VULKANCONTEXT_SRC_DIR ${MODELEDITOR_SRC_DIR}/VulkanContext)
+
+file(GLOB VULKANCONTEXT_SOURCES "${VULKANCONTEXT_SRC_DIR}/*.cpp")
+file(GLOB VULKANCONTEXT_HEADERS "${VULKANCONTEXT_INCLUDE_DIR}/*.h")
+
+add_library(${PROJECT_NAME} SHARED 
+${VULKANCONTEXT_HEADERS}
+${VULKANCONTEXT_SOURCES}
+)
+
+add_compile_definitions(VULKANCONTEXT_EXPORT)
+add_compile_definitions(NOMINMAX)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+Vulkan::Vulkan
+)
+
+
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.vert -o ${CMAKE_CURRENT_LIST_DIR}/vert.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)

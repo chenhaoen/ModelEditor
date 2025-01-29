@@ -1,0 +1,10 @@
+E:/code/ModelEditer/build/CMakeFiles/INSTALL.dir
+E:/code/ModelEditer/build/CMakeFiles/ALL_BUILD.dir
+E:/code/ModelEditer/build/CMakeFiles/ZERO_CHECK.dir
+E:/code/ModelEditer/build/src/CMakeFiles/INSTALL.dir
+E:/code/ModelEditer/build/src/editor/CMakeFiles/Editor.dir
+E:/code/ModelEditer/build/src/editor/CMakeFiles/INSTALL.dir
+E:/code/ModelEditer/build/src/editor/CMakeFiles/ALL_BUILD.dir
+E:/code/ModelEditer/build/src/VulkanContext/CMakeFiles/VulkanContext.dir
+E:/code/ModelEditer/build/src/VulkanContext/CMakeFiles/INSTALL.dir
+E:/code/ModelEditer/build/src/VulkanContext/CMakeFiles/ALL_BUILD.dir

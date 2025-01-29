@@ -1,0 +1,6 @@
+set(__QT_DEPLOY_TARGET_Editor_FILE E:/code/ModelEditer/build/bin/Debug/Editor.exe)
+set(__QT_DEPLOY_TARGET_Editor_TYPE EXECUTABLE)
+set(__QT_DEPLOY_TARGET_Editor_RUNTIME_DLLS E:/Qt/6.8.1/msvc2022_64/bin/Qt6Widgetsd.dll;E:/code/ModelEditer/build/bin/Debug/VulkanContext.dll;E:/Qt/6.8.1/msvc2022_64/bin/Qt6Guid.dll;E:/Qt/6.8.1/msvc2022_64/bin/Qt6Cored.dll)
+set(__QT_DEPLOY_TARGET_VulkanContext_FILE E:/code/ModelEditer/build/bin/Debug/VulkanContext.dll)
+set(__QT_DEPLOY_TARGET_VulkanContext_TYPE SHARED_LIBRARY)
+set(__QT_DEPLOY_TARGET_VulkanContext_RUNTIME_DLLS )

@@ -1,0 +1,32 @@
+project(Editor CXX)
+set(CMAKE_CXX_STANDARD 20)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+
+qt_standard_project_setup()
+
+set(EDITOR_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/Editor)
+set(EDITOR_SRC_DIR ${MODELEDITOR_SRC_DIR}/Editor)
+
+file(GLOB EDITOR_SOURCES "${EDITOR_SRC_DIR}/*.cpp")
+file(GLOB EDITOR_HEADERS "${EDITOR_INCLUDE_DIR}/*.h")
+file(GLOB EDITOR_UIS "${EDITOR_SRC_DIR}/*.ui")
+
+qt_add_executable(${PROJECT_NAME}
+${EDITOR_SOURCES}
+${EDITOR_HEADERS}
+${EDITOR_UIS}
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    VulkanContext
+)
+
+install(TARGETS ${PROJECT_NAME}
+    BUNDLE  DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

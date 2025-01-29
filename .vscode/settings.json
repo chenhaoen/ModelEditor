@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "qapplication": "cpp",
+        "qwindow": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp"
+    }
+}
