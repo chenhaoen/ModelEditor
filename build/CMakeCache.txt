@@ -216,7 +216,7 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
 
 //Value Computed by CMake
-Editor_BINARY_DIR:STATIC=E:/code/ModelEditer/build/src/editor
+Editor_BINARY_DIR:STATIC=E:/code/ModelEditer/build/src/Editor
 
 //Value Computed by CMake
 Editor_IS_TOP_LEVEL:STATIC=OFF

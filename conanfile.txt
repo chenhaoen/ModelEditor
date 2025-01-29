@@ -1,9 +1,0 @@
-[requires]
-qt/6.7.3
-
-[tool_requires]
-cmake/3.31.3
-
-[generators]
-CMakeDeps
-CMakeToolchain

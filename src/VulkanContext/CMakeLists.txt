@@ -1,6 +1,8 @@
 project(VulkanContext CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+set(CMAKE_GENERATOR_TOOLSET "v143")
+
 find_package(Vulkan)
 
 set(VULKANCONTEXT_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/VulkanContext)
@@ -21,6 +23,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 Vulkan::Vulkan
 )
 
-
-execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.vert -o ${CMAKE_CURRENT_LIST_DIR}/vert.spv)
-execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)
+#execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.vert -o ${CMAKE_CURRENT_LIST_DIR}/vert.spv)
+#execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)

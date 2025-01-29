@@ -335,8 +335,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\Exports.h" />
     <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\InitInfo.h" />
+    <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\Instance.h" />
+    <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\Utils.h" />
     <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\VulkanContext.h" />
     <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\InitInfo.cpp" />
+    <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\Instance.cpp" />
+    <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\Utils.cpp" />
     <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\VulkanContext.cpp" />
   </ItemGroup>
   <ItemGroup>

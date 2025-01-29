@@ -4,6 +4,12 @@
     <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\InitInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\Instance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="E:\code\ModelEditer\src\VulkanContext\VulkanContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -13,6 +19,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\InitInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\Instance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="E:\code\ModelEditer\include\VulkanContext\VulkanContext.h">

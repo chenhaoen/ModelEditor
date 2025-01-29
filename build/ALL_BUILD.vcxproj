@@ -173,7 +173,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="E:\code\ModelEditer\build\src\editor\Editor.vcxproj">
+    <ProjectReference Include="E:\code\ModelEditer\build\src\Editor\Editor.vcxproj">
       <Project>{F75042A9-6D1B-3C01-BA53-949F4072D0AB}</Project>
       <Name>Editor</Name>
     </ProjectReference>
