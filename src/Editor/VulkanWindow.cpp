@@ -32,7 +32,7 @@ bool VulkanWindow::event(QEvent *event)
 {
     if (event->type() == QEvent::UpdateRequest)
     {
-        render();
+        VulkanContext::instance()->drawFrame();
         return true;
     }
     return QWindow::event(event);

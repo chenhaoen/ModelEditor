@@ -21,5 +21,11 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 Vulkan::Vulkan
 )
 
-#execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.vert -o ${CMAKE_CURRENT_LIST_DIR}/vert.spv)
-#execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)
+install(TARGETS ${PROJECT_NAME}
+    BUNDLE  DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.vert -o ${CMAKE_CURRENT_LIST_DIR}/vert.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)

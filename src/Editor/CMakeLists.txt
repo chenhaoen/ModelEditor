@@ -19,9 +19,9 @@ ${EDITOR_UIS}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
+    ${Qt6Core_LIBRARIES}
+    ${Qt6Gui_LIBRARIES}
+    ${Qt6Widgets_LIBRARIES}
     VulkanContext
 )
 

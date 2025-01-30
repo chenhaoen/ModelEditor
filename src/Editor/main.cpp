@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     window.show();
     const int result = app.exec();
 
-    VulkanContext::instance()->destory();
+    VulkanContext::instance()->destroy();
 
     return result;
 }
