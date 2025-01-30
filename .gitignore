@@ -365,4 +365,4 @@ FodyWeavers.xsd
 .conanBuild.ps1
 .conanfile.txt
 
-.build/
+./build/

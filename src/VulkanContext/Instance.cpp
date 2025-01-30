@@ -1,6 +1,8 @@
 #include "VulkanContext/Instance.h"
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Utils.h"
+#include "VulkanContext/DebugUtilsMessenger.h"
+#include "VulkanContext/PhysicalDevice.h"
 
 Instance::Instance()
 {
@@ -25,7 +27,7 @@ Instance::Instance()
     if (VulkanContext::instance()->getInitInfo().m_debug)
     {
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
-        //DebugUtilsMessenger::populateDebugMessengerCreateInfo(debugCreateInfo);
+        DebugUtilsMessenger::populateDebugMessengerCreateInfo(debugCreateInfo);
         createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
     }
 
@@ -58,7 +60,7 @@ VkInstance Instance::getVkInstance() const
     return m_vkInstance;
 }
 
-PhysicalDevice* Instance::getBestPhysicalDevice(Surface* surface)
+PhysicalDevice* Instance::getBestPhysicalDevice()
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_vkInstance, &deviceCount, nullptr);
@@ -73,6 +75,5 @@ PhysicalDevice* Instance::getBestPhysicalDevice(Surface* surface)
 
     VkPhysicalDevice bestPhysicalDevice = devices.front();
 
-    //return new PhysicalDevice(bestPhysicalDevice,this, surface);
-    return nullptr;
+    return new PhysicalDevice(bestPhysicalDevice);
 }

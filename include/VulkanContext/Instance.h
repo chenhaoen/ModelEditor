@@ -6,7 +6,6 @@
 #include <vulkan/vulkan.h>
 
 class PhysicalDevice;
-class Surface;
 class Instance
 {
 public:
@@ -16,7 +15,7 @@ public:
 
 	VkInstance getVkInstance() const;
 
-	PhysicalDevice* getBestPhysicalDevice(Surface* surface);
+	PhysicalDevice* getBestPhysicalDevice();
 
 private:
 	VkInstance m_vkInstance;

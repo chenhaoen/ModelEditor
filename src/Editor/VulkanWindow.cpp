@@ -15,6 +15,11 @@ void VulkanWindow::exposeEvent(QExposeEvent *)
 
             InitInfo initInfo;
             initInfo.m_platformWindow = reinterpret_cast<void*>(winId());
+
+#ifndef NDEBUG
+            initInfo.m_debug = true;
+#endif // NDEBUG
+
             VulkanContext::instance()->setInitInfo(initInfo);
             VulkanContext::instance()->init();
 

@@ -6,6 +6,10 @@
 #include "VulkanContext/InitInfo.h"
 
 class Instance;
+class DebugUtilsMessenger;
+class PhysicalDevice;
+class Surface;
+class LogicalDevice;
 
 class VULKANCONTEXT_API VulkanContext
 {
@@ -24,6 +28,22 @@ public:
     const std::vector<const char*>& getInstanceExtensions() const;
     const std::vector<const char*>& getDeviceExtensions() const;
     const std::vector<const char*>& getInstanceLayers() const;
+
+    Instance* getVulkanInstance()
+    {
+        return m_instance;
+    }
+
+    PhysicalDevice* getPhysicalDevice()
+    {
+        return m_physicalDevice;
+    }
+
+    Surface* getSurface()
+    {
+        return m_surface;
+    }
+
 private:
     VulkanContext();
     ~VulkanContext();
@@ -41,4 +61,8 @@ private:
     std::vector<const char*> m_deviceExtensions;
 
     Instance* m_instance;
+    DebugUtilsMessenger* m_debugUtilsMessenger;
+    PhysicalDevice* m_physicalDevice;
+    Surface* m_surface;
+    LogicalDevice* m_device;
 };

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <vulkan/vulkan.h>
 
 #ifdef _WIN64
@@ -7,11 +9,18 @@
 
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Instance.h"
+#include "VulkanContext/DebugUtilsMessenger.h"
+#include "VulkanContext/LogicalDevice.h"
+#include "VulkanContext/Surface.h"
 
 VulkanContext *VulkanContext::g_instance = nullptr;
 
 VulkanContext::VulkanContext()
     :m_instance(nullptr)
+    , m_debugUtilsMessenger(nullptr)
+    , m_physicalDevice(nullptr)
+    , m_surface(nullptr)
+    , m_device(nullptr)
 {
 }
 
@@ -55,6 +64,21 @@ void VulkanContext::init()
     }
 
     m_instance = new Instance();
+
+    if (m_initInfo.m_debug)
+    {
+        m_debugUtilsMessenger = new DebugUtilsMessenger();
+    }
+
+    m_surface = new Surface(m_initInfo.m_platformWindow);
+
+    m_physicalDevice = m_instance->getBestPhysicalDevice();
+    if (m_physicalDevice == nullptr)
+    {
+        throw std::runtime_error("failed to find a suitable GPU!");
+    }
+    
+    m_device = new LogicalDevice(m_physicalDevice);
 }
 
 void VulkanContext::setInitInfo(const InitInfo& initInfo)
@@ -69,6 +93,10 @@ const InitInfo& VulkanContext::getInitInfo() const
 
 void VulkanContext::destory()
 {
+    delete m_device;
+    delete m_surface;
+    delete m_physicalDevice;
+    delete m_debugUtilsMessenger;
     delete m_instance;
 }
 
