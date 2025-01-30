@@ -362,7 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-.conanBuild.ps1
-.conanfile.txt
-
-./build/
+/build
+/conanBuild.ps1
+/conanfile.txt
+/install/lib
