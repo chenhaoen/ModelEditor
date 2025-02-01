@@ -10,6 +10,10 @@ class VulkanWindow : public QWindow
 protected:
     void exposeEvent(QExposeEvent *) override;
 
+    void resizeEvent(QResizeEvent*) override;
+
+    void closeEvent(QCloseEvent*) override;
+
     bool event(QEvent *event) override;
 
     void render();

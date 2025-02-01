@@ -60,10 +60,11 @@ Pipeline::Pipeline(
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	vertexInputInfo.vertexAttributeDescriptionCount = 0;
+	vertexInputInfo.pVertexAttributeDescriptions = nullptr;
+	vertexInputInfo.vertexBindingDescriptionCount = 0;
+	vertexInputInfo.pVertexBindingDescriptions = nullptr;
+
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -214,11 +215,7 @@ VkShaderModule Pipeline::createShaderModule(const std::vector<char>& code)
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 	VkShaderModule shaderModule;
-	if (vkCreateShaderModule(VulkanContext::instance()->getDevice()->getVkDevice(), &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
-	{
-		throw std::runtime_error("failed to create shader module!");
-	}
-
+	VK_CHECK(vkCreateShaderModule(VulkanContext::instance()->getDevice()->getVkDevice(), &createInfo, nullptr, &shaderModule));
 	return shaderModule;
 }
 
@@ -246,20 +243,20 @@ std::vector<VkVertexInputAttributeDescription> Vertex::getAttributeDescriptions(
 {
 	std::vector<VkVertexInputAttributeDescription> attributeDescriptions(3);
 
-	attributeDescriptions[0].binding = 0;
-	attributeDescriptions[0].location = 0;
-	attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-	attributeDescriptions[0].offset = offsetof(Vertex, pos);
+	//attributeDescriptions[0].binding = 0;
+	//attributeDescriptions[0].location = 0;
+	//attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
+	//attributeDescriptions[0].offset = offsetof(Vertex, pos);
 
-	attributeDescriptions[1].binding = 0;
-	attributeDescriptions[1].location = 1;
-	attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-	attributeDescriptions[1].offset = offsetof(Vertex, color);
+	//attributeDescriptions[1].binding = 0;
+	//attributeDescriptions[1].location = 1;
+	//attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+	//attributeDescriptions[1].offset = offsetof(Vertex, color);
 
-	attributeDescriptions[2].binding = 0;
-	attributeDescriptions[2].location = 2;
-	attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-	attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
+	//attributeDescriptions[2].binding = 0;
+	//attributeDescriptions[2].location = 2;
+	//attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+	//attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
 
 	return attributeDescriptions;
 }

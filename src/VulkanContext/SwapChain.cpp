@@ -18,6 +18,7 @@ bool hasStencilComponent(VkFormat format)
 }
 
 SwapChain::SwapChain()
+	:m_vkSwapChain(VK_NULL_HANDLE)
 {
 	create();
 	createImageViews();
@@ -98,7 +99,7 @@ void SwapChain::create()
 	createInfo.presentMode = VulkanContext::instance()->getSurface()->getPresentMode();
 	createInfo.clipped = VK_TRUE;
 
-	createInfo.oldSwapchain = VK_NULL_HANDLE;
+	createInfo.oldSwapchain = nullptr;
 
 	VK_CHECK(vkCreateSwapchainKHR(VulkanContext::instance()->getDevice()->getVkDevice(), &createInfo, nullptr, &m_vkSwapChain));
 

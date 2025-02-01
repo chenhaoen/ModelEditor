@@ -12,8 +12,7 @@ class Surface;
 class LogicalDevice;
 class RenderPass;
 class SwapChain;
-class DescriptorSetLayout;
-class Pipeline;
+class CommandPool;
 
 class VULKANCONTEXT_API VulkanContext
 {
@@ -28,6 +27,8 @@ public:
 	void destroy();
 
 	void drawFrame();
+
+	void resizeSurface();
 
 	const std::vector<const char*>& getInstanceExtensions() const;
 	const std::vector<const char*>& getDeviceExtensions() const;
@@ -63,14 +64,9 @@ public:
 		return m_swapChain;
 	}
 
-	Pipeline* getPipeline()
+	CommandPool* getCommandPool()
 	{
-		return m_pipeLine;
-	}
-
-	static uint32_t getMaxFrameCount()
-	{
-		return 2;
+		return m_commandPool;
 	}
 
 private:
@@ -80,7 +76,6 @@ private:
 	static std::vector<const char*> getRequiredInstanceExtensions();
 
 private:
-
 	static VulkanContext* g_instance;
 
 	InitInfo m_initInfo;
@@ -96,6 +91,5 @@ private:
 	LogicalDevice* m_device;
 	RenderPass* m_renderPass;
 	SwapChain* m_swapChain;
-	DescriptorSetLayout* m_descriptorSetLayout;
-	Pipeline* m_pipeLine;
+	CommandPool* m_commandPool;
 };
