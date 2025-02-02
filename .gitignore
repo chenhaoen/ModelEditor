@@ -366,3 +366,5 @@ FodyWeavers.xsd
 /conanBuild.ps1
 /conanfile.txt
 /install/lib
+/src/VulkanContext/frag.spv
+/src/VulkanContext/vert.spv
