@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string_view>
 
 #include <vulkan/vk_enum_string_helper.h>
 
@@ -14,3 +15,4 @@
         }                                                                \
     }
 
+constexpr std::string_view g_modelPipelineName("Model");

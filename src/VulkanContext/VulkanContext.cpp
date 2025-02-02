@@ -18,6 +18,7 @@
 #include "VulkanContext/CommandPool.h"
 #include "VulkanContext/FrameManager.h"
 #include "VulkanContext/CommandManager.h"
+#include "VulkanContext/PipelineManager.h"
 
 VulkanContext *VulkanContext::g_instance = nullptr;
 
@@ -98,6 +99,7 @@ void VulkanContext::init()
 
     FrameManager::instance();
     CommandManager::instance();
+    PipelineManager::instance();
 }
 
 void VulkanContext::setInitInfo(const InitInfo& initInfo)
@@ -114,6 +116,7 @@ void VulkanContext::destroy()
 {
     m_device->Wait();
 
+    PipelineManager::instance()->destroy();
     FrameManager::instance()->destroy();
     CommandManager::instance()->destroy();
 

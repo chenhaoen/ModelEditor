@@ -10,11 +10,17 @@ class PipelineManager
 public:
 	static PipelineManager* instance();
 
+	void init();
+
 	void destroy();
 
-	void AddPipeline(const std::string_view& name, Pipeline* pipeline);
+	Pipeline* getPipeline(const std::string_view& name);
+
 private:
 	PipelineManager();
+	~PipelineManager();
+
+	void addPipeline(const std::string_view& name, Pipeline* pipeline);
 
 	static PipelineManager* g_instance;
 

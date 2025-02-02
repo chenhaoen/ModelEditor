@@ -1,2 +1,3 @@
 add_subdirectory(Editor)
 add_subdirectory(VulkanContext)
+add_subdirectory(Nodes)

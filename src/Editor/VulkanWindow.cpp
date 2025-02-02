@@ -3,6 +3,8 @@
 
 #include "Editor/VulkanWindow.h"
 
+#include "Nodes/NodeManager.h"
+
 #include "VulkanContext/VulkanContext.h"
 
 VulkanWindow::VulkanWindow()
@@ -26,6 +28,8 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 #ifndef NDEBUG
 			initInfo.m_debug = true;
 #endif // NDEBUG
+
+			NodeManager::root();
 
 			VulkanContext::instance()->setInitInfo(initInfo);
 			VulkanContext::instance()->init();
