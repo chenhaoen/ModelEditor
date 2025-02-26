@@ -1,6 +1,8 @@
 project(Nodes CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(glm)
+
 set(NODES_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME})
 set(NODES_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME})
 
@@ -12,6 +14,10 @@ add_compile_definitions(NODES_EXPORT)
 add_library(${PROJECT_NAME} SHARED 
 ${NODEST_HEADERS}
 ${NODES_SOURCES}
+)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+glm::glm
 )
 
 install(TARGETS ${PROJECT_NAME}

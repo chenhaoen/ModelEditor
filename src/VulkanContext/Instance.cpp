@@ -18,11 +18,11 @@ Instance::Instance()
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
-    createInfo.enabledExtensionCount = VulkanContext::instance()->getInstanceExtensions().size();
-    createInfo.ppEnabledExtensionNames = VulkanContext::instance()->getInstanceExtensions().data();
+    createInfo.enabledExtensionCount = VulkanContext::getInstanceExtensions().size();
+    createInfo.ppEnabledExtensionNames = VulkanContext::getInstanceExtensions().data();
 
-    createInfo.enabledLayerCount = VulkanContext::instance()->getInstanceLayers().size();
-    createInfo.ppEnabledLayerNames = VulkanContext::instance()->getInstanceLayers().data();
+    createInfo.enabledLayerCount = VulkanContext::getInstanceLayers().size();
+    createInfo.ppEnabledLayerNames = VulkanContext::getInstanceLayers().data();
 
     if (VulkanContext::instance()->getInitInfo().m_debug)
     {

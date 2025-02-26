@@ -3,7 +3,8 @@
 #include <vector>
 
 #include "VulkanContext/Exports.h"
-#include "VulkanContext/InitInfo.h"
+
+#include "RenderingContextDriver/RenderingContextDriver.h"
 
 class Instance;
 class DebugUtilsMessenger;
@@ -14,82 +15,104 @@ class RenderPass;
 class SwapChain;
 class CommandPool;
 
-class VULKANCONTEXT_API VulkanContext
+class VULKANCONTEXT_API VulkanContext : public RenderingContextDriver
 {
 public:
-	static VulkanContext* instance();
+	VulkanContext();
+	~VulkanContext() override;
 
-	void setInitInfo(const InitInfo& initInfo);
-	const InitInfo& getInitInfo() const;
-
-	void init();
+	void initialize() override final;
 
 	void destroy();
 
-	void drawFrame();
+	void wait() override final;
 
-	void resizeSurface();
+	void draw() override final;
 
-	const std::vector<const char*>& getInstanceExtensions() const;
-	const std::vector<const char*>& getDeviceExtensions() const;
-	const std::vector<const char*>& getInstanceLayers() const;
+	void resizeSurface() override final;
 
-	Instance* getVulkanInstance()
+	CommandBufferID createCommandBuffer() override final;
+	void resetCommandBuffer(CommandBufferID commandBuffer) override final;
+	void beginCommandBuffer(CommandBufferID commandBuffer) override final;
+	void endCommandBuffer(CommandBufferID commandBuffer) override final;
+
+	FenceID createFence() override final;
+	void waitFence(FenceID p_fence) override final;
+	void freeFence(FenceID p_fence) override final;
+
+	SemaphoreID createSemaphore() override final;
+	void freeSemaphore(SemaphoreID p_semaphore) override final;
+
+	uint32_t getNextImageIndex(SemaphoreID semaphore) override final;
+
+	SurfaceID getSurfaceID() override final;
+	Extent2D getSurfaceExtent(SurfaceID) override final;
+
+	RenderPassID getRenderPassID() override final;
+	void beginRenderPass(CommandBufferID, FramebufferID) override final;
+	void endRenderPass(CommandBufferID) override final;
+
+	SwapChainID getSwapChainID() override final;
+	FramebufferID getFramebuffer(SwapChainID, uint32_t) override final;
+
+	void queueSubmit(const std::vector<CommandBufferID>&, const std::vector<SemaphoreID>& waitSemaphore,
+		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) override final;
+
+	void queuePresent(const std::vector<SemaphoreID>& waitSemaphore, const uint32_t) override final;
+
+	static const std::vector<const char*>& getInstanceExtensions();
+	static const std::vector<const char*>& getDeviceExtensions();
+	static const std::vector<const char*>& getInstanceLayers();
+
+	static Instance* getVulkanInstance()
 	{
 		return m_instance;
 	}
 
-	PhysicalDevice* getPhysicalDevice()
+	static PhysicalDevice* getPhysicalDevice()
 	{
 		return m_physicalDevice;
 	}
 
-	Surface* getSurface()
+	static Surface* getSurface()
 	{
 		return m_surface;
 	}
 
-	LogicalDevice* getDevice()
+	static LogicalDevice* getDevice()
 	{
 		return m_device;
 	}
 
-	RenderPass* getRenderPass()
+	static RenderPass* getRenderPass()
 	{
 		return m_renderPass;
 	}
 
-	SwapChain* getSwapChain()
+	static SwapChain* getSwapChain()
 	{
 		return m_swapChain;
 	}
 
-	CommandPool* getCommandPool()
+	static CommandPool* getCommandPool()
 	{
 		return m_commandPool;
 	}
 
 private:
-	VulkanContext();
-	~VulkanContext();
-
 	static std::vector<const char*> getRequiredInstanceExtensions();
 
 private:
-	static VulkanContext* g_instance;
+	static std::vector<const char*> m_instanceExtensions;
+	static std::vector<const char*> m_instanceLayers;
+	static std::vector<const char*> m_deviceExtensions;
 
-	InitInfo m_initInfo;
-
-	std::vector<const char*> m_instanceExtensions;
-	std::vector<const char*> m_instanceLayers;
-	std::vector<const char*> m_deviceExtensions;
-
-	Instance* m_instance;
-	DebugUtilsMessenger* m_debugUtilsMessenger;
-	PhysicalDevice* m_physicalDevice;
-	Surface* m_surface;
-	LogicalDevice* m_device;
-	RenderPass* m_renderPass;
-	SwapChain* m_swapChain;
-	CommandPool* m_commandPool;
+	static Instance* m_instance;
+	static DebugUtilsMessenger* m_debugUtilsMessenger;
+	static PhysicalDevice* m_physicalDevice;
+	static Surface* m_surface;
+	static LogicalDevice* m_device;
+	static RenderPass* m_renderPass;
+	static SwapChain* m_swapChain;
+	static CommandPool* m_commandPool;
 };

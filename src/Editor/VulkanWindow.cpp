@@ -7,6 +7,8 @@
 
 #include "VulkanContext/VulkanContext.h"
 
+#include "RenderingContextDriver/FrameManager.h"
+
 VulkanWindow::VulkanWindow()
 {
 	setSurfaceType(QSurface::VulkanSurface);
@@ -31,8 +33,11 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 
 			NodeManager::root();
 
-			VulkanContext::instance()->setInitInfo(initInfo);
-			VulkanContext::instance()->init();
+			RenderingContextDriver::setContext(new VulkanContext());
+			RenderingContextDriver::instance()->setInitInfo(initInfo);
+			RenderingContextDriver::instance()->initialize();
+
+			FrameManager::instance();
 
 			render();
 		}
@@ -50,19 +55,22 @@ void VulkanWindow::resizeEvent(QResizeEvent* event)
 		return;
 	}
 
-	VulkanContext::instance()->resizeSurface();
+	RenderingContextDriver::instance()->resizeSurface();
 }
 
 void VulkanWindow::closeEvent(QCloseEvent*)
 {
-	//VulkanContext::instance()->wait();
+	//RenderingContextDriver::instance()->wait();
 }
 
 bool VulkanWindow::event(QEvent* event)
 {
 	if (event->type() == QEvent::UpdateRequest)
 	{
-		VulkanContext::instance()->drawFrame();
+		FrameManager::instance()->beginFrame();
+
+
+		FrameManager::instance()->endFrame();
 		return true;
 	}
 	return QWindow::event(event);

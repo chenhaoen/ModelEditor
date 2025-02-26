@@ -20,7 +20,7 @@ VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags a
     viewInfo.subresourceRange.layerCount = 1;
 
     VkImageView imageView;
-    VK_CHECK(vkCreateImageView(VulkanContext::instance()->getDevice()->getVkDevice(), &viewInfo, nullptr, &imageView));
+    VK_CHECK(vkCreateImageView(VulkanContext::getDevice()->getVkDevice(), &viewInfo, nullptr, &imageView));
 
     return imageView;
 }
@@ -49,19 +49,19 @@ void createImage(uint32_t width,
     imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
     imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    VK_CHECK(vkCreateImage(VulkanContext::instance()->getDevice()->getVkDevice(), &imageInfo, nullptr, &image));
+    VK_CHECK(vkCreateImage(VulkanContext::getDevice()->getVkDevice(), &imageInfo, nullptr, &image));
 
     VkMemoryRequirements memRequirements;
-    vkGetImageMemoryRequirements(VulkanContext::instance()->getDevice()->getVkDevice(), image, &memRequirements);
+    vkGetImageMemoryRequirements(VulkanContext::getDevice()->getVkDevice(), image, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = VulkanContext::instance()->getPhysicalDevice()->findMemoryType(memRequirements.memoryTypeBits, properties);
+    allocInfo.memoryTypeIndex = VulkanContext::getPhysicalDevice()->findMemoryType(memRequirements.memoryTypeBits, properties);
 
-    VK_CHECK(vkAllocateMemory(VulkanContext::instance()->getDevice()->getVkDevice(), &allocInfo, nullptr, &imageMemory));
+    VK_CHECK(vkAllocateMemory(VulkanContext::getDevice()->getVkDevice(), &allocInfo, nullptr, &imageMemory));
 
-    vkBindImageMemory(VulkanContext::instance()->getDevice()->getVkDevice(), image, imageMemory, 0);
+    vkBindImageMemory(VulkanContext::getDevice()->getVkDevice(), image, imageMemory, 0);
 }
 
 VkFormat findDepthFormat()
@@ -77,7 +77,7 @@ VkFormat findSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTil
     for (VkFormat format : candidates)
     {
         VkFormatProperties props;
-        vkGetPhysicalDeviceFormatProperties(VulkanContext::instance()->getPhysicalDevice()->getVkPhysicalDevice(), format, &props);
+        vkGetPhysicalDeviceFormatProperties(VulkanContext::getPhysicalDevice()->getVkPhysicalDevice(), format, &props);
 
         if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
         {

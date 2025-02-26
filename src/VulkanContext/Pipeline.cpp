@@ -2,8 +2,6 @@
 #include <filesystem>
 #include <vector>
 
-#include <glm/glm.hpp>
-
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Pipeline.h"
 #include "VulkanContext/LogicalDevice.h"
@@ -11,16 +9,6 @@
 #include "VulkanContext/RenderPass.h"
 #include "VulkanContext/DescriptorSetLayout.h"
 #include "VulkanContext/Utils.h"
-
-struct Vertex
-{
-	glm::vec3 pos;
-	glm::vec3 color;
-	glm::vec2 texCoord;
-
-	static VkVertexInputBindingDescription getBindingDescription();
-	static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
-};
 
 Pipeline::Pipeline(
 	DescriptorSetLayout* descriptorSetLayout)
@@ -47,31 +35,30 @@ Pipeline::Pipeline(
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
 	std::vector<VkDynamicState> dynamicStates = {
-/*		VK_DYNAMIC_STATE_VIEWPORT,
-		VK_DYNAMIC_STATE_SCISSOR */};
+		VK_DYNAMIC_STATE_VIEWPORT,
+		VK_DYNAMIC_STATE_SCISSOR };
 
 	VkPipelineDynamicStateCreateInfo dynamicState{};
 	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
 	dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
 	dynamicState.pDynamicStates = dynamicStates.data();
 
-	auto bindingDescription = Vertex::getBindingDescription();
-	auto attributeDescriptions = Vertex::getAttributeDescriptions();
+	auto bindingDescription = getBindingDescription();
+	auto attributeDescriptions = getAttributeDescriptions();
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexAttributeDescriptionCount = 0;
-	vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.pVertexBindingDescriptions = nullptr;
-
+	vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
+	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+	vertexInputInfo.vertexBindingDescriptionCount = 1;
+	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
 	inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 	inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-	VkExtent2D swapChainExtent = VulkanContext::instance()->getSurface()->getExtent();
+	VkExtent2D swapChainExtent = VulkanContext::getSurface()->getExtent();
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;
@@ -145,7 +132,7 @@ Pipeline::Pipeline(
 	pipelineLayoutInfo.pushConstantRangeCount = 0;         // Optional
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;      // Optional
 
-	VK_CHECK(vkCreatePipelineLayout(VulkanContext::instance()->getDevice()->getVkDevice(), &pipelineLayoutInfo, nullptr, &m_layout));
+	VK_CHECK(vkCreatePipelineLayout(VulkanContext::getDevice()->getVkDevice(), &pipelineLayoutInfo, nullptr, &m_layout));
 
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -174,19 +161,19 @@ Pipeline::Pipeline(
 	pipelineInfo.pDynamicState = &dynamicState;
 
 	pipelineInfo.layout = m_layout;
-	pipelineInfo.renderPass = VulkanContext::instance()->getRenderPass()->getVkRenderPass();
+	pipelineInfo.renderPass = VulkanContext::getRenderPass()->getVkRenderPass();
 	pipelineInfo.subpass = 0;
 
-	VK_CHECK(vkCreateGraphicsPipelines(VulkanContext::instance()->getDevice()->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline));
+	VK_CHECK(vkCreateGraphicsPipelines(VulkanContext::getDevice()->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline));
 
-	vkDestroyShaderModule(VulkanContext::instance()->getDevice()->getVkDevice(), fragShaderModule, nullptr);
-	vkDestroyShaderModule(VulkanContext::instance()->getDevice()->getVkDevice(), vertShaderModule, nullptr);
+	vkDestroyShaderModule(VulkanContext::getDevice()->getVkDevice(), fragShaderModule, nullptr);
+	vkDestroyShaderModule(VulkanContext::getDevice()->getVkDevice(), vertShaderModule, nullptr);
 }
 
 Pipeline::~Pipeline()
 {
-	vkDestroyPipeline(VulkanContext::instance()->getDevice()->getVkDevice(), m_graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(VulkanContext::instance()->getDevice()->getVkDevice(), m_layout, nullptr);
+	vkDestroyPipeline(VulkanContext::getDevice()->getVkDevice(), m_graphicsPipeline, nullptr);
+	vkDestroyPipelineLayout(VulkanContext::getDevice()->getVkDevice(), m_layout, nullptr);
 }
 
 std::vector<char> Pipeline::readFile(const std::string& filename)
@@ -215,7 +202,7 @@ VkShaderModule Pipeline::createShaderModule(const std::vector<char>& code)
 	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
 	VkShaderModule shaderModule;
-	VK_CHECK(vkCreateShaderModule(VulkanContext::instance()->getDevice()->getVkDevice(), &createInfo, nullptr, &shaderModule));
+	VK_CHECK(vkCreateShaderModule(VulkanContext::getDevice()->getVkDevice(), &createInfo, nullptr, &shaderModule));
 	return shaderModule;
 }
 
@@ -227,36 +214,4 @@ VkPipeline Pipeline::getVkPipeline() const
 VkPipelineLayout Pipeline::getVkPipelineLayout() const
 {
 	return m_layout;
-}
-
-VkVertexInputBindingDescription Vertex::getBindingDescription()
-{
-	VkVertexInputBindingDescription bindingDescription{};
-	bindingDescription.binding = 0;
-	bindingDescription.stride = sizeof(Vertex);
-	bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-	return bindingDescription;
-}
-
-std::vector<VkVertexInputAttributeDescription> Vertex::getAttributeDescriptions()
-{
-	std::vector<VkVertexInputAttributeDescription> attributeDescriptions(3);
-
-	//attributeDescriptions[0].binding = 0;
-	//attributeDescriptions[0].location = 0;
-	//attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-	//attributeDescriptions[0].offset = offsetof(Vertex, pos);
-
-	//attributeDescriptions[1].binding = 0;
-	//attributeDescriptions[1].location = 1;
-	//attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-	//attributeDescriptions[1].offset = offsetof(Vertex, color);
-
-	//attributeDescriptions[2].binding = 0;
-	//attributeDescriptions[2].location = 2;
-	//attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-	//attributeDescriptions[2].offset = offsetof(Vertex, texCoord);
-
-	return attributeDescriptions;
 }

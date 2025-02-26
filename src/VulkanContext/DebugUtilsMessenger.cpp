@@ -41,12 +41,12 @@ DebugUtilsMessenger::DebugUtilsMessenger()
 	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 	populateDebugMessengerCreateInfo(createInfo);
 
-	VK_CHECK(CreateDebugUtilsMessengerEXT(VulkanContext::instance()->getVulkanInstance()->getVkInstance(), &createInfo, nullptr, &m_vkDebugUtilsMessenger));
+	VK_CHECK(CreateDebugUtilsMessengerEXT(VulkanContext::getVulkanInstance()->getVkInstance(), &createInfo, nullptr, &m_vkDebugUtilsMessenger));
 }
 
 DebugUtilsMessenger::~DebugUtilsMessenger()
 {
-	DestroyDebugUtilsMessengerEXT(VulkanContext::instance()->getVulkanInstance()->getVkInstance(), m_vkDebugUtilsMessenger, nullptr);
+	DestroyDebugUtilsMessengerEXT(VulkanContext::getVulkanInstance()->getVkInstance(), m_vkDebugUtilsMessenger, nullptr);
 }
 
 void DebugUtilsMessenger::populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo)

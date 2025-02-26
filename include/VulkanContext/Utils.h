@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string_view>
+#include <array>
 
 #include <vulkan/vk_enum_string_helper.h>
 
@@ -16,3 +17,7 @@
     }
 
 constexpr std::string_view g_modelPipelineName("Model");
+
+VkVertexInputBindingDescription getBindingDescription();
+
+std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions();

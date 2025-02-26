@@ -10,7 +10,7 @@ LogicalDevice::LogicalDevice(PhysicalDevice* physicalDevice)
 {
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { physicalDevice->getGraphicsFamilyIndex(),
-		physicalDevice->getPresentFamilyIndex(VulkanContext::instance()->getSurface()) };
+		physicalDevice->getPresentFamilyIndex(VulkanContext::getSurface()) };
 
 	float queuePriority = 1.0f;
 	for (uint32_t queueFamily : uniqueQueueFamilies) {
@@ -31,12 +31,12 @@ LogicalDevice::LogicalDevice(PhysicalDevice* physicalDevice)
 	deviceFeatures.samplerAnisotropy = true;
 	createInfo.pEnabledFeatures = &deviceFeatures;
 
-	createInfo.enabledExtensionCount = VulkanContext::instance()->getDeviceExtensions().size();
-	createInfo.ppEnabledExtensionNames = VulkanContext::instance()->getDeviceExtensions().data();
+	createInfo.enabledExtensionCount = VulkanContext::getDeviceExtensions().size();
+	createInfo.ppEnabledExtensionNames = VulkanContext::getDeviceExtensions().data();
 
 	if (VulkanContext::instance()->getInitInfo().m_debug) {
-		createInfo.enabledLayerCount = VulkanContext::instance()->getInstanceLayers().size();
-		createInfo.ppEnabledLayerNames = VulkanContext::instance()->getInstanceLayers().data();
+		createInfo.enabledLayerCount = VulkanContext::getInstanceLayers().size();
+		createInfo.ppEnabledLayerNames = VulkanContext::getInstanceLayers().data();
 	}
 	else {
 		createInfo.enabledLayerCount = 0;
@@ -45,7 +45,7 @@ LogicalDevice::LogicalDevice(PhysicalDevice* physicalDevice)
 	VK_CHECK(vkCreateDevice(physicalDevice->getVkPhysicalDevice(), &createInfo, nullptr, &m_vkDevice));
 
 	vkGetDeviceQueue(m_vkDevice, physicalDevice->getGraphicsFamilyIndex(), 0, &m_graphicsQueue);
-	vkGetDeviceQueue(m_vkDevice, physicalDevice->getPresentFamilyIndex(VulkanContext::instance()->getSurface()), 0, &m_presentQueue);
+	vkGetDeviceQueue(m_vkDevice, physicalDevice->getPresentFamilyIndex(VulkanContext::getSurface()), 0, &m_presentQueue);
 }
 
 LogicalDevice::~LogicalDevice()
@@ -68,7 +68,7 @@ VkQueue LogicalDevice::getPresentQueue() const
 	return m_presentQueue;
 }
 
-void LogicalDevice::Wait() const
+void LogicalDevice::wait() const
 {
 	vkDeviceWaitIdle(m_vkDevice);
 }

@@ -9,7 +9,7 @@
 RenderPass::RenderPass()
 {
     VkAttachmentDescription colorAttachment{};
-    colorAttachment.format = VulkanContext::instance()->getSurface()->getImageFormat();
+    colorAttachment.format = VulkanContext::getSurface()->getImageFormat();
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -61,12 +61,12 @@ RenderPass::RenderPass()
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
 
-    VK_CHECK(vkCreateRenderPass(VulkanContext::instance()->getDevice()->getVkDevice(), &renderPassInfo, nullptr, &m_renderPass));
+    VK_CHECK(vkCreateRenderPass(VulkanContext::getDevice()->getVkDevice(), &renderPassInfo, nullptr, &m_renderPass));
 }
 
 RenderPass::~RenderPass()
 {
-    vkDestroyRenderPass(VulkanContext::instance()->getDevice()->getVkDevice(), m_renderPass, nullptr);
+    vkDestroyRenderPass(VulkanContext::getDevice()->getVkDevice(), m_renderPass, nullptr);
 }
 
 VkRenderPass RenderPass::getVkRenderPass() const

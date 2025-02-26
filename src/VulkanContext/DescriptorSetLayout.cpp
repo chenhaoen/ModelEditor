@@ -29,12 +29,12 @@ DescriptorSetLayout::DescriptorSetLayout()
     layoutInfo.bindingCount = bindings.size();
     layoutInfo.pBindings = bindings.data();
 
-    VK_CHECK(vkCreateDescriptorSetLayout(VulkanContext::instance()->getDevice()->getVkDevice(), &layoutInfo, nullptr, &m_descriptorSetLayout));
+    VK_CHECK(vkCreateDescriptorSetLayout(VulkanContext::getDevice()->getVkDevice(), &layoutInfo, nullptr, &m_descriptorSetLayout));
 }
 
 DescriptorSetLayout::~DescriptorSetLayout()
 {
-    vkDestroyDescriptorSetLayout(VulkanContext::instance()->getDevice()->getVkDevice(), m_descriptorSetLayout, nullptr);
+    vkDestroyDescriptorSetLayout(VulkanContext::getDevice()->getVkDevice(), m_descriptorSetLayout, nullptr);
 }
 
 VkDescriptorSetLayout DescriptorSetLayout::getVkDescriptorSetLayout() const

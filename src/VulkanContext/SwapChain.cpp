@@ -41,14 +41,14 @@ void SwapChain::createFrameBuffers()
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebufferInfo.renderPass = VulkanContext::instance()->getRenderPass()->getVkRenderPass();
+		framebufferInfo.renderPass = VulkanContext::getRenderPass()->getVkRenderPass();
 		framebufferInfo.attachmentCount = attachments.size();
 		framebufferInfo.pAttachments = attachments.data();
-		framebufferInfo.width = VulkanContext::instance()->getSurface()->getExtent().width;
-		framebufferInfo.height = VulkanContext::instance()->getSurface()->getExtent().height;
+		framebufferInfo.width = VulkanContext::getSurface()->getExtent().width;
+		framebufferInfo.height = VulkanContext::getSurface()->getExtent().height;
 		framebufferInfo.layers = 1;
 
-		VK_CHECK(vkCreateFramebuffer(VulkanContext::instance()->getDevice()->getVkDevice(), &framebufferInfo, nullptr, &m_frameBuffers[i]));
+		VK_CHECK(vkCreateFramebuffer(VulkanContext::getDevice()->getVkDevice(), &framebufferInfo, nullptr, &m_frameBuffers[i]));
 	}
 }
 
@@ -64,21 +64,21 @@ void SwapChain::createDepthResources()
 
 void SwapChain::create()
 {
-	VkSurfaceFormatKHR surfaceFormat = VulkanContext::instance()->getSurface()->getSurfaceFormat();
-	uint32_t imageCount = VulkanContext::instance()->getSurface()->getImageCount();
+	VkSurfaceFormatKHR surfaceFormat = VulkanContext::getSurface()->getSurfaceFormat();
+	uint32_t imageCount = VulkanContext::getSurface()->getImageCount();
 
 	VkSwapchainCreateInfoKHR createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = VulkanContext::instance()->getSurface()->getVkSurface();
+	createInfo.surface = VulkanContext::getSurface()->getVkSurface();
 	createInfo.minImageCount = imageCount;
-	createInfo.imageFormat = VulkanContext::instance()->getSurface()->getImageFormat();
+	createInfo.imageFormat = VulkanContext::getSurface()->getImageFormat();
 	createInfo.imageColorSpace = surfaceFormat.colorSpace;
-	createInfo.imageExtent = VulkanContext::instance()->getSurface()->getExtent();
+	createInfo.imageExtent = VulkanContext::getSurface()->getExtent();
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	const uint32_t graphicsFamilyIndex = VulkanContext::instance()->getPhysicalDevice()->getGraphicsFamilyIndex();
-	const uint32_t presentFamilyIndex = VulkanContext::instance()->getPhysicalDevice()->getPresentFamilyIndex(VulkanContext::instance()->getSurface());
+	const uint32_t graphicsFamilyIndex = VulkanContext::getPhysicalDevice()->getGraphicsFamilyIndex();
+	const uint32_t presentFamilyIndex = VulkanContext::getPhysicalDevice()->getPresentFamilyIndex(VulkanContext::getSurface());
 	uint32_t queueFamilyIndices[] = { graphicsFamilyIndex, presentFamilyIndex };
 
 	if (graphicsFamilyIndex != presentFamilyIndex)
@@ -94,18 +94,18 @@ void SwapChain::create()
 		createInfo.pQueueFamilyIndices = nullptr; // Optional
 	}
 
-	createInfo.preTransform = VulkanContext::instance()->getSurface()->getPreTranform();
+	createInfo.preTransform = VulkanContext::getSurface()->getPreTranform();
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	createInfo.presentMode = VulkanContext::instance()->getSurface()->getPresentMode();
+	createInfo.presentMode = VulkanContext::getSurface()->getPresentMode();
 	createInfo.clipped = VK_TRUE;
 
 	createInfo.oldSwapchain = nullptr;
 
-	VK_CHECK(vkCreateSwapchainKHR(VulkanContext::instance()->getDevice()->getVkDevice(), &createInfo, nullptr, &m_vkSwapChain));
+	VK_CHECK(vkCreateSwapchainKHR(VulkanContext::getDevice()->getVkDevice(), &createInfo, nullptr, &m_vkSwapChain));
 
-	vkGetSwapchainImagesKHR(VulkanContext::instance()->getDevice()->getVkDevice(), m_vkSwapChain, &imageCount, nullptr);
+	vkGetSwapchainImagesKHR(VulkanContext::getDevice()->getVkDevice(), m_vkSwapChain, &imageCount, nullptr);
 	m_images.resize(imageCount);
-	vkGetSwapchainImagesKHR(VulkanContext::instance()->getDevice()->getVkDevice(), m_vkSwapChain, &imageCount, m_images.data());
+	vkGetSwapchainImagesKHR(VulkanContext::getDevice()->getVkDevice(), m_vkSwapChain, &imageCount, m_images.data());
 }
 
 void SwapChain::createImageViews()
@@ -113,7 +113,7 @@ void SwapChain::createImageViews()
 	m_imageViews.resize(m_images.size());
 	for (size_t i = 0; i < m_imageViews.size(); i++)
 	{
-		m_imageViews[i] = createImageView(m_images[i], VulkanContext::instance()->getSurface()->getImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT);
+		m_imageViews[i] = createImageView(m_images[i], VulkanContext::getSurface()->getImageFormat(), VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
 
@@ -121,15 +121,15 @@ void SwapChain::cleanup()
 {
 	for (auto imageView : m_imageViews)
 	{
-		vkDestroyImageView(VulkanContext::instance()->getDevice()->getVkDevice(), imageView, nullptr);
+		vkDestroyImageView(VulkanContext::getDevice()->getVkDevice(), imageView, nullptr);
 	}
 
 	for (auto framebuffer : m_frameBuffers)
 	{
-		vkDestroyFramebuffer(VulkanContext::instance()->getDevice()->getVkDevice(), framebuffer, nullptr);
+		vkDestroyFramebuffer(VulkanContext::getDevice()->getVkDevice(), framebuffer, nullptr);
 	}
 
-	vkDestroySwapchainKHR(VulkanContext::instance()->getDevice()->getVkDevice(), m_vkSwapChain, nullptr);
+	vkDestroySwapchainKHR(VulkanContext::getDevice()->getVkDevice(), m_vkSwapChain, nullptr);
 	//
 	//vkDestroyImage(Context::instance()->getDevice()->getVkDevice(), m_depthImage, nullptr);
 	//vkFreeMemory(Context::instance()->getDevice()->getVkDevice(), m_depthImageMemory, nullptr);
@@ -155,7 +155,7 @@ VkFramebuffer SwapChain::getFrameBuffer(const int index)
 uint32_t SwapChain::getNextImageIndex(VkSemaphore semaphore)
 {
 	uint32_t imageIndex;
-	VkResult result = vkAcquireNextImageKHR(VulkanContext::instance()->getDevice()->getVkDevice(),
+	VkResult result = vkAcquireNextImageKHR(VulkanContext::getDevice()->getVkDevice(),
 		m_vkSwapChain, UINT64_MAX, semaphore, VK_NULL_HANDLE, &imageIndex);
 
 	if (result == VK_ERROR_OUT_OF_DATE_KHR)

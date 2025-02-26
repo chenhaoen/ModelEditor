@@ -18,7 +18,7 @@ Surface::Surface(void* platformWindow)
 	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
 	surfaceCreateInfo.hinstance = (HINSTANCE)GetModuleHandle(NULL);
 	surfaceCreateInfo.hwnd = (HWND)platformWindow;
-	VK_CHECK(vkCreateWin32SurfaceKHR(VulkanContext::instance()->getVulkanInstance()->getVkInstance(), &surfaceCreateInfo, nullptr, &m_vkSurface));
+	VK_CHECK(vkCreateWin32SurfaceKHR(VulkanContext::getVulkanInstance()->getVkInstance(), &surfaceCreateInfo, nullptr, &m_vkSurface));
 #endif // _WIN64
 
 	SwapChainSupportDetails details = querySwapChainSupport();
@@ -29,7 +29,7 @@ Surface::Surface(void* platformWindow)
 
 Surface::~Surface()
 {
-	vkDestroySurfaceKHR(VulkanContext::instance()->getVulkanInstance()->getVkInstance(), m_vkSurface, nullptr);
+	vkDestroySurfaceKHR(VulkanContext::getVulkanInstance()->getVkInstance(), m_vkSurface, nullptr);
 }
 
 VkSurfaceKHR Surface::getVkSurface() const
@@ -80,24 +80,24 @@ SwapChainSupportDetails Surface::querySwapChainSupport() const
 {
 	SwapChainSupportDetails details;
 
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VulkanContext::instance()->getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &details.capabilities);
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(VulkanContext::getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &details.capabilities);
 
 	uint32_t formatCount;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanContext::instance()->getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &formatCount, nullptr);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanContext::getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &formatCount, nullptr);
 
 	if (formatCount != 0)
 	{
 		details.formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanContext::instance()->getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &formatCount, details.formats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(VulkanContext::getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &formatCount, details.formats.data());
 	}
 
 	uint32_t presentModeCount;
-	vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanContext::instance()->getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &presentModeCount, nullptr);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanContext::getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(), &presentModeCount, nullptr);
 
 	if (presentModeCount != 0)
 	{
 		details.presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanContext::instance()->getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(),
+		vkGetPhysicalDeviceSurfacePresentModesKHR(VulkanContext::getPhysicalDevice()->getVkPhysicalDevice(), getVkSurface(),
 			&presentModeCount, details.presentModes.data());
 	}
 

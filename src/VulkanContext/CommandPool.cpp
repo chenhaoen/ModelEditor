@@ -9,14 +9,14 @@ CommandPool::CommandPool()
     VkCommandPoolCreateInfo poolInfo{};
     poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    poolInfo.queueFamilyIndex = VulkanContext::instance()->getPhysicalDevice()->getGraphicsFamilyIndex();
+    poolInfo.queueFamilyIndex = VulkanContext::getPhysicalDevice()->getGraphicsFamilyIndex();
 
-    VK_CHECK(vkCreateCommandPool(VulkanContext::instance()->getDevice()->getVkDevice(), &poolInfo, nullptr, &m_vkCommandPool));
+    VK_CHECK(vkCreateCommandPool(VulkanContext::getDevice()->getVkDevice(), &poolInfo, nullptr, &m_vkCommandPool));
 }
 
 CommandPool::~CommandPool()
 {
-    vkDestroyCommandPool(VulkanContext::instance()->getDevice()->getVkDevice(), m_vkCommandPool, nullptr);
+    vkDestroyCommandPool(VulkanContext::getDevice()->getVkDevice(), m_vkCommandPool, nullptr);
 }
 
 VkCommandPool CommandPool::getVkCommandPool() const
@@ -33,7 +33,7 @@ VkCommandBuffer CommandPool::createCommands()
     allocInfo.commandBufferCount = 1;
 
     VkCommandBuffer commandBuffer;
-    vkAllocateCommandBuffers(VulkanContext::instance()->getDevice()->getVkDevice(), &allocInfo, &commandBuffer);
+    vkAllocateCommandBuffers(VulkanContext::getDevice()->getVkDevice(), &allocInfo, &commandBuffer);
 
     return commandBuffer;
 }
@@ -47,8 +47,8 @@ void CommandPool::endSingleTimeCommands(VkCommandBuffer commandBuffer)
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    vkQueueSubmit(VulkanContext::instance()->getDevice()->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
-    vkQueueWaitIdle(VulkanContext::instance()->getDevice()->getGraphicsQueue());
+    vkQueueSubmit(VulkanContext::getDevice()->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(VulkanContext::getDevice()->getGraphicsQueue());
 
-    vkFreeCommandBuffers(VulkanContext::instance()->getDevice()->getVkDevice(), m_vkCommandPool, 1, &commandBuffer);
+    vkFreeCommandBuffers(VulkanContext::getDevice()->getVkDevice(), m_vkCommandPool, 1, &commandBuffer);
 }

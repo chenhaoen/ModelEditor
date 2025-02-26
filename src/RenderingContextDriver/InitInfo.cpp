@@ -1,4 +1,4 @@
-#include "VulkanContext/InitInfo.h"
+#include "RenderingContextDriver/InitInfo.h"
 
 InitInfo::InitInfo()
 	:m_platformWindow(nullptr)

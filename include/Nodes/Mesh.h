@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include "Nodes/Exports.h"
 
 enum class DrawMode {
@@ -13,6 +15,11 @@ enum class PrimitiveType {
     Triangles,  // 三角形
     Lines,      // 线段
     Points      // 点
+};
+
+struct Vertex {
+    glm::vec2 pos;
+    glm::vec3 color;
 };
 
 class NODES_API Mesh

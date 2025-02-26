@@ -2,7 +2,8 @@
 
 #include "Editor/MainWindow.h"
 
-#include "VulkanContext/VulkanContext.h"
+#include "RenderingContextDriver/RenderingContextDriver.h"
+#include "RenderingContextDriver/FrameManager.h"
 
 int main(int argc, char **argv)
 {
@@ -13,7 +14,9 @@ int main(int argc, char **argv)
     window.show();
     const int result = app.exec();
 
-    VulkanContext::instance()->destroy();
+    RenderingContextDriver::instance()->wait();
+    FrameManager::destroy();
+    RenderingContextDriver::destroyContext();
 
     return result;
 }

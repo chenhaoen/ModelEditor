@@ -18,6 +18,7 @@ add_compile_definitions(VULKANCONTEXT_EXPORT)
 add_compile_definitions(NOMINMAX)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
+RenderingContextDriver
 Vulkan::Vulkan
 )
 

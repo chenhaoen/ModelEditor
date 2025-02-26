@@ -5,12 +5,16 @@
 #include <vulkan/vulkan.h>
 
 class Command;
+class Mesh;
+
 class CommandManager
 {
 public:
 	static CommandManager* instance();
 
 	void generateCommands();
+
+	void generateCommands(Mesh* mesh);
 
 	void cleanCommands();
 

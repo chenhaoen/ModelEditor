@@ -14,7 +14,7 @@ public:
 	VkQueue getGraphicsQueue() const;
 	VkQueue getPresentQueue() const;
 
-	void Wait() const;
+	void wait() const;
 private:
 	VkDevice m_vkDevice;
 
