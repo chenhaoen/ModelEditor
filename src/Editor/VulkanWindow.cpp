@@ -8,6 +8,7 @@
 #include "VulkanContext/VulkanContext.h"
 
 #include "RenderingContextDriver/FrameManager.h"
+#include "RenderingContextDriver/PipelineManager.h"
 
 VulkanWindow::VulkanWindow()
 {
@@ -38,6 +39,7 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			RenderingContextDriver::instance()->initialize();
 
 			FrameManager::instance();
+			PipelineManager::instance();
 
 			render();
 		}
@@ -69,6 +71,25 @@ bool VulkanWindow::event(QEvent* event)
 	{
 		FrameManager::instance()->beginFrame();
 
+		CommandBufferID currentCommandBuffer = FrameManager::instance()->currentCommandBuffer();
+
+		RenderingContextDriver::instance()->cmdBindPipeline(currentCommandBuffer, PipelineManager::instance()->getPipeline(PipelineType::Model));
+
+		Rect2D scissor;
+		scissor.offset = { 0,0 };
+		scissor.extent = RenderingContextDriver::instance()->getSurfaceExtent(SurfaceID());
+		RenderingContextDriver::instance()->cmdSetScissor(currentCommandBuffer, scissor);
+
+		Viewport viewport;
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = (float)RenderingContextDriver::instance()->getSurfaceExtent(SurfaceID()).width;
+		viewport.height = (float)RenderingContextDriver::instance()->getSurfaceExtent(SurfaceID()).height;
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		RenderingContextDriver::instance()->cmdSetViewport(currentCommandBuffer, viewport);
+
+		RenderingContextDriver::instance()->cmdDraw(currentCommandBuffer, 3,1,0,0);
 
 		FrameManager::instance()->endFrame();
 		return true;

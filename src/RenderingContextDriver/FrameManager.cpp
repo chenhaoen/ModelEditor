@@ -47,3 +47,8 @@ void FrameManager::endFrame()
 	m_frames[m_currentFrame]->end();
 	m_currentFrame = (m_currentFrame + 1) % maxFrameCount();
 }
+
+CommandBufferID FrameManager::currentCommandBuffer()
+{
+	return m_frames[m_currentFrame]->getCommandBuffer();
+}

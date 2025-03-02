@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
 struct ID {
 	uint64_t id = 0;
@@ -53,8 +53,31 @@ DEFINE_ID(Fence);
 DEFINE_ID(Semaphore);
 DEFINE_ID(Surface);
 
-struct Extent2D
+typedef struct Offset2D {
+	int32_t    x;
+	int32_t    y;
+} Offset2D;
+
+typedef struct Extent2D {
+	uint32_t    width;
+	uint32_t    height;
+} Extent2D;
+
+typedef struct Rect2D {
+	Offset2D    offset;
+	Extent2D    extent;
+} Rect2D;
+
+typedef struct Viewport {
+	float    x;
+	float    y;
+	float    width;
+	float    height;
+	float    minDepth;
+	float    maxDepth;
+} Viewport;
+
+enum PipelineType
 {
-	uint32_t width;
-	uint32_t height;
+	Model,
 };

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "RenderingContextDriver/Exports.h"
+#include "RenderingContextDriver/Commons.h"
 
 class Frame;
 class RENDERINGCONTEXTDRIVER_API FrameManager
@@ -16,6 +17,7 @@ public:
 	void beginFrame();
 	void endFrame();
 
+	CommandBufferID currentCommandBuffer();
 private:
 	FrameManager();
 	~FrameManager();

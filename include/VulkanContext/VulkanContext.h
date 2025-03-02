@@ -27,8 +27,6 @@ public:
 
 	void wait() override final;
 
-	void draw() override final;
-
 	void resizeSurface() override final;
 
 	CommandBufferID createCommandBuffer() override final;
@@ -48,6 +46,9 @@ public:
 	SurfaceID getSurfaceID() override final;
 	Extent2D getSurfaceExtent(SurfaceID) override final;
 
+	PipelineID createPipeline() override final;
+	void freePipeline(PipelineID pipeline) override final;
+
 	RenderPassID getRenderPassID() override final;
 	void beginRenderPass(CommandBufferID, FramebufferID) override final;
 	void endRenderPass(CommandBufferID) override final;
@@ -59,6 +60,18 @@ public:
 		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) override final;
 
 	void queuePresent(const std::vector<SemaphoreID>& waitSemaphore, const uint32_t) override final;
+
+	void cmdBindPipeline(CommandBufferID p_cmd_buffer, PipelineID p_pipeline) override final;
+	void cmdDraw(
+		CommandBufferID p_cmd_buffer,
+		uint32_t vertexCount,
+		uint32_t instanceCount,
+		uint32_t firstVertex,
+		uint32_t firstInstanc);
+
+	void cmdSetScissor(CommandBufferID p_cmd_buffer, const Rect2D& scissor) override final;
+
+	void cmdSetViewport(CommandBufferID p_cmd_buffer, const Viewport& viewport) override final;
 
 	static const std::vector<const char*>& getInstanceExtensions();
 	static const std::vector<const char*>& getDeviceExtensions();

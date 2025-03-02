@@ -28,8 +28,6 @@ public:
 
 	virtual void initialize() = 0;
 
-	virtual void draw() = 0;
-
 	virtual void wait() = 0;
 
 	virtual void resizeSurface() = 0;
@@ -51,17 +49,33 @@ public:
 	virtual SurfaceID getSurfaceID() = 0;
 	virtual Extent2D getSurfaceExtent(SurfaceID) = 0;
 
+	virtual PipelineID createPipeline() = 0;
+	virtual void freePipeline(PipelineID pipeline) = 0;
+
 	virtual RenderPassID getRenderPassID() = 0;
 	virtual void beginRenderPass(CommandBufferID, FramebufferID) = 0;
 	virtual void endRenderPass(CommandBufferID) = 0;
 
 	virtual SwapChainID getSwapChainID() = 0;
-	virtual FramebufferID getFramebuffer(SwapChainID,uint32_t) = 0;
+	virtual FramebufferID getFramebuffer(SwapChainID, uint32_t) = 0;
 
 	virtual void queueSubmit(const std::vector<CommandBufferID>&, const std::vector<SemaphoreID>& waitSemaphore,
 		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) = 0;
 
 	virtual void queuePresent(const std::vector<SemaphoreID>& waitSemaphore, const uint32_t) = 0;
+
+	virtual void cmdDraw(
+		CommandBufferID p_cmd_buffer,
+		uint32_t vertexCount,
+		uint32_t instanceCount,
+		uint32_t firstVertex,
+		uint32_t firstInstanc) = 0;
+
+	virtual void cmdBindPipeline(CommandBufferID p_cmd_buffer, PipelineID p_pipeline) = 0;
+
+	virtual void cmdSetScissor(CommandBufferID p_cmd_buffer, const Rect2D& scissor) = 0;
+
+	virtual void cmdSetViewport(CommandBufferID p_cmd_buffer, const Viewport& viewport) = 0;
 protected:
 	RenderingContextDriver() = default;
 	virtual ~RenderingContextDriver() = 0;
