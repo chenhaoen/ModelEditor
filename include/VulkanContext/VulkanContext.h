@@ -14,6 +14,7 @@ class LogicalDevice;
 class RenderPass;
 class SwapChain;
 class CommandPool;
+class DescriptorPool;
 
 class VULKANCONTEXT_API VulkanContext : public RenderingContextDriver
 {
@@ -33,6 +34,10 @@ public:
 	void resetCommandBuffer(CommandBufferID commandBuffer) override final;
 	void beginCommandBuffer(CommandBufferID commandBuffer) override final;
 	void endCommandBuffer(CommandBufferID commandBuffer) override final;
+
+	BufferID createVertexBuffer(const std::vector<Vertex>& vertices) override final;
+	BufferID createIndexBuffer(const std::vector<uint32_t>& indices) override final;
+	void freeBuffer(BufferID buffer) override final;
 
 	FenceID createFence() override final;
 	void waitFence(FenceID p_fence) override final;
@@ -56,6 +61,10 @@ public:
 	SwapChainID getSwapChainID() override final;
 	FramebufferID getFramebuffer(SwapChainID, uint32_t) override final;
 
+	UniformSetID createUniformSet(PipelineID pipeline) override final;
+	void freeUniformSet(UniformSetID uniformSet) override final;
+	void undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo) override final;
+
 	void queueSubmit(const std::vector<CommandBufferID>&, const std::vector<SemaphoreID>& waitSemaphore,
 		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) override final;
 
@@ -69,9 +78,23 @@ public:
 		uint32_t firstVertex,
 		uint32_t firstInstanc);
 
+	void cmdDrawIndexed(
+		CommandBufferID p_cmd_buffer,
+		uint32_t indexCount,
+		uint32_t instanceCount,
+		uint32_t firstIndex,
+		int32_t  vertexOffset,
+		uint32_t firstInstance);
+
 	void cmdSetScissor(CommandBufferID p_cmd_buffer, const Rect2D& scissor) override final;
 
 	void cmdSetViewport(CommandBufferID p_cmd_buffer, const Viewport& viewport) override final;
+
+	void cmdBindVertexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer) override final;
+
+	void cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer) override final;
+
+	void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) override final;
 
 	static const std::vector<const char*>& getInstanceExtensions();
 	static const std::vector<const char*>& getDeviceExtensions();
@@ -128,4 +151,5 @@ private:
 	static RenderPass* m_renderPass;
 	static SwapChain* m_swapChain;
 	static CommandPool* m_commandPool;
+	DescriptorPool* m_descriptorPool;
 };

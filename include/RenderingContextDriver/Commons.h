@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+#include <glm/glm.hpp>
+
 struct ID {
 	uint64_t id = 0;
 	inline ID() = default;
@@ -80,4 +83,15 @@ typedef struct Viewport {
 enum PipelineType
 {
 	Model,
+};
+
+struct Vertex {
+	glm::vec2 pos;
+	glm::vec3 color;
+};
+
+struct UniformBufferObject {
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 proj;
 };

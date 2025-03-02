@@ -18,6 +18,8 @@
 #include "VulkanContext/SwapChain.h"
 #include "VulkanContext/CommandPool.h"
 #include "VulkanContext/Pipeline.h"
+#include "VulkanContext/DescriptorSetLayout.h"
+#include "VulkanContext/DescriptorPool.h"
 #include "VulkanContext/Utils.h"
 
 #include "Nodes/NodeManager.h"
@@ -97,6 +99,8 @@ void VulkanContext::initialize()
 
 	m_commandPool = new CommandPool();
 
+	m_descriptorPool = new DescriptorPool();
+
 #ifndef NDEBUG
 	const auto finish{ std::chrono::steady_clock::now() };
 	const std::chrono::duration<double> elapsed_seconds{ finish - start };
@@ -109,6 +113,7 @@ void VulkanContext::destroy()
 {
 	m_device->wait();
 
+	delete m_descriptorPool;
 	delete m_commandPool;
 	delete m_swapChain;
 	delete m_renderPass;
@@ -163,6 +168,85 @@ void VulkanContext::beginCommandBuffer(CommandBufferID commandBuffer)
 void VulkanContext::endCommandBuffer(CommandBufferID commandBuffer)
 {
 	VK_CHECK(vkEndCommandBuffer(reinterpret_cast<VkCommandBuffer>(commandBuffer.id)));
+}
+
+struct BufferInfo
+{
+	VkBuffer buffer;
+	VkDeviceMemory bufferMemory;
+};
+
+BufferID VulkanContext::createVertexBuffer(const std::vector<Vertex>& vertices)
+{
+	BufferInfo* bufferInfo = new BufferInfo{};
+
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+
+	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, vertices.data(), (size_t)bufferSize);
+	vkUnmapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory);
+
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, 
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		bufferInfo->buffer, bufferInfo->bufferMemory);
+
+	copyBuffer(stagingBuffer, bufferInfo->buffer, bufferSize);
+
+	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), stagingBuffer, nullptr);
+	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, nullptr);
+
+	return BufferID(bufferInfo);
+}
+
+BufferID VulkanContext::createIndexBuffer(const std::vector<uint32_t>& indices)
+{
+	BufferInfo* bufferInfo = new BufferInfo{};
+
+	VkBuffer stagingBuffer;
+	VkDeviceMemory stagingBufferMemory;
+
+	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		stagingBuffer, stagingBufferMemory);
+
+	void* data;
+	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
+	memcpy(data, indices.data(), (size_t)bufferSize);
+	vkUnmapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory);
+
+	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+		bufferInfo->buffer, bufferInfo->bufferMemory);
+
+	copyBuffer(stagingBuffer, bufferInfo->buffer, bufferSize);
+
+	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), stagingBuffer, nullptr);
+	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, nullptr);
+
+	return BufferID(bufferInfo);
+}
+
+void VulkanContext::freeBuffer(BufferID buffer)
+{
+	if (!buffer)
+	{
+		return;
+	}
+
+	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(buffer.id);
+
+	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), bufferInfo->buffer, nullptr);
+	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->bufferMemory, nullptr);
+
+	delete bufferInfo;
 }
 
 FenceID VulkanContext::createFence()
@@ -223,26 +307,46 @@ Extent2D VulkanContext::getSurfaceExtent(SurfaceID)
 	return result;
 }
 
+struct PipelineInfo
+{
+	Pipeline* pipeline;
+	DescriptorSetLayout* descriptorSetLayout;
+};
+
 PipelineID VulkanContext::createPipeline()
 {
-	return PipelineID(new Pipeline(nullptr));
+	PipelineInfo* pipelineInfo = new PipelineInfo();
+	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
+	pipelineInfo->pipeline = new Pipeline(pipelineInfo->descriptorSetLayout);
+	return PipelineID(pipelineInfo);
 }
 
 void VulkanContext::freePipeline(PipelineID pipeline)
 {
-	delete reinterpret_cast<Pipeline*>(pipeline.id);
+	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
+
+	delete pipelineInfo->descriptorSetLayout;
+	delete pipelineInfo->pipeline;
+	delete pipelineInfo;
 }
 
 void VulkanContext::cmdBindPipeline(CommandBufferID p_cmd_buffer, PipelineID p_pipeline)
 {
+	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(p_pipeline.id);
 	vkCmdBindPipeline(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
-		VK_PIPELINE_BIND_POINT_GRAPHICS, reinterpret_cast<Pipeline*>(p_pipeline.id)->getVkPipeline());
+		VK_PIPELINE_BIND_POINT_GRAPHICS, reinterpret_cast<Pipeline*>(pipelineInfo->pipeline)->getVkPipeline());
 }
 
 void VulkanContext::cmdDraw(CommandBufferID p_cmd_buffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstanc)
 {
 	vkCmdDraw(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
 		vertexCount, instanceCount, firstVertex, firstInstanc);
+}
+
+void VulkanContext::cmdDrawIndexed(CommandBufferID p_cmd_buffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
+{
+	vkCmdDrawIndexed(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), 
+		indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
 }
 
 static_assert(sizeof(Rect2D) == sizeof(VkRect2D));
@@ -265,6 +369,33 @@ void VulkanContext::cmdSetViewport(CommandBufferID p_cmd_buffer, const Viewport&
 
 	vkCmdSetViewport(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
 		0, 1, &vkViewport);
+}
+
+void VulkanContext::cmdBindVertexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer)
+{
+	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(buffer.id);
+
+	VkBuffer vertexBuffers[] = { bufferInfo->buffer };
+	VkDeviceSize offsets[] = { 0 };
+	vkCmdBindVertexBuffers(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), 0, 1, vertexBuffers, offsets);
+}
+
+void VulkanContext::cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer)
+{
+	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(buffer.id);
+	vkCmdBindIndexBuffer(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), bufferInfo->buffer, 0, VK_INDEX_TYPE_UINT32);
+}
+
+void VulkanContext::cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet)
+{
+	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
+	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
+
+	vkCmdBindDescriptorSets(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
+		VK_PIPELINE_BIND_POINT_GRAPHICS,
+		pipelineInfo->pipeline->getVkPipelineLayout(),
+		0, 1, 
+		&bufferInfo->descriptorSet, 0, nullptr);
 }
 
 RenderPassID VulkanContext::getRenderPassID()
@@ -304,6 +435,73 @@ SwapChainID VulkanContext::getSwapChainID()
 FramebufferID VulkanContext::getFramebuffer(SwapChainID swapChain, uint32_t imageIndex)
 {
 	return FramebufferID(reinterpret_cast<SwapChain*>(swapChain.id)->getFrameBuffer(imageIndex));
+}
+
+UniformSetID VulkanContext::createUniformSet(PipelineID pipeline)
+{
+	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
+
+	UniformBufferInfo* bufferInfo = new UniformBufferInfo{};
+
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, bufferInfo->buffer, bufferInfo->memory);
+
+	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, 0, bufferSize, 0, &bufferInfo->mapped);
+
+	bufferInfo->descriptorSet = m_descriptorPool->AllocateDescriptorSet(pipelineInfo->descriptorSetLayout);
+
+	{
+		VkDescriptorBufferInfo descriptorBufferInfo{};
+		descriptorBufferInfo.buffer = bufferInfo->buffer;
+		descriptorBufferInfo.offset = 0;
+		descriptorBufferInfo.range = sizeof(UniformBufferObject);
+
+		VkWriteDescriptorSet descriptorWrite{};
+		descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrite.dstSet = bufferInfo->descriptorSet;
+		descriptorWrite.dstBinding = 0;
+		descriptorWrite.dstArrayElement = 0;
+
+		descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrite.descriptorCount = 1;
+
+		descriptorWrite.pBufferInfo = &descriptorBufferInfo;
+		descriptorWrite.pImageInfo = nullptr; // Optional
+		descriptorWrite.pTexelBufferView = nullptr; // Optional
+
+		vkUpdateDescriptorSets(VulkanContext::getDevice()->getVkDevice(), 1, &descriptorWrite, 0, nullptr);
+	}
+
+
+	return UniformSetID(bufferInfo);
+}
+
+void VulkanContext::freeUniformSet(UniformSetID uniformSet)
+{
+	if (!uniformSet)
+	{
+		return;
+	}
+
+	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
+
+	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), bufferInfo->buffer, nullptr);
+	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, nullptr);
+
+	delete bufferInfo;
+}
+
+void VulkanContext::undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo)
+{
+	if (!uniformSet)
+	{
+		return;
+	}
+
+	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
+
+	memcpy(bufferInfo->mapped, &ubo, sizeof(ubo));
 }
 
 void VulkanContext::queueSubmit(const std::vector<CommandBufferID>& inCommandBuffers, const std::vector<SemaphoreID>& inWaitSemaphore,

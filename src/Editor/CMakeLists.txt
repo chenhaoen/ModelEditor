@@ -22,7 +22,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${Qt6Core_LIBRARIES}
     ${Qt6Gui_LIBRARIES}
     ${Qt6Widgets_LIBRARIES}
-    RenderingContextDriver
     VulkanContext
     Nodes
 )

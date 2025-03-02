@@ -37,6 +37,10 @@ public:
 	virtual void beginCommandBuffer(CommandBufferID commandBuffer) = 0;
 	virtual void endCommandBuffer(CommandBufferID commandBuffer) = 0;
 
+	virtual BufferID createVertexBuffer(const std::vector<Vertex>& vertices) = 0;
+	virtual BufferID createIndexBuffer(const std::vector<uint32_t>& indices) = 0;
+	virtual void freeBuffer(BufferID buffer) = 0;
+
 	virtual FenceID createFence() = 0;
 	virtual void waitFence(FenceID p_fence) = 0;
 	virtual void freeFence(FenceID p_fence) = 0;
@@ -59,6 +63,10 @@ public:
 	virtual SwapChainID getSwapChainID() = 0;
 	virtual FramebufferID getFramebuffer(SwapChainID, uint32_t) = 0;
 
+	virtual UniformSetID createUniformSet(PipelineID pipeline) = 0;
+	virtual void freeUniformSet(UniformSetID uniformSet) = 0;
+	virtual void undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo) = 0;
+
 	virtual void queueSubmit(const std::vector<CommandBufferID>&, const std::vector<SemaphoreID>& waitSemaphore,
 		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) = 0;
 
@@ -71,11 +79,25 @@ public:
 		uint32_t firstVertex,
 		uint32_t firstInstanc) = 0;
 
+	virtual void cmdDrawIndexed(
+		CommandBufferID p_cmd_buffer,
+		uint32_t indexCount,
+		uint32_t instanceCount,
+		uint32_t firstIndex,
+		int32_t  vertexOffset,
+		uint32_t firstInstance) = 0;
+
 	virtual void cmdBindPipeline(CommandBufferID p_cmd_buffer, PipelineID p_pipeline) = 0;
 
 	virtual void cmdSetScissor(CommandBufferID p_cmd_buffer, const Rect2D& scissor) = 0;
 
 	virtual void cmdSetViewport(CommandBufferID p_cmd_buffer, const Viewport& viewport) = 0;
+
+	virtual void cmdBindVertexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer) = 0;
+
+	virtual void cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer) = 0;
+
+	virtual void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) = 0;
 protected:
 	RenderingContextDriver() = default;
 	virtual ~RenderingContextDriver() = 0;

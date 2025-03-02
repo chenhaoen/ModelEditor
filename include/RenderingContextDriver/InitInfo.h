@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "RenderingContextDriver/Exports.h"
 
 class RENDERINGCONTEXTDRIVER_API InitInfo

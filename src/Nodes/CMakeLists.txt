@@ -1,8 +1,6 @@
 project(Nodes CXX)
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(glm)
-
 set(NODES_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME})
 set(NODES_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME})
 
@@ -16,8 +14,8 @@ ${NODEST_HEADERS}
 ${NODES_SOURCES}
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-glm::glm
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    RenderingContextDriver
 )
 
 install(TARGETS ${PROJECT_NAME}

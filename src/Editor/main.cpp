@@ -5,6 +5,7 @@
 #include "RenderingContextDriver/RenderingContextDriver.h"
 #include "RenderingContextDriver/FrameManager.h"
 #include "RenderingContextDriver/PipelineManager.h"
+#include "Nodes/NodeManager.h"
 
 int main(int argc, char **argv)
 {
@@ -18,6 +19,7 @@ int main(int argc, char **argv)
     RenderingContextDriver::instance()->wait();
     FrameManager::destroy();
     PipelineManager::destroy();
+    NodeManager::destoryRoot();
     RenderingContextDriver::destroyContext();
 
     return result;

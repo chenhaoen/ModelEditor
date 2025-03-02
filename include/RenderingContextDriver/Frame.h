@@ -12,12 +12,17 @@ public:
 
 	void begin();
 	void end();
+
+private:
+	void updateUniformBuffer();
+
 private:
 	SemaphoreID m_imageAvailableSemaphore;
 	SemaphoreID m_renderFinishedSemaphore;
 	FenceID m_inFlightFence;
 
 	CommandBufferID m_commandBuffer;
+	UniformSetID m_uniformSet;
 
 	uint32_t m_imageIndex;
 };
