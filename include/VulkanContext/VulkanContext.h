@@ -39,6 +39,9 @@ public:
 	BufferID createIndexBuffer(const std::vector<uint32_t>& indices) override final;
 	void freeBuffer(BufferID buffer) override final;
 
+	TextureID createTexture(const uint32_t width, const uint32_t height, const uint32_t channels, const unsigned char* data) override final;
+	void freeTexture(TextureID buffer) override final;
+
 	FenceID createFence() override final;
 	void waitFence(FenceID p_fence) override final;
 	void freeFence(FenceID p_fence) override final;
@@ -61,7 +64,7 @@ public:
 	SwapChainID getSwapChainID() override final;
 	FramebufferID getFramebuffer(SwapChainID, uint32_t) override final;
 
-	UniformSetID createUniformSet(PipelineID pipeline) override final;
+	UniformSetID createUniformSet(PipelineID pipeline, const std::vector<BoundUniform>& boundUniforms) override final;
 	void freeUniformSet(UniformSetID uniformSet) override final;
 	void undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo) override final;
 

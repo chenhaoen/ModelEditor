@@ -41,6 +41,9 @@ public:
 	virtual BufferID createIndexBuffer(const std::vector<uint32_t>& indices) = 0;
 	virtual void freeBuffer(BufferID buffer) = 0;
 
+	virtual TextureID createTexture(const uint32_t width, const uint32_t height, const uint32_t channels, const unsigned char* data) = 0;
+	virtual void freeTexture(TextureID buffer) = 0;
+
 	virtual FenceID createFence() = 0;
 	virtual void waitFence(FenceID p_fence) = 0;
 	virtual void freeFence(FenceID p_fence) = 0;
@@ -63,7 +66,7 @@ public:
 	virtual SwapChainID getSwapChainID() = 0;
 	virtual FramebufferID getFramebuffer(SwapChainID, uint32_t) = 0;
 
-	virtual UniformSetID createUniformSet(PipelineID pipeline) = 0;
+	virtual UniformSetID createUniformSet(PipelineID pipeline,const std::vector<BoundUniform>& boundUniforms) = 0;
 	virtual void freeUniformSet(UniformSetID uniformSet) = 0;
 	virtual void undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo) = 0;
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
-#define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
 #include <glm/glm.hpp>
 
 struct ID {
@@ -88,10 +88,34 @@ enum PipelineType
 struct Vertex {
 	glm::vec2 pos;
 	glm::vec3 color;
+	glm::vec2 texCoord;
 };
 
 struct UniformBufferObject {
 	glm::mat4 model;
 	glm::mat4 view;
 	glm::mat4 proj;
+};
+
+enum UniformType {
+	UNIFORM_TYPE_SAMPLER, // For sampling only (sampler GLSL type).
+	UNIFORM_TYPE_SAMPLER_WITH_TEXTURE, // For sampling only, but includes a texture, (samplerXX GLSL type), first a sampler then a texture.
+	UNIFORM_TYPE_TEXTURE, // Only texture, (textureXX GLSL type).
+	UNIFORM_TYPE_IMAGE, // Storage image (imageXX GLSL type), for compute mostly.
+	UNIFORM_TYPE_TEXTURE_BUFFER, // Buffer texture (or TBO, textureBuffer type).
+	UNIFORM_TYPE_SAMPLER_WITH_TEXTURE_BUFFER, // Buffer texture with a sampler(or TBO, samplerBuffer type).
+	UNIFORM_TYPE_IMAGE_BUFFER, // Texel buffer, (imageBuffer type), for compute mostly.
+	UNIFORM_TYPE_UNIFORM_BUFFER, // Regular uniform buffer (or UBO).
+	UNIFORM_TYPE_STORAGE_BUFFER, // Storage buffer ("buffer" qualifier) like UBO, but supports storage, for compute mostly.
+	UNIFORM_TYPE_INPUT_ATTACHMENT, // Used for sub-pass read/write, for mobile mostly.
+	UNIFORM_TYPE_MAX
+};
+
+struct BoundUniform {
+	UniformType type = UNIFORM_TYPE_MAX;
+	uint32_t binding = 0xffffffff; // Binding index as specified in shader.
+	std::vector<ID> ids;
+	// Flag to indicate  that this is an immutable sampler so it is skipped when creating uniform
+	// sets, as it would be set previously when creating the pipeline layout.
+	bool immutable_sampler = false;
 };

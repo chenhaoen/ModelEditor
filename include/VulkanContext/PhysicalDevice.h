@@ -15,6 +15,8 @@ public:
 
 	uint32_t getGraphicsFamilyIndex() const;
 	uint32_t getPresentFamilyIndex(Surface* surface) const;
+
+	const VkPhysicalDeviceProperties properties() const;
 private:
 	VkPhysicalDevice m_vkPhysicalDevice;
 

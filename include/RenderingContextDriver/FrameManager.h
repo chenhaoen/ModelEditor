@@ -18,6 +18,8 @@ public:
 	void endFrame();
 
 	CommandBufferID currentCommandBuffer();
+
+	void addBoundUniform(const BoundUniform& boundUniform);
 private:
 	FrameManager();
 	~FrameManager();

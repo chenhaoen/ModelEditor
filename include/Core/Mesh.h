@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Nodes/Exports.h"
+#include "Core/Exports.h"
 
 #include "RenderingContextDriver/Commons.h"
 
@@ -17,7 +17,8 @@ enum class PrimitiveType {
     Points      
 };
 
-class NODES_API Mesh
+class Image;
+class CORE_API Mesh
 {
 public:
     Mesh();
@@ -32,6 +33,8 @@ public:
     void setIndices(const std::vector<uint32_t>& indices);
     const std::vector<uint32_t>& getIndices() const;
 
+    void setImage(Image* image);
+
     bool isChanged();
     void setChanged(const bool value);
 
@@ -45,6 +48,9 @@ private:
 
     void createIndexBuffer();
     void freeIndexBuffer();
+
+    void createTexture();
+    void freeTexture();
 private:
 
     bool m_isChanged;
@@ -56,5 +62,8 @@ private:
 
     std::vector<uint32_t> m_indices;
     BufferID m_indexBuffer;
+
+    Image* m_image;
+    TextureID m_texureID;
 };
 

@@ -8,7 +8,8 @@
 #include "RenderingContextDriver/PipelineManager.h"
 
 Frame::Frame()
-	:m_imageIndex(0)
+	: m_imageIndex(0)
+	, m_compiled(false)
 {
 	m_inFlightFence = RenderingContextDriver::instance()->createFence();
 	m_renderFinishedSemaphore = RenderingContextDriver::instance()->createSemaphore();
@@ -16,7 +17,9 @@ Frame::Frame()
 
 	m_commandBuffer = RenderingContextDriver::instance()->createCommandBuffer();
 
-	m_uniformSet = RenderingContextDriver::instance()->createUniformSet(PipelineManager::instance()->getPipeline(PipelineType::Model));
+	BoundUniform uniform;
+	uniform.type = UNIFORM_TYPE_UNIFORM_BUFFER;
+	addBoundUniform(uniform);
 }
 
 Frame::~Frame()
@@ -35,6 +38,8 @@ CommandBufferID Frame::getCommandBuffer() const
 
 void Frame::begin()
 {
+	compile();
+
 	RenderingContextDriver::instance()->waitFence(m_inFlightFence);
 
 	RenderingContextDriver::instance()->resetCommandBuffer(m_commandBuffer);
@@ -59,6 +64,26 @@ void Frame::end()
 	RenderingContextDriver::instance()->queueSubmit({ m_commandBuffer }, { m_imageAvailableSemaphore }, { m_renderFinishedSemaphore }, m_inFlightFence);
 
 	RenderingContextDriver::instance()->queuePresent({ m_renderFinishedSemaphore },m_imageIndex);
+}
+
+void Frame::addBoundUniform(const BoundUniform& boundUniform)
+{
+	m_boundUniforms.emplace_back(boundUniform);
+	m_compiled = false;
+}
+
+void Frame::compile()
+{
+	if (m_compiled)
+	{
+		return;
+	}
+
+	RenderingContextDriver::instance()->freeUniformSet(m_uniformSet);
+
+	m_uniformSet = RenderingContextDriver::instance()->createUniformSet(PipelineManager::instance()->getPipeline(PipelineType::Model), m_boundUniforms);
+
+	m_compiled = true;
 }
 
 void Frame::updateUniformBuffer()

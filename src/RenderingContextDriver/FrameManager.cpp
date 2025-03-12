@@ -52,3 +52,11 @@ CommandBufferID FrameManager::currentCommandBuffer()
 {
 	return m_frames[m_currentFrame]->getCommandBuffer();
 }
+
+void FrameManager::addBoundUniform(const BoundUniform& boundUniform)
+{
+	for (Frame* frame : m_frames)
+	{
+		frame->addBoundUniform(boundUniform);
+	}
+}

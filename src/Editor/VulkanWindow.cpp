@@ -3,8 +3,10 @@
 
 #include "Editor/VulkanWindow.h"
 
-#include "Nodes/NodeManager.h"
-#include "Nodes/Mesh.h"
+#include "Core/NodeManager.h"
+#include "Core/Mesh.h"
+
+#include "IO/ReadImage.h"
 
 #include "VulkanContext/VulkanContext.h"
 
@@ -34,6 +36,7 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 #endif // NDEBUG
 
 			NodeManager::root();
+			NodeManager::root()->setImage(readImage("E:/code/ModelEditer/build/bin/Debug/textures/texture.jpg"));
 
 			RenderingContextDriver::setContext(new VulkanContext());
 			RenderingContextDriver::instance()->setInitInfo(initInfo);

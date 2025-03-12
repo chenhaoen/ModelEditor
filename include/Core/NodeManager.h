@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Nodes/Exports.h"
+#include "Core/Exports.h"
 
 class Mesh;
-class NODES_API NodeManager
+class CORE_API NodeManager
 {
 public:
 	static Mesh* root();

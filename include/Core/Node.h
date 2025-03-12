@@ -1,7 +1,7 @@
 #pragma once
-#include "Nodes/Exports.h"
+#include "Core/Exports.h"
 
-class NODES_API Node
+class CORE_API Node
 {
 public:
 	virtual void render() = 0;

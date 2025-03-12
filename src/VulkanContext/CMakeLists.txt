@@ -22,7 +22,7 @@ Vulkan::Vulkan
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-Nodes
+Core
 RenderingContextDriver
 )
 

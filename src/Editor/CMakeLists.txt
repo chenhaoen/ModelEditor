@@ -23,7 +23,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${Qt6Gui_LIBRARIES}
     ${Qt6Widgets_LIBRARIES}
     VulkanContext
-    Nodes
+    IO
 )
 
 install(TARGETS ${PROJECT_NAME}

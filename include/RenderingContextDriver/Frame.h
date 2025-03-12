@@ -13,6 +13,9 @@ public:
 	void begin();
 	void end();
 
+	void addBoundUniform(const BoundUniform& boundUniform);
+
+	void compile();
 private:
 	void updateUniformBuffer();
 
@@ -25,5 +28,9 @@ private:
 	UniformSetID m_uniformSet;
 
 	uint32_t m_imageIndex;
+
+	std::vector<BoundUniform> m_boundUniforms;
+
+	bool m_compiled;
 };
 

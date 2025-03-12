@@ -16,19 +16,9 @@
         }                                                                \
     }
 
-struct UniformBufferInfo
-{
-    VkBuffer buffer;
-    VkDeviceMemory memory;
-    void* mapped;
-    VkDescriptorSet descriptorSet;
-};
-
-constexpr std::string_view g_modelPipelineName("Model");
-
 VkVertexInputBindingDescription getBindingDescription();
 
-std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions();
+std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions();
 
 void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 

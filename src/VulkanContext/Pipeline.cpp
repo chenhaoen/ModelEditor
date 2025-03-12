@@ -159,7 +159,7 @@ Pipeline::Pipeline(
 	pipelineInfo.pDepthStencilState = &depthStencil; // Optional
 	pipelineInfo.pColorBlendState = &colorBlending;
 	pipelineInfo.pDynamicState = &dynamicState;
-
+	//pipelineInfo.flags = VK_PIPELINE_CREATE_DESCRIPTOR_BUFFER_BIT_EXT;
 	pipelineInfo.layout = m_layout;
 	pipelineInfo.renderPass = VulkanContext::getRenderPass()->getVkRenderPass();
 	pipelineInfo.subpass = 0;

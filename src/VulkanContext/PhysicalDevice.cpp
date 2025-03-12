@@ -77,3 +77,8 @@ uint32_t PhysicalDevice::getPresentFamilyIndex(Surface* surface) const
 	}
 	return UINT32_MAX;
 }
+
+const VkPhysicalDeviceProperties PhysicalDevice::properties() const
+{
+	return m_deviceProperties;
+}
