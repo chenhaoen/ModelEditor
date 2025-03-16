@@ -22,8 +22,8 @@ SwapChain::SwapChain()
 {
 	create();
 	createImageViews();
+	createDepthResources();
 	createFrameBuffers();
-	//createDepthResources();
 }
 
 SwapChain::~SwapChain()
@@ -36,8 +36,8 @@ void SwapChain::createFrameBuffers()
 	m_frameBuffers.resize(m_imageViews.size());
 	for (size_t i = 0; i < m_frameBuffers.size(); i++)
 	{
-		std::array<VkImageView, 1> attachments = {
-			m_imageViews[i] };
+		std::array<VkImageView, 2> attachments = {
+			m_imageViews[i] , m_depthImageView};
 
 		VkFramebufferCreateInfo framebufferInfo{};
 		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -54,12 +54,14 @@ void SwapChain::createFrameBuffers()
 
 void SwapChain::createDepthResources()
 {
-	//VkFormat depthFormat = findDepthFormat();
-	//
-	//createImage(m_extent.width, m_extent.height, depthFormat,
-	//            VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-	//            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
-	//m_depthImageView = createImageView(m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+	VkFormat depthFormat = findDepthFormat();
+	
+	createImage(VulkanContext::getSurface()->getExtent().width, 
+				VulkanContext::getSurface()->getExtent().height,
+				depthFormat,
+	            VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+	            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
+	m_depthImageView = createImageView(m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
 }
 
 void SwapChain::create()
@@ -130,16 +132,11 @@ void SwapChain::cleanup()
 	}
 
 	vkDestroySwapchainKHR(VulkanContext::getDevice()->getVkDevice(), m_vkSwapChain, nullptr);
-	//
-	//vkDestroyImage(Context::instance()->getDevice()->getVkDevice(), m_depthImage, nullptr);
-	//vkFreeMemory(Context::instance()->getDevice()->getVkDevice(), m_depthImageMemory, nullptr);
-	//vkDestroyImageView(Context::instance()->getDevice()->getVkDevice(), m_depthImageView, nullptr);
+	
+	vkDestroyImage(VulkanContext::getDevice()->getVkDevice(), m_depthImage, nullptr);
+	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), m_depthImageMemory, nullptr);
+	vkDestroyImageView(VulkanContext::getDevice()->getVkDevice(), m_depthImageView, nullptr);
 }
-
-//void SwapChain::setRenderPass(RenderPass *renderPass)
-//{
-//   // m_renderPass = renderPass;
-//}
 
 
 VkSwapchainKHR SwapChain::getVkSwapChain() const
