@@ -60,6 +60,14 @@ glm::vec3 Camera::getFront() const {
     return front;
 }
 
+void Camera::record()
+{
+}
+
+void Camera::compile()
+{
+}
+
 // 更新摄像机的坐标系
 void Camera::updateCameraVectors() {
     // 计算前向向量

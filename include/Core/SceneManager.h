@@ -8,6 +8,8 @@
 
 inline const std::string MAIN_SCENE_NAME;
 
+inline const std::string MAIN_CAMERA_NAME;
+
 class Scene;
 class CORE_API SceneManager {
 public:

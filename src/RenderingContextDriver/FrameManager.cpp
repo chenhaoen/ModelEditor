@@ -39,7 +39,6 @@ FrameManager::~FrameManager()
 void FrameManager::beginFrame()
 {
 	m_frames[m_currentFrame]->begin();
-	
 }
 
 void FrameManager::endFrame()

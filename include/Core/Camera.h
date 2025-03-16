@@ -3,7 +3,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class Camera {
+#include "Core/Compilable.h"
+#include "Core/Exports.h"
+
+class CORE_API Camera : public Compilable {
 public:
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
@@ -25,7 +28,11 @@ public:
 
     glm::vec3 getFront() const;
 
+    void record() override;
 private:
+
+    void compile() override;
+
     void updateCameraVectors();
 
     glm::vec3 position; 

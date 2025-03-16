@@ -26,6 +26,9 @@ const std::string& Material::getTexturePath() const
 void Material::setImage(std::shared_ptr<Image> image)
 {
 	m_image = image;
+
+	// TO DO 这里以后要改
+	compile();
 }
 
 void Material::record()

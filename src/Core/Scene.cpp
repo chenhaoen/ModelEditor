@@ -89,8 +89,9 @@ void Scene::update(float deltaTime) {
 
 void Scene::record()
 {
-    //glm::mat4 viewMatrix = currentCamera->getViewMatrix();
-    //glm::mat4 projectionMatrix = currentCamera->getProjectionMatrix();
+    if (!currentCamera) {
+        currentCamera->record();
+    }
 
     rootNode->record();
 }
