@@ -3,10 +3,7 @@
 
 #include "Editor/VulkanWindow.h"
 
-#include "Core/NodeManager.h"
-#include "Core/Mesh.h"
-
-#include "IO/ReadImage.h"
+#include "Core/SceneManager.h"
 
 #include "VulkanContext/VulkanContext.h"
 
@@ -34,9 +31,6 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 #ifndef NDEBUG
 			initInfo.m_debug = true;
 #endif // NDEBUG
-
-			NodeManager::root();
-			NodeManager::root()->setImage(readImage("E:/code/ModelEditer/build/bin/Debug/textures/texture.jpg"));
 
 			RenderingContextDriver::setContext(new VulkanContext());
 			RenderingContextDriver::instance()->setInitInfo(initInfo);
@@ -66,7 +60,7 @@ void VulkanWindow::resizeEvent(QResizeEvent* event)
 
 void VulkanWindow::closeEvent(QCloseEvent*)
 {
-	//RenderingContextDriver::instance()->wait();
+	
 }
 
 bool VulkanWindow::event(QEvent* event)
@@ -95,7 +89,7 @@ bool VulkanWindow::event(QEvent* event)
 		viewport.maxDepth = 1.0f;
 		RenderingContextDriver::instance()->cmdSetViewport(currentCommandBuffer, viewport);
 
-		NodeManager::root()->record();
+		SceneManager::instance()->record();
 
 		FrameManager::instance()->endFrame();
 		return true;

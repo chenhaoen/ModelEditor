@@ -5,7 +5,7 @@
 
 static_assert(std::is_same< stbi_uc, unsigned char>::value);
 
-Image* readImage(const std::string_view& file)
+std::shared_ptr<Image> readImage(const std::string_view& file)
 {
     int texWidth, texHeight, texChannels;
     stbi_uc* pixels = stbi_load(file.data(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
@@ -14,7 +14,7 @@ Image* readImage(const std::string_view& file)
         return nullptr;
     }
 
-    Image* image = new Image();
+    auto image = std::make_shared<Image>();
     image->setHeight(texHeight);
     image->setWidth(texWidth);
     image->setChannels(4);

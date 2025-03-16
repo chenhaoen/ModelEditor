@@ -1,8 +1,10 @@
 #pragma once
 
 #include <string_view>
+#include <memory>
 
 #include "IO/Exports.h"
 
-IO_API class Image* readImage(const std::string_view& file);
+class Image;
+IO_API std::shared_ptr<Image>readImage(const std::string_view& file);
 

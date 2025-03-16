@@ -23,7 +23,6 @@
 #include "VulkanContext/Utils.h"
 #include "VulkanContext/Image.h"
 
-#include "Core/NodeManager.h"
 #include "Core/Mesh.h"
 
 Instance* VulkanContext::m_instance = nullptr;
@@ -143,9 +142,8 @@ void VulkanContext::resizeSurface()
 	m_swapChain->cleanup();
 	m_swapChain->create();
 	m_swapChain->createImageViews();
+	m_swapChain->createDepthResources();
 	m_swapChain->createFrameBuffers();
-
-	NodeManager::root()->setChanged(true);
 }
 
 CommandBufferID VulkanContext::createCommandBuffer()
@@ -456,6 +454,11 @@ void VulkanContext::cmdSetViewport(CommandBufferID p_cmd_buffer, const Viewport&
 
 void VulkanContext::cmdBindVertexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer)
 {
+	if (!buffer)
+	{
+		return;
+	}
+
 	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(buffer.id);
 
 	VkBuffer vertexBuffers[] = { bufferInfo->buffer };
@@ -465,6 +468,11 @@ void VulkanContext::cmdBindVertexBuffer(CommandBufferID p_cmd_buffer, BufferID b
 
 void VulkanContext::cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer)
 {
+	if (!buffer)
+	{
+		return;
+	}
+
 	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(buffer.id);
 	vkCmdBindIndexBuffer(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), bufferInfo->buffer, 0, VK_INDEX_TYPE_UINT32);
 }

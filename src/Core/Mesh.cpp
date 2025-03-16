@@ -7,9 +7,7 @@
 Mesh::Mesh()
 	: m_drawMode(DrawMode::Indexed)
 	, m_isChanged(true)
-	, m_isCompiled(false)
 	, m_primitiveType(PrimitiveType::Triangles)
-	, m_image(nullptr)
 {
 }
 
@@ -17,12 +15,16 @@ Mesh::~Mesh()
 {
 	freeVertexBuffer();
 	freeIndexBuffer();
-	freeTexture();
 }
 
 void Mesh::setVertices(const std::vector<Vertex>& vertices)
 {
 	m_vertices = vertices;
+}
+
+std::vector<Vertex>& Mesh::getVertices()
+{
+	return m_vertices;
 }
 
 const std::vector<Vertex>& Mesh::getVertices() const
@@ -35,14 +37,14 @@ void Mesh::setIndices(const std::vector<uint32_t>& indices)
 	m_indices = indices;
 }
 
-const std::vector<uint32_t>& Mesh::getIndices() const
+std::vector<uint32_t>& Mesh::getIndices()
 {
 	return m_indices;
 }
 
-void Mesh::setImage(Image* image)
+const std::vector<uint32_t>& Mesh::getIndices() const
 {
-	m_image = image;
+	return m_indices;
 }
 
 bool Mesh::isChanged()
@@ -57,16 +59,15 @@ void Mesh::setChanged(const bool value)
 
 void Mesh::compile()
 {
-	if (m_isCompiled)
+	if (m_compiled)
 	{
 		return;
 	}
 
 	createVertexBuffer();
 	createIndexBuffer();
-	createTexture();
 
-	m_isCompiled = true;
+	m_compiled = true;
 }
 
 void Mesh::createVertexBuffer()
@@ -97,26 +98,6 @@ void Mesh::createIndexBuffer()
 void Mesh::freeIndexBuffer()
 {
 	RenderingContextDriver::instance()->freeBuffer(m_indexBuffer);
-}
-
-void Mesh::createTexture()
-{
-	if (!m_image)
-	{
-		return;
-	}
-
-	m_texureID = RenderingContextDriver::instance()->createTexture(m_image->width(), m_image->height(), m_image->channels(), m_image->datas());
-
-	BoundUniform uniform;
-	uniform.type = UNIFORM_TYPE_SAMPLER_WITH_TEXTURE;
-	uniform.ids.push_back(m_texureID);
-	FrameManager::instance()->addBoundUniform(uniform);
-}
-
-void Mesh::freeTexture()
-{
-	RenderingContextDriver::instance()->freeTexture(m_texureID);
 }
 
 void Mesh::record()

@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Core/Exports.h"
+#include "Core/Compilable.h"
 
 #include "RenderingContextDriver/Commons.h"
 
@@ -17,53 +18,43 @@ enum class PrimitiveType {
     Points      
 };
 
-class Image;
-class CORE_API Mesh
+class CORE_API Mesh : public Compilable
 {
 public:
     Mesh();
-    ~Mesh();
+    ~Mesh() override;
 
     DrawMode m_drawMode;
     PrimitiveType m_primitiveType;
 
     void setVertices(const std::vector<Vertex>& vertices);
+    std::vector<Vertex>& getVertices();
     const std::vector<Vertex>& getVertices() const;
 
     void setIndices(const std::vector<uint32_t>& indices);
+    std::vector<uint32_t>& getIndices();
     const std::vector<uint32_t>& getIndices() const;
-
-    void setImage(Image* image);
 
     bool isChanged();
     void setChanged(const bool value);
 
-    void record();
+    void record() override;
 private:
 
-    void compile();
+    void compile() override;
 
     void createVertexBuffer();
     void freeVertexBuffer();
 
     void createIndexBuffer();
     void freeIndexBuffer();
-
-    void createTexture();
-    void freeTexture();
 private:
-
     bool m_isChanged;
-
-    bool m_isCompiled;
 
     std::vector<Vertex> m_vertices;
     BufferID m_vertexBuffer;
 
     std::vector<uint32_t> m_indices;
     BufferID m_indexBuffer;
-
-    Image* m_image;
-    TextureID m_texureID;
 };
 
