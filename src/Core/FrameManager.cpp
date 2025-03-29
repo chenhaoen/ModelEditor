@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <memory>
 
-#include "RenderingContextDriver/FrameManager.h"
-#include "RenderingContextDriver/Frame.h"
+#include "Core/FrameManager.h"
+#include "Core/Frame.h"
 
 FrameManager* FrameManager::g_instance = nullptr;
 
@@ -52,10 +52,12 @@ CommandBufferID FrameManager::currentCommandBuffer()
 	return m_frames[m_currentFrame]->getCommandBuffer();
 }
 
-void FrameManager::addBoundUniform(const BoundUniform& boundUniform)
+std::shared_ptr<CommandGroup> FrameManager::currentCommandGroup()
 {
-	for (Frame* frame : m_frames)
-	{
-		frame->addBoundUniform(boundUniform);
-	}
+	return m_frames[m_currentFrame]->getCommandGroup();
+}
+
+UniformSetID FrameManager::currentUniformSet()
+{
+	return m_frames[m_currentFrame]->getUniformSet();
 }

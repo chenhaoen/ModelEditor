@@ -80,9 +80,26 @@ typedef struct Viewport {
 	float    maxDepth;
 } Viewport;
 
-enum PipelineType
+enum class PipelineType
 {
 	Model,
+};
+
+enum class BufferType
+{
+	Vertex,
+	Index,
+};
+
+enum class DrawMode {
+	Indexed,
+	NonIndexed
+};
+
+enum class PrimitiveType {
+	Triangles,
+	Lines,
+	Points
 };
 
 struct Vertex {
@@ -92,9 +109,9 @@ struct Vertex {
 };
 
 struct UniformBufferObject {
-	glm::mat4 model;
-	glm::mat4 view;
-	glm::mat4 proj;
+	glm::mat4 model = glm::mat4(1.0);
+	glm::mat4 view = glm::mat4(1.0);
+	glm::mat4 proj = glm::mat4(1.0);
 };
 
 enum UniformType {

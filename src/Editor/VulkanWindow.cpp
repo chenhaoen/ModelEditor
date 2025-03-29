@@ -4,11 +4,13 @@
 #include "Editor/VulkanWindow.h"
 
 #include "Core/SceneManager.h"
+#include "Core/FrameManager.h"
+
+#include "Core/Commands/CommandGroup.h"
 
 #include "VulkanContext/VulkanContext.h"
 
-#include "RenderingContextDriver/FrameManager.h"
-#include "RenderingContextDriver/PipelineManager.h"
+#include "Core/PipelineManager.h"
 
 VulkanWindow::VulkanWindow()
 {
@@ -36,7 +38,7 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			RenderingContextDriver::instance()->setInitInfo(initInfo);
 			RenderingContextDriver::instance()->initialize();
 
-			PipelineManager::instance();
+			PipelineManager::instance()->init();
 			FrameManager::instance();
 
 			render();
@@ -69,27 +71,18 @@ bool VulkanWindow::event(QEvent* event)
 	{
 		FrameManager::instance()->beginFrame();
 
+		auto commandGroup = FrameManager::instance()->currentCommandGroup();
+		commandGroup->clear();
+
 		CommandBufferID currentCommandBuffer = FrameManager::instance()->currentCommandBuffer();
 
-		const Extent2D& surfaceExtent = RenderingContextDriver::instance()->getSurfaceExtent(SurfaceID());
+		SceneManager::instance()->compile();
 
-		RenderingContextDriver::instance()->cmdBindPipeline(currentCommandBuffer, PipelineManager::instance()->getPipeline(PipelineType::Model));
-
-		Rect2D scissor;
-		scissor.offset = { 0,0 };
-		scissor.extent = surfaceExtent;
-		RenderingContextDriver::instance()->cmdSetScissor(currentCommandBuffer, scissor);
-
-		Viewport viewport;
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = (float)surfaceExtent.width;
-		viewport.height = (float)surfaceExtent.height;
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		RenderingContextDriver::instance()->cmdSetViewport(currentCommandBuffer, viewport);
+		//SceneManager::instance()->update(0.0);
 
 		SceneManager::instance()->record();
+
+		commandGroup->record();
 
 		FrameManager::instance()->endFrame();
 		return true;

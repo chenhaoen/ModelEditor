@@ -1,8 +1,12 @@
 #include "Core/Mesh.h"
 #include "Core/Image.h"
+#include "Core/FrameManager.h"
+
+#include "Core/Commands/BindBufferCommand.h"
+#include "Core/Commands/CommandGroup.h"
+#include "Core/Commands/DrawCommand.h"
 
 #include "RenderingContextDriver/RenderingContextDriver.h"
-#include "RenderingContextDriver/FrameManager.h"
 
 Mesh::Mesh()
 	: m_drawMode(DrawMode::Indexed)
@@ -102,24 +106,21 @@ void Mesh::freeIndexBuffer()
 
 void Mesh::record()
 {
-	compile();
-
-	CommandBufferID currentCommandBuffer = FrameManager::instance()->currentCommandBuffer();
-
-	RenderingContextDriver::instance()->cmdBindVertexBuffer(currentCommandBuffer, m_vertexBuffer);
-
-	RenderingContextDriver::instance()->cmdBindIndexBuffer(currentCommandBuffer, m_indexBuffer);
+	auto commandGroup = std::make_shared<CommandGroup>();
+	commandGroup->push(std::make_shared<BindBufferCommand>(m_vertexBuffer, BufferType::Vertex));
+	commandGroup->push(std::make_shared<BindBufferCommand>(m_indexBuffer, BufferType::Index));
 
 	switch (m_drawMode)
 	{
 	case DrawMode::Indexed:
-		RenderingContextDriver::instance()->cmdDrawIndexed(currentCommandBuffer, static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0);
+		commandGroup->push(std::make_shared<DrawCommand>(DrawMode::Indexed, static_cast<uint32_t>(m_indices.size()), 1, 0, 0, 0));
 		break;
 	case DrawMode::NonIndexed:
-		RenderingContextDriver::instance()->cmdDraw(currentCommandBuffer, 3, 1, 0, 0);
+		commandGroup->push(std::make_shared<DrawCommand>(DrawMode::NonIndexed, static_cast<uint32_t>(m_vertices.size()), 1, 0, 0, 0 ));
 		break;
 	default:
 		break;
 	}
 
+	FrameManager::instance()->currentCommandGroup()->push(commandGroup);
 }

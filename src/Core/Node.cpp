@@ -1,6 +1,14 @@
 #include "Core/Node.h"
 #include "Core/Mesh.h"
 #include "Core/Material.h"
+#include "Core/PipelineManager.h"
+#include "Core/FrameManager.h"
+#include "Core/SceneManager.h"
+
+#include "Core/Commands/BindPipelineCommand.h"
+#include "Core/Commands/CommandGroup.h"
+
+#include "RenderingContextDriver/RenderingContextDriver.h"
 
 Node::Node(const std::string& name)
     :m_parent(nullptr)
@@ -74,15 +82,15 @@ std::shared_ptr<Material> Node::getMaterial() const
 
 void Node::record()
 {
-    if (m_mesh)
+    if (m_material && m_mesh)
     {
+        PipelineManager::instance()->setCurrentPipeline(PipelineType::Model);
+        FrameManager::instance()->currentCommandGroup()->push(PipelineManager::instance()->getCommands());
+        m_material->record();
+        PipelineManager::instance()->updateDescriptorSets();
         m_mesh->record();
     }
 
-    if (m_material)
-    {
-        m_material->record();
-    }
 
     for (auto child : m_children)
     {
@@ -92,4 +100,14 @@ void Node::record()
 
 void Node::compile()
 {
+    if (m_material && m_mesh)
+    {
+        m_material->compile();
+        m_mesh->compile();
+    }
+
+    for (auto child : m_children)
+    {
+        child->compile();
+    }
 }

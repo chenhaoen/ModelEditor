@@ -35,6 +35,8 @@ public:
     std::shared_ptr<Light> getLight(const std::string& name);
 
     void update(float deltaTime);
+    
+    void compile();
 
     void record();
 private:

@@ -34,7 +34,6 @@ public:
 
     void record() override;
 
-private:
     void compile() override;
 
 private:

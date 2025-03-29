@@ -78,7 +78,7 @@ void Scene::update(float deltaTime) {
 
     // 更新摄像机
     if (currentCamera) {
-        // 例如：根据输入更新摄像机位置和方向
+        //currentCamera->
     }
 
     // 更新灯光
@@ -87,9 +87,18 @@ void Scene::update(float deltaTime) {
     }
 }
 
+void Scene::compile()
+{
+    if (currentCamera) {
+        currentCamera->compile();
+    }
+
+    rootNode->compile();
+}
+
 void Scene::record()
 {
-    if (!currentCamera) {
+    if (currentCamera) {
         currentCamera->record();
     }
 

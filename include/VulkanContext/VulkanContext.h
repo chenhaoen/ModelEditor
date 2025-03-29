@@ -35,9 +35,11 @@ public:
 	void beginCommandBuffer(CommandBufferID commandBuffer) override final;
 	void endCommandBuffer(CommandBufferID commandBuffer) override final;
 
+	BufferID createUniformBuffer() override final;
 	BufferID createVertexBuffer(const std::vector<Vertex>& vertices) override final;
 	BufferID createIndexBuffer(const std::vector<uint32_t>& indices) override final;
 	void freeBuffer(BufferID buffer) override final;
+	void updateUniformBuffer(BufferID uniformBuffer, void* data, uint32_t size) override final;
 
 	TextureID createTexture(const uint32_t width, const uint32_t height, const uint32_t channels, const unsigned char* data) override final;
 	void freeTexture(TextureID buffer) override final;
@@ -64,9 +66,9 @@ public:
 	SwapChainID getSwapChainID() override final;
 	FramebufferID getFramebuffer(SwapChainID, uint32_t) override final;
 
-	UniformSetID createUniformSet(PipelineID pipeline, const std::vector<BoundUniform>& boundUniforms) override final;
+	UniformSetID createUniformSet(PipelineID pipeline) override final;
+	void updateUniformSet(UniformSetID uniformSet, const std::vector<BoundUniform>& boundUniforms);
 	void freeUniformSet(UniformSetID uniformSet) override final;
-	void undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo) override final;
 
 	void queueSubmit(const std::vector<CommandBufferID>&, const std::vector<SemaphoreID>& waitSemaphore,
 		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) override final;
@@ -98,6 +100,8 @@ public:
 	void cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer) override final;
 
 	void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) override final;
+
+	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data)override final;
 
 	static const std::vector<const char*>& getInstanceExtensions();
 	static const std::vector<const char*>& getDeviceExtensions();

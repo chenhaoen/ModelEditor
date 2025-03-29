@@ -29,6 +29,8 @@ public:
 
     void update(float deltaTime);
 
+    void compile();
+
     void record();
 
     void clear();

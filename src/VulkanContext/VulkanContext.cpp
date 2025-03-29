@@ -174,8 +174,20 @@ void VulkanContext::endCommandBuffer(CommandBufferID commandBuffer)
 struct BufferInfo
 {
 	VkBuffer buffer;
-	VkDeviceMemory bufferMemory;
+	VkDeviceMemory memory;
+	void* mapped;
 };
+
+BufferID VulkanContext::createUniformBuffer()
+{
+	BufferInfo* bufferInfo = new BufferInfo;
+	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, bufferInfo->buffer, bufferInfo->memory);
+
+	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, 0, bufferSize, 0, &bufferInfo->mapped);
+	return BufferID(bufferInfo);
+}
 
 BufferID VulkanContext::createVertexBuffer(const std::vector<Vertex>& vertices)
 {
@@ -196,7 +208,7 @@ BufferID VulkanContext::createVertexBuffer(const std::vector<Vertex>& vertices)
 
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		bufferInfo->buffer, bufferInfo->bufferMemory);
+		bufferInfo->buffer, bufferInfo->memory);
 
 	copyBuffer(stagingBuffer, bufferInfo->buffer, bufferSize);
 
@@ -225,7 +237,7 @@ BufferID VulkanContext::createIndexBuffer(const std::vector<uint32_t>& indices)
 
 	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		bufferInfo->buffer, bufferInfo->bufferMemory);
+		bufferInfo->buffer, bufferInfo->memory);
 
 	copyBuffer(stagingBuffer, bufferInfo->buffer, bufferSize);
 
@@ -245,7 +257,7 @@ void VulkanContext::freeBuffer(BufferID buffer)
 	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(buffer.id);
 
 	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), bufferInfo->buffer, nullptr);
-	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->bufferMemory, nullptr);
+	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, nullptr);
 
 	delete bufferInfo;
 }
@@ -479,10 +491,7 @@ void VulkanContext::cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID bu
 
 struct UniformBufferInfo
 {
-	VkBuffer buffer;
-	VkDeviceMemory memory;
-	void* mapped;
-	std::vector<VkDescriptorSet> descriptorSets;
+	VkDescriptorSet descriptorSet;
 };
 
 void VulkanContext::cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet)
@@ -493,8 +502,21 @@ void VulkanContext::cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, Pipeline
 	vkCmdBindDescriptorSets(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
 		VK_PIPELINE_BIND_POINT_GRAPHICS,
 		pipelineInfo->pipeline->getVkPipelineLayout(),
-		0, bufferInfo->descriptorSets.size(),
-		bufferInfo->descriptorSets.data(), 0, nullptr);
+		0, 1,
+		&bufferInfo->descriptorSet, 0, nullptr);
+}
+
+void VulkanContext::cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data)
+{
+	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
+	vkCmdPushConstants(
+		reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), // 命令缓冲区
+		pipelineInfo->pipeline->getVkPipelineLayout(),
+		VK_SHADER_STAGE_VERTEX_BIT, // 着色器阶段
+		0, // 偏移量
+		size, // 数据大小
+		data // 数据
+	);
 }
 
 RenderPassID VulkanContext::getRenderPassID()
@@ -536,19 +558,24 @@ FramebufferID VulkanContext::getFramebuffer(SwapChainID swapChain, uint32_t imag
 	return FramebufferID(reinterpret_cast<SwapChain*>(swapChain.id)->getFrameBuffer(imageIndex));
 }
 
-UniformSetID VulkanContext::createUniformSet(PipelineID pipeline, const std::vector<BoundUniform>& boundUniforms)
+UniformSetID VulkanContext::createUniformSet(PipelineID pipeline)
 {
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
-
 	UniformBufferInfo* bufferInfo = new UniformBufferInfo{};
 
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, bufferInfo->buffer, bufferInfo->memory);
+	bufferInfo->descriptorSet = m_descriptorPool->AllocateDescriptorSet(pipelineInfo->descriptorSetLayout);
 
-	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, 0, bufferSize, 0, &bufferInfo->mapped);
+	return UniformSetID(bufferInfo);
+}
 
-	bufferInfo->descriptorSets.push_back(m_descriptorPool->AllocateDescriptorSet(pipelineInfo->descriptorSetLayout));
+void VulkanContext::updateUniformSet(UniformSetID uniformSet, const std::vector<BoundUniform>& boundUniforms)
+{
+	if (!uniformSet)
+	{
+		return;
+	}
+
+	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
 
 	std::vector< VkWriteDescriptorSet> writeDescriptorSets;
 
@@ -558,15 +585,17 @@ UniformSetID VulkanContext::createUniformSet(PipelineID pipeline, const std::vec
 		{
 		case UNIFORM_TYPE_UNIFORM_BUFFER:
 		{
+			BufferInfo* UniformBufferInfo = reinterpret_cast<BufferInfo*>(boundUniform.ids[0].id);
+
 			VkDescriptorBufferInfo descriptorBufferInfo{};
-			descriptorBufferInfo.buffer = bufferInfo->buffer;
-			descriptorBufferInfo.offset = 0;
-			descriptorBufferInfo.range = sizeof(UniformBufferObject);
+			descriptorBufferInfo.buffer = UniformBufferInfo->buffer;
+			descriptorBufferInfo.offset = boundUniform.ids[1].id;
+			descriptorBufferInfo.range = boundUniform.ids[2].id;
 
 			VkWriteDescriptorSet descriptorWrite{};
 			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = bufferInfo->descriptorSets[0];
-			descriptorWrite.dstBinding = 0;
+			descriptorWrite.dstSet = bufferInfo->descriptorSet;
+			descriptorWrite.dstBinding = boundUniform.binding;
 			descriptorWrite.dstArrayElement = 0;
 
 			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -587,8 +616,8 @@ UniformSetID VulkanContext::createUniformSet(PipelineID pipeline, const std::vec
 
 			VkWriteDescriptorSet descriptorWrite{};
 			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrite.dstSet = bufferInfo->descriptorSets[0];
-			descriptorWrite.dstBinding = 1;
+			descriptorWrite.dstSet = bufferInfo->descriptorSet;
+			descriptorWrite.dstBinding = boundUniform.binding;
 			descriptorWrite.dstArrayElement = 0;
 
 			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -604,8 +633,6 @@ UniformSetID VulkanContext::createUniformSet(PipelineID pipeline, const std::vec
 	}
 
 	vkUpdateDescriptorSets(VulkanContext::getDevice()->getVkDevice(), writeDescriptorSets.size(), writeDescriptorSets.data(), 0, nullptr);
-
-	return UniformSetID(bufferInfo);
 }
 
 void VulkanContext::freeUniformSet(UniformSetID uniformSet)
@@ -616,26 +643,21 @@ void VulkanContext::freeUniformSet(UniformSetID uniformSet)
 	}
 
 	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
-
-	VulkanContext::getDevice()->wait();
-
-	m_descriptorPool->freeDescriptorSets(bufferInfo->descriptorSets);
-	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), bufferInfo->buffer, nullptr);
-	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, nullptr);
+	m_descriptorPool->freeDescriptorSets({ bufferInfo->descriptorSet });
 
 	delete bufferInfo;
 }
 
-void VulkanContext::undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo)
+void VulkanContext::updateUniformBuffer(BufferID uniformBuffer, void* data, uint32_t size)
 {
-	if (!uniformSet)
+	if (!uniformBuffer)
 	{
 		return;
 	}
 
-	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
+	BufferInfo* bufferInfo = reinterpret_cast<BufferInfo*>(uniformBuffer.id);
 
-	memcpy(bufferInfo->mapped, &ubo, sizeof(ubo));
+	memcpy(bufferInfo->mapped, data, size);
 }
 
 void VulkanContext::queueSubmit(const std::vector<CommandBufferID>& inCommandBuffers, const std::vector<SemaphoreID>& inWaitSemaphore,

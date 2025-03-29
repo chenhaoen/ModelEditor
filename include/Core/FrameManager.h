@@ -1,12 +1,15 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
-#include "RenderingContextDriver/Exports.h"
+#include "Core/Exports.h"
+
 #include "RenderingContextDriver/Commons.h"
 
 class Frame;
-class RENDERINGCONTEXTDRIVER_API FrameManager
+class CommandGroup;
+class CORE_API FrameManager
 {
 public:
 	static FrameManager* instance();
@@ -19,7 +22,9 @@ public:
 
 	CommandBufferID currentCommandBuffer();
 
-	void addBoundUniform(const BoundUniform& boundUniform);
+	std::shared_ptr<CommandGroup> currentCommandGroup();
+
+	UniformSetID currentUniformSet();
 private:
 	FrameManager();
 	~FrameManager();

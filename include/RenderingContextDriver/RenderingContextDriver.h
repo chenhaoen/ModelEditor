@@ -37,8 +37,10 @@ public:
 	virtual void beginCommandBuffer(CommandBufferID commandBuffer) = 0;
 	virtual void endCommandBuffer(CommandBufferID commandBuffer) = 0;
 
+	virtual BufferID createUniformBuffer() = 0;
 	virtual BufferID createVertexBuffer(const std::vector<Vertex>& vertices) = 0;
 	virtual BufferID createIndexBuffer(const std::vector<uint32_t>& indices) = 0;
+	virtual void updateUniformBuffer(BufferID uniformBuffer, void* data, uint32_t size) = 0;
 	virtual void freeBuffer(BufferID buffer) = 0;
 
 	virtual TextureID createTexture(const uint32_t width, const uint32_t height, const uint32_t channels, const unsigned char* data) = 0;
@@ -66,9 +68,9 @@ public:
 	virtual SwapChainID getSwapChainID() = 0;
 	virtual FramebufferID getFramebuffer(SwapChainID, uint32_t) = 0;
 
-	virtual UniformSetID createUniformSet(PipelineID pipeline,const std::vector<BoundUniform>& boundUniforms) = 0;
+	virtual UniformSetID createUniformSet(PipelineID pipeline) = 0;
+	virtual void updateUniformSet(UniformSetID uniformSet, const std::vector<BoundUniform>& boundUniforms) = 0;
 	virtual void freeUniformSet(UniformSetID uniformSet) = 0;
-	virtual void undateUniformSet(UniformSetID uniformSet, const UniformBufferObject& ubo) = 0;
 
 	virtual void queueSubmit(const std::vector<CommandBufferID>&, const std::vector<SemaphoreID>& waitSemaphore,
 		const std::vector<SemaphoreID>& signalSemaphore, const FenceID& fence) = 0;
@@ -101,6 +103,8 @@ public:
 	virtual void cmdBindIndexBuffer(CommandBufferID p_cmd_buffer, BufferID buffer) = 0;
 
 	virtual void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) = 0;
+
+	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data) = 0;
 protected:
 	RenderingContextDriver() = default;
 	virtual ~RenderingContextDriver() = 0;

@@ -1,8 +1,10 @@
 #include "Core/Material.h"
 #include "Core/Image.h"
+#include "Core/FrameManager.h"
+#include "Core/PipelineManager.h"
+#include "Core/Pipeline.h"
 
 #include "RenderingContextDriver/RenderingContextDriver.h"
-#include "RenderingContextDriver/FrameManager.h"
 
 Material::Material()
 {
@@ -26,14 +28,15 @@ const std::string& Material::getTexturePath() const
 void Material::setImage(std::shared_ptr<Image> image)
 {
 	m_image = image;
-
-	// TO DO 这里以后要改
-	compile();
 }
 
 void Material::record()
 {
-	compile();
+	BoundUniform uniform;
+	uniform.type = UNIFORM_TYPE_SAMPLER_WITH_TEXTURE;
+	uniform.ids.push_back(m_texureID);
+	uniform.binding = 1;
+	PipelineManager::instance()->currentPipeline()->m_boundUniforms.push_back(uniform);
 }
 
 void Material::createTexture()
@@ -44,11 +47,6 @@ void Material::createTexture()
 	}
 
 	m_texureID = RenderingContextDriver::instance()->createTexture(m_image->width(), m_image->height(), m_image->channels(), m_image->datas());
-
-	BoundUniform uniform;
-	uniform.type = UNIFORM_TYPE_SAMPLER_WITH_TEXTURE;
-	uniform.ids.push_back(m_texureID);
-	FrameManager::instance()->addBoundUniform(uniform);
 }
 
 void Material::freeTexture()

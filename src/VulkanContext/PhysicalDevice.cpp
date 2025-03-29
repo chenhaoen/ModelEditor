@@ -12,6 +12,20 @@ PhysicalDevice::PhysicalDevice(
 	vkGetPhysicalDeviceProperties(m_vkPhysicalDevice, &m_deviceProperties);
 	vkGetPhysicalDeviceFeatures(m_vkPhysicalDevice, &m_deviceFeatures);
 
+	uint32_t maxPushConstantsSize = m_deviceProperties.limits.maxPushConstantsSize;
+	std::cout << "Max Push Constants Size: " << maxPushConstantsSize << " bytes" << std::endl;
+
+	VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties = {};
+	pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
+
+	VkPhysicalDeviceProperties2 deviceProperties2 = {};
+	deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+	deviceProperties2.pNext = &pushDescriptorProperties;
+
+	vkGetPhysicalDeviceProperties2(m_vkPhysicalDevice, &deviceProperties2);
+
+	std::cout << "Max Push Descriptors: " << pushDescriptorProperties.maxPushDescriptors << std::endl;
+
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(m_vkPhysicalDevice, &queueFamilyCount, nullptr);
 

@@ -7,17 +7,6 @@
 
 #include "RenderingContextDriver/Commons.h"
 
-enum class DrawMode {
-    Indexed,    
-    NonIndexed  
-};
-
-enum class PrimitiveType {
-    Triangles,  
-    Lines,     
-    Points      
-};
-
 class CORE_API Mesh : public Compilable
 {
 public:
@@ -38,10 +27,10 @@ public:
     bool isChanged();
     void setChanged(const bool value);
 
+    void compile() override;
+
     void record() override;
 private:
-
-    void compile() override;
 
     void createVertexBuffer();
     void freeVertexBuffer();

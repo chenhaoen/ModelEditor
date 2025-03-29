@@ -68,6 +68,12 @@ void SceneManager::update(float deltaTime) {
     }
 }
 
+void SceneManager::compile() {
+    if (currentScene) {
+        currentScene->compile();
+    }
+}
+
 // ‰÷»æµ±«∞≥°æ∞
 void SceneManager::record() {
     if (currentScene) {

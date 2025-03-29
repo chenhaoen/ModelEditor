@@ -22,12 +22,12 @@ public:
     void setImage(std::shared_ptr<Image> image);
 
     void record() override;
+
+    void compile() override;
 private:
     void createTexture();
 
     void freeTexture();
-
-    void compile() override;
 private:
     std::string m_texturePath;
 

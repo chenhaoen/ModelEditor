@@ -6,11 +6,15 @@
 #include "Core/Compilable.h"
 #include "Core/Exports.h"
 
+#include "RenderingContextDriver/Commons.h"
+
 class CORE_API Camera : public Compilable {
 public:
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
         float yaw = -90.0f, float pitch = 0.0f);
+
+    ~Camera();
 
     glm::mat4 getViewMatrix() const;
 
@@ -28,10 +32,12 @@ public:
 
     glm::vec3 getFront() const;
 
-    void record() override;
-private:
-
     void compile() override;
+
+    void record() override;
+
+    BoundUniform getUniform() const;
+private:
 
     void updateCameraVectors();
 
@@ -44,12 +50,13 @@ private:
     float yaw;  
     float pitch;
 
-    // ͶӰ����
-    float fov;          // ��Ұ�Ƕ�
-    float aspectRatio;  // ���߱�
-    float nearPlane;    // ��ƽ��
-    float farPlane;     // Զƽ��
-    bool isPerspective; // �Ƿ�Ϊ͸��ͶӰ
+    float fov;          
+    float aspectRatio;  
+    float nearPlane;    
+    float farPlane;     
+    bool isPerspective; 
+
+    BufferID m_buffer;
 };
 
 

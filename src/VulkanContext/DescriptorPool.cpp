@@ -6,7 +6,7 @@
 #include "VulkanContext/Utils.h"
 #include "VulkanContext/DescriptorSetLayout.h"
 
-#include "RenderingContextDriver/FrameManager.h"
+#include "Core/FrameManager.h"
 
 DescriptorPool::DescriptorPool()
 {

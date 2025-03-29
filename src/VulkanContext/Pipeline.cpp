@@ -125,6 +125,11 @@ Pipeline::Pipeline(
 	std::vector<VkDescriptorSetLayout> setLayouts;
 	setLayouts.push_back(m_descriptorSetLayout->getVkDescriptorSetLayout());
 
+	VkPushConstantRange pushConstantRange = {};
+	pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT; // 指定着色器阶段
+	pushConstantRange.offset = 0; // 偏移量
+	pushConstantRange.size = sizeof(UniformBufferObject); // 数据大小
+
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 	pipelineLayoutInfo.setLayoutCount = setLayouts.size(); // Optional
