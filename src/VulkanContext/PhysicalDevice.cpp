@@ -18,11 +18,16 @@ PhysicalDevice::PhysicalDevice(
 	VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties = {};
 	pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
 
-	VkPhysicalDeviceProperties2 deviceProperties2 = {};
-	deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-	deviceProperties2.pNext = &pushDescriptorProperties;
+	VkPhysicalDeviceFeatures2 features2 = { VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2 };
+	VkPhysicalDeviceExtendedDynamicStateFeaturesEXT dynamicStateFeatures = {
+		VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT
+	};
+	features2.pNext = &dynamicStateFeatures;
+	vkGetPhysicalDeviceFeatures2(m_vkPhysicalDevice, &features2);
 
-	vkGetPhysicalDeviceProperties2(m_vkPhysicalDevice, &deviceProperties2);
+	if (!dynamicStateFeatures.extendedDynamicState) {
+		// 设备不支持动态多边形模式，回退到多管线方案
+	}
 
 	std::cout << "Max Push Descriptors: " << pushDescriptorProperties.maxPushDescriptors << std::endl;
 

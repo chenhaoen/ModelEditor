@@ -3,7 +3,9 @@
 #include "Core/Camera.h"
 
 // 构造函数
-Scene::Scene() {
+Scene::Scene()
+    :m_fillMode(FillMode::SOLID)
+{
     rootNode = std::make_shared<Node>("Root");
 }
 
@@ -69,6 +71,16 @@ std::shared_ptr<Light> Scene::getLight(const std::string& name) {
         return it->second;
     }
     return nullptr;
+}
+
+void Scene::setFillMode(FillMode fillMode)
+{
+    m_fillMode = fillMode;
+}
+
+FillMode Scene::getFillMode() const
+{
+    return m_fillMode;
 }
 
 // 更新场景

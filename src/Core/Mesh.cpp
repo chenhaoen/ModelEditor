@@ -1,6 +1,8 @@
 #include "Core/Mesh.h"
 #include "Core/Image.h"
 #include "Core/FrameManager.h"
+#include "Core/SceneManager.h"
+#include "Core/Scene.h"
 
 #include "Core/Commands/BindBufferCommand.h"
 #include "Core/Commands/CommandGroup.h"

@@ -17,6 +17,9 @@ public:
 
 private slots:
     void on_action_Open_triggered(bool);
+    void on_action_Fill_triggered(bool);
+    void on_action_Mesh_triggered(bool);
+    void on_action_Point_triggered(bool);
 
 private:
     Ui::MainWindow *ui;

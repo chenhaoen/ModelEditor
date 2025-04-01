@@ -105,6 +105,8 @@ public:
 	virtual void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) = 0;
 
 	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data) = 0;
+
+	virtual void cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode) = 0;
 protected:
 	RenderingContextDriver() = default;
 	virtual ~RenderingContextDriver() = 0;

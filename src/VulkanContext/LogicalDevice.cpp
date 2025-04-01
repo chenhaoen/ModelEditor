@@ -29,7 +29,21 @@ LogicalDevice::LogicalDevice(PhysicalDevice* physicalDevice)
 
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.samplerAnisotropy = true;
+	deviceFeatures.fillModeNonSolid = true;
 	createInfo.pEnabledFeatures = &deviceFeatures;
+
+	VkPhysicalDeviceExtendedDynamicState3FeaturesEXT dynamicState3Features = {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,
+		.extendedDynamicState3PolygonMode = VK_TRUE,
+	};
+
+	VkPhysicalDeviceFeatures2 features2 = {
+		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+		.pNext = &dynamicState3Features,
+		.features = deviceFeatures,
+	};
+
+	createInfo.pNext = &features2;
 
 	createInfo.enabledExtensionCount = VulkanContext::getDeviceExtensions().size();
 	createInfo.ppEnabledExtensionNames = VulkanContext::getDeviceExtensions().data();

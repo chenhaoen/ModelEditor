@@ -9,6 +9,8 @@
 
 #include "Core/Exports.h"
 
+#include "RenderingContextDriver/Commons.h"
+
 class Node;
 class Light;
 class Camera;
@@ -34,6 +36,10 @@ public:
 
     std::shared_ptr<Light> getLight(const std::string& name);
 
+    void setFillMode(FillMode fillMode);
+
+    FillMode getFillMode() const;
+
     void update(float deltaTime);
     
     void compile();
@@ -48,5 +54,7 @@ private:
     std::shared_ptr<Camera> currentCamera;
 
     std::unordered_map<std::string, std::shared_ptr<Light>> lights;
+
+    FillMode m_fillMode;
 };
 

@@ -102,6 +102,12 @@ enum class PrimitiveType {
 	Points
 };
 
+enum class FillMode {
+	SOLID,      // 实体填充
+	WIREFRAME,  // 线框模式
+	POINT,      // 点模式
+};
+
 struct Vertex {
 	glm::vec3 pos;
 	glm::vec3 color;

@@ -26,6 +26,21 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_action_Fill_triggered(bool)
+{
+    SceneManager::instance()->getCurrentScene()->setFillMode(FillMode::SOLID);
+}
+
+void MainWindow::on_action_Mesh_triggered(bool)
+{
+    SceneManager::instance()->getCurrentScene()->setFillMode(FillMode::WIREFRAME);
+}
+
+void MainWindow::on_action_Point_triggered(bool)
+{
+    SceneManager::instance()->getCurrentScene()->setFillMode(FillMode::POINT);
+}
+
 void MainWindow::on_action_Open_triggered(bool)
 {
     const QString& fileName = QFileDialog::getOpenFileName(this, tr("Open Model File"), "", "*.obj");

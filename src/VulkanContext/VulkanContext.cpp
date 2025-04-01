@@ -70,7 +70,7 @@ void VulkanContext::initialize()
 	//m_instanceExtensions.emplace_back(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
 	m_instanceExtensions.insert(m_instanceExtensions.end(), windowInstanceExtensions.begin(), windowInstanceExtensions.end());
 	m_deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
-	//m_deviceExtensions.emplace_back(VK_EXT_DESCRIPTOR_BUFFER_EXTENSION_NAME);
+	m_deviceExtensions.emplace_back(VK_EXT_EXTENDED_DYNAMIC_STATE_3_EXTENSION_NAME);
 
 	if (m_initInfo.m_debug)
 	{
@@ -517,6 +517,31 @@ void VulkanContext::cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pi
 		size, // 数据大小
 		data // 数据
 	);
+}
+
+
+
+void VulkanContext::cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode)
+{
+	// 获取函数指针（需动态加载）
+	PFN_vkCmdSetPolygonModeEXT vkCmdSetPolygonModeEXT =
+		(PFN_vkCmdSetPolygonModeEXT)vkGetDeviceProcAddr(m_device->getVkDevice(), "vkCmdSetPolygonModeEXT");
+
+	switch (fillMode)
+	{
+	case FillMode::SOLID:
+		vkCmdSetPolygonModeEXT(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), VK_POLYGON_MODE_FILL);
+		break;
+	case FillMode::WIREFRAME:
+		vkCmdSetPolygonModeEXT(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), VK_POLYGON_MODE_LINE);
+		break;
+	case FillMode::POINT:
+		vkCmdSetPolygonModeEXT(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), VK_POLYGON_MODE_POINT);
+		break;
+	default:
+		break;
+	}
+
 }
 
 RenderPassID VulkanContext::getRenderPassID()

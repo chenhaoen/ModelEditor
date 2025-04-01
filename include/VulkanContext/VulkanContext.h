@@ -103,6 +103,8 @@ public:
 
 	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data)override final;
 
+	void cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode) override final;
+
 	static const std::vector<const char*>& getInstanceExtensions();
 	static const std::vector<const char*>& getDeviceExtensions();
 	static const std::vector<const char*>& getInstanceLayers();

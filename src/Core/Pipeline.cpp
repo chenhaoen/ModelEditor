@@ -7,6 +7,7 @@
 #include "Core/Commands/CommandGroup.h"
 #include "Core/Commands/BindPipelineCommand.h"
 #include "Core/Commands/BindDescriptorSetsCommand.h"
+#include "Core/Commands/SetPolygonModeCommand.h"
 #include "Core/FrameManager.h"
 
 #include "RenderingContextDriver/RenderingContextDriver.h"
@@ -49,6 +50,7 @@ std::shared_ptr<CommandGroup> Pipeline::getCommands()
 	commandGroup->push(std::make_shared<SetViewportCommand>(viewport));
 
 	commandGroup->push(std::make_shared < BindDescriptorSetsCommand>());
+	commandGroup->push(std::make_shared < SetPolygonModeCommand>(SceneManager::instance()->getCurrentScene()->getFillMode()));
 
 	return commandGroup;
 }
