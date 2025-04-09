@@ -10,7 +10,7 @@
 #include "Core/Commands/SetPolygonModeCommand.h"
 #include "Core/FrameManager.h"
 
-#include "RenderingContextDriver/RenderingContextDriver.h"
+#include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
 Pipeline::Pipeline(PipelineType type)
 	:m_type(type)

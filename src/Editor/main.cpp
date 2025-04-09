@@ -8,7 +8,7 @@
 #include "Core/FrameManager.h"
 #include "Core/PipelineManager.h"
 
-#include "RenderingContextDriver/RenderingContextDriver.h"
+#include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
 int main(int argc, char **argv)
 {

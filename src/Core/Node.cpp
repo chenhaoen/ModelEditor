@@ -8,7 +8,7 @@
 #include "Core/Commands/BindPipelineCommand.h"
 #include "Core/Commands/CommandGroup.h"
 
-#include "RenderingContextDriver/RenderingContextDriver.h"
+#include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
 Node::Node(const std::string& name)
     :m_parent(nullptr)

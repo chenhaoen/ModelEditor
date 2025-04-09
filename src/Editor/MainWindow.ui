@@ -40,6 +40,7 @@
     <addaction name="action_Mesh"/>
     <addaction name="action_Point"/>
     <addaction name="separator"/>
+    <addaction name="actionSceneShoot"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Scene"/>
@@ -79,6 +80,11 @@
   <action name="action_Point">
    <property name="text">
     <string>&amp;Point</string>
+   </property>
+  </action>
+  <action name="actionSceneShoot">
+   <property name="text">
+    <string>ScreenShot</string>
    </property>
   </action>
  </widget>

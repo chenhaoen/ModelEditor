@@ -9,7 +9,7 @@
 
 #include "Core/Exports.h"
 
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
 class Node;
 class Light;

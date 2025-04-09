@@ -2,11 +2,12 @@
 
 #include <vector>
 
-#include "RenderingContextDriver/Exports.h"
-#include "RenderingContextDriver/InitInfo.h"
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/InitInfo.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
-class RENDERINGCONTEXTDRIVER_API RenderingContextDriver
+#include "Core/Exports.h"
+
+class CORE_API RenderingContextDriver
 {
 public:
 	static RenderingContextDriver* g_instance;

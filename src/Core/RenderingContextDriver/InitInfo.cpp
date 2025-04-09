@@ -1,4 +1,4 @@
-#include "RenderingContextDriver/InitInfo.h"
+#include "Core/RenderingContextDriver/InitInfo.h"
 
 InitInfo::InitInfo()
 	:m_platformWindow(nullptr)

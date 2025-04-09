@@ -5,7 +5,7 @@
 
 #include "Core/Exports.h"
 
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
 class Frame;
 class CommandGroup;

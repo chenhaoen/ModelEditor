@@ -4,7 +4,7 @@
 
 #include "Core/Commands/Command.h"
 
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
 class DrawCommand final :
     public Command

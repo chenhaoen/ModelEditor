@@ -41,6 +41,11 @@ void MainWindow::on_action_Point_triggered(bool)
     SceneManager::instance()->getCurrentScene()->setFillMode(FillMode::POINT);
 }
 
+void MainWindow::on_actionSceneShoot_triggered(bool)
+{
+    SceneManager::instance()->getCurrentScene();
+}
+
 void MainWindow::on_action_Open_triggered(bool)
 {
     const QString& fileName = QFileDialog::getOpenFileName(this, tr("Open Model File"), "", "*.obj");

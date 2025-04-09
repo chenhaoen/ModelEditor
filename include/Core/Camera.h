@@ -6,7 +6,7 @@
 #include "Core/Compilable.h"
 #include "Core/Exports.h"
 
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
 class CORE_API Camera : public Compilable {
 public:

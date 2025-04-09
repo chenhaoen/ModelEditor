@@ -1,7 +1,7 @@
 #include "Core/Commands/BindBufferCommand.h"
 #include "Core/FrameManager.h"
 
-#include "RenderingContextDriver/RenderingContextDriver.h"
+#include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
 BindBufferCommand::BindBufferCommand(BufferID buffer, BufferType type)
 	: m_buffer(buffer)

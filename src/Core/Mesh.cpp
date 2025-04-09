@@ -8,7 +8,7 @@
 #include "Core/Commands/CommandGroup.h"
 #include "Core/Commands/DrawCommand.h"
 
-#include "RenderingContextDriver/RenderingContextDriver.h"
+#include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
 Mesh::Mesh()
 	: m_drawMode(DrawMode::Indexed)

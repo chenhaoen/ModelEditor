@@ -5,7 +5,7 @@
 #include "Core/Exports.h"
 #include "Core/Compilable.h"
 
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
 class CORE_API Mesh : public Compilable
 {

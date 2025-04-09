@@ -1,13 +1,19 @@
 project(Core CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+find_package(glm)
+
 set(CORE_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME})
 set(CORE_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME})
 set(COMMANDS_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME}/Commands)
 set(COMMANDS_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME}/Commands)
+set(RCD_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME}/RenderingContextDriver)
+set(RCD_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME}/RenderingContextDriver)
 
-file(GLOB CORE_SOURCES "${CORE_SRC_DIR}/*.cpp" "${CORE_INCLUDE_DIR}/*.h"
-"${COMMANDS_INCLUDE_DIR}/*.h" "${COMMANDS_SRC_DIR}/*.cpp")
+file(GLOB CORE_SOURCES 
+"${CORE_SRC_DIR}/*.cpp" "${CORE_INCLUDE_DIR}/*.h"
+"${COMMANDS_INCLUDE_DIR}/*.h" "${COMMANDS_SRC_DIR}/*.cpp"
+"${RCD_SRC_DIR}/*.cpp" "${RCD_INCLUDE_DIR}/*.h")
 #file(GLOB CORET_HEADERS )
 
 add_compile_definitions(CORE_EXPORT)
@@ -18,7 +24,7 @@ ${CORE_SOURCES}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    RenderingContextDriver
+    glm::glm
 )
 
 install(TARGETS ${PROJECT_NAME}

@@ -30,7 +30,7 @@ LogicalDevice::LogicalDevice(PhysicalDevice* physicalDevice)
 	VkPhysicalDeviceFeatures deviceFeatures{};
 	deviceFeatures.samplerAnisotropy = true;
 	deviceFeatures.fillModeNonSolid = true;
-	createInfo.pEnabledFeatures = &deviceFeatures;
+	//createInfo.pEnabledFeatures = &deviceFeatures;
 
 	VkPhysicalDeviceExtendedDynamicState3FeaturesEXT dynamicState3Features = {
 		.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_3_FEATURES_EXT,

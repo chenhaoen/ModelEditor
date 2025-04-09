@@ -23,7 +23,6 @@ Vulkan::Vulkan
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
 Core
-RenderingContextDriver
 )
 
 install(TARGETS ${PROJECT_NAME}

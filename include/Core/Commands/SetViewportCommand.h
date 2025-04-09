@@ -3,7 +3,7 @@
 #include "Core/Commands/Command.h"
 #include "Core/Exports.h"
 
-#include "RenderingContextDriver/Commons.h"
+#include "Core/RenderingContextDriver/Commons.h"
 
 class CORE_API SetViewportCommand :
     public Command

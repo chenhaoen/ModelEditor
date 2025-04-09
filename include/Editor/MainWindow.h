@@ -20,6 +20,7 @@ private slots:
     void on_action_Fill_triggered(bool);
     void on_action_Mesh_triggered(bool);
     void on_action_Point_triggered(bool);
+    void on_actionSceneShoot_triggered(bool);
 
 private:
     Ui::MainWindow *ui;
