@@ -3,6 +3,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 find_package(assimp)
 find_package(glm)
+find_package(ktx)
 
 set(IO_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME})
 set(IO_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME})
@@ -22,6 +23,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
    Core
    glm::glm
    assimp::assimp
+   KTX::ktx
 )
 
 install(TARGETS ${PROJECT_NAME}

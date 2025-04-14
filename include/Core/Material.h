@@ -24,6 +24,8 @@ public:
     void record() override;
 
     void compile() override;
+
+    TextureID m_texureID;
 private:
     void createTexture();
 
@@ -32,6 +34,5 @@ private:
     std::string m_texturePath;
 
     std::shared_ptr<Image> m_image;
-    TextureID m_texureID;
 };
 

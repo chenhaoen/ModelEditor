@@ -3,6 +3,8 @@
 
 #include "Core/Image.h"
 
+
+
 static_assert(std::is_same< stbi_uc, unsigned char>::value);
 
 std::shared_ptr<Image> readImage(const std::string_view& file)
@@ -21,4 +23,9 @@ std::shared_ptr<Image> readImage(const std::string_view& file)
     image->setDatas(pixels);
 
 	return image;
+}
+
+void readKtx()
+{
+    
 }

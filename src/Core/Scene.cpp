@@ -1,6 +1,10 @@
 #include "Core/Scene.h"
 #include "Core/Node.h"
 #include "Core/Camera.h"
+#include "Core/RenderingContextDriver/RenderingContextDriver.h"
+#include "Core/SkyboxNode.h"
+
+#include "IO/ReadNode.h"
 
 // 构造函数
 Scene::Scene()
@@ -27,6 +31,11 @@ void Scene::removeNode(const std::string& name) {
         rootNode->removeChild(it->second);
         nodes.erase(it);
     }
+}
+
+void Scene::setSkyBox(std::shared_ptr<SkyboxNode> node)
+{
+    m_skyboxNode = node;
 }
 
 // 获取节点
@@ -105,6 +114,11 @@ void Scene::compile()
         currentCamera->compile();
     }
 
+    if (m_skyboxNode)
+    {
+        m_skyboxNode->compile();
+    }
+
     rootNode->compile();
 }
 
@@ -112,6 +126,11 @@ void Scene::record()
 {
     if (currentCamera) {
         currentCamera->record();
+    }
+
+    if (m_skyboxNode)
+    {
+        m_skyboxNode->record();
     }
 
     rootNode->record();

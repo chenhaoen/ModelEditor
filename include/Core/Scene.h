@@ -14,6 +14,7 @@
 class Node;
 class Light;
 class Camera;
+class SkyboxNode;
 
 class CORE_API Scene {
 public:
@@ -23,6 +24,8 @@ public:
     void addNode(const std::string& name, std::shared_ptr<Node> node);
 
     void removeNode(const std::string& name);
+
+    void setSkyBox(std::shared_ptr<SkyboxNode>);
 
     std::shared_ptr<Node> getNode(const std::string& name);
 
@@ -47,6 +50,8 @@ public:
     void record();
 private:
     std::shared_ptr<Node> rootNode;
+
+    std::shared_ptr<SkyboxNode> m_skyboxNode;
 
     std::unordered_map<std::string, std::shared_ptr<Node>> nodes;
 

@@ -91,7 +91,6 @@ void Node::record()
         m_mesh->record();
     }
 
-
     for (auto child : m_children)
     {
         child->record();

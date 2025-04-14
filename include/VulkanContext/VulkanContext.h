@@ -57,6 +57,7 @@ public:
 	Extent2D getSurfaceExtent(SurfaceID) override final;
 
 	PipelineID createPipeline() override final;
+	PipelineID createSkyboxPipeline() override final;
 	void freePipeline(PipelineID pipeline) override final;
 
 	RenderPassID getRenderPassID() override final;
@@ -104,6 +105,8 @@ public:
 	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data)override final;
 
 	void cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode) override final;
+
+	TextureID createKTXTexture(const std::string_view&) override final;
 
 	static const std::vector<const char*>& getInstanceExtensions();
 	static const std::vector<const char*>& getDeviceExtensions();

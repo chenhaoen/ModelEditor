@@ -2,6 +2,7 @@ project(VulkanContext CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 find_package(Vulkan)
+find_package(ktx)
 
 set(VULKANCONTEXT_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME})
 set(VULKANCONTEXT_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME})
@@ -19,6 +20,7 @@ add_compile_definitions(NOMINMAX)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
 Vulkan::Vulkan
+KTX::ktx
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
@@ -33,3 +35,5 @@ install(TARGETS ${PROJECT_NAME}
 
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.vert -o ${CMAKE_CURRENT_LIST_DIR}/vert.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/skybox.frag -o ${CMAKE_CURRENT_LIST_DIR}/skyboxFrag.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/skybox.vert -o ${CMAKE_CURRENT_LIST_DIR}/skyboxVert.spv)

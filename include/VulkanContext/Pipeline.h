@@ -9,7 +9,7 @@ class DescriptorSetLayout;
 class Pipeline
 {
 public:
-    Pipeline(DescriptorSetLayout *descriptorSetLayout);
+    Pipeline(const std::string& vertShaderFile, const std::string& fragShaderFile, DescriptorSetLayout *descriptorSetLayout);
     ~Pipeline();
 
     static std::vector<char> readFile(const std::string &filename);

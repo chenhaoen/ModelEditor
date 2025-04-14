@@ -3,6 +3,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include <ktxvulkan.h>
+
 #ifdef _WIN64
 #include <Windows.h>
 #include <vulkan/vulkan_win32.h>
@@ -410,9 +412,24 @@ PipelineID VulkanContext::createPipeline()
 {
 	PipelineInfo* pipelineInfo = new PipelineInfo();
 	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
-	pipelineInfo->pipeline = new Pipeline(pipelineInfo->descriptorSetLayout);
+	pipelineInfo->pipeline = new Pipeline(
+		"E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv",
+		"E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv",
+		pipelineInfo->descriptorSetLayout);
 	return PipelineID(pipelineInfo);
 }
+
+PipelineID VulkanContext::createSkyboxPipeline()
+{
+	PipelineInfo* pipelineInfo = new PipelineInfo();
+	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
+	pipelineInfo->pipeline = new Pipeline(
+		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxVert.spv",
+		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv",
+		pipelineInfo->descriptorSetLayout);
+	return PipelineID(pipelineInfo);
+}
+
 
 void VulkanContext::freePipeline(PipelineID pipeline)
 {
@@ -542,6 +559,90 @@ void VulkanContext::cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fil
 		break;
 	}
 
+}
+
+TextureID VulkanContext::createKTXTexture(const std::string_view& file)
+{
+	// 1. 初始化 KTX Vulkan 设备信息
+	ktxVulkanDeviceInfo kvdi;
+	ktxVulkanDeviceInfo_Construct(&kvdi, m_physicalDevice->getVkPhysicalDevice(), 
+		m_device->getVkDevice(), m_device->getPresentQueue(), m_commandPool->getVkCommandPool(), nullptr);
+
+	// 2. 加载 KTX 文件
+	ktxTexture* ktxTexture = nullptr;
+	KTX_error_code result = ktxTexture_CreateFromNamedFile(
+		file.data(),  // 你的 KTX 文件路径
+		KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT,
+		&ktxTexture
+	);
+
+	if (result != KTX_SUCCESS) {
+		throw std::runtime_error("Failed to load KTX texture");
+	}
+
+	// 3. 上传到 Vulkan
+	ktxVulkanTexture vulkanTexture;
+	result = ktxTexture_VkUploadEx(
+		ktxTexture,
+		&kvdi,
+		&vulkanTexture,
+		VK_IMAGE_TILING_OPTIMAL,
+		VK_IMAGE_USAGE_SAMPLED_BIT,
+		VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+	);
+
+	if (result != KTX_SUCCESS) {
+		ktxTexture_Destroy(ktxTexture);
+		throw std::runtime_error("Failed to upload KTX texture to Vulkan");
+	}
+
+	// 4. 创建图像视图
+	VkImageViewCreateInfo viewInfo = {};
+	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	viewInfo.image = vulkanTexture.image;
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;  // 对于立方体贴图使用 VK_IMAGE_VIEW_TYPE_CUBE
+	viewInfo.format = vulkanTexture.imageFormat;
+	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	viewInfo.subresourceRange.baseMipLevel = 0;
+	viewInfo.subresourceRange.levelCount = ktxTexture->numLevels;
+	viewInfo.subresourceRange.baseArrayLayer = 0;
+	viewInfo.subresourceRange.layerCount = ktxTexture->numLayers;
+
+	VkImageView imageView;
+	if (vkCreateImageView(m_device->getVkDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {
+		ktxTexture_Destroy(ktxTexture);
+		throw std::runtime_error("Failed to create texture image view");
+	}
+
+	TextureInfo* pTextureInfo = new TextureInfo();
+	pTextureInfo->textureImage = vulkanTexture.image;
+	pTextureInfo->textureImageView = imageView;
+	pTextureInfo->textureImageMemory = vulkanTexture.deviceMemory;
+
+	// Create sampler
+	VkSamplerCreateInfo samplerCreateInfo{};
+	samplerCreateInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+	samplerCreateInfo.magFilter = VK_FILTER_LINEAR;
+	samplerCreateInfo.minFilter = VK_FILTER_LINEAR;
+	samplerCreateInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+	samplerCreateInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+	samplerCreateInfo.addressModeV = samplerCreateInfo.addressModeU;
+	samplerCreateInfo.addressModeW = samplerCreateInfo.addressModeU;
+	samplerCreateInfo.mipLodBias = 0.0f;
+	samplerCreateInfo.maxAnisotropy =  16.0f;
+	samplerCreateInfo.anisotropyEnable = true;
+	samplerCreateInfo.compareOp = VK_COMPARE_OP_NEVER;
+	samplerCreateInfo.minLod = 0.0f;
+	samplerCreateInfo.maxLod = (float)ktxTexture->numLevels;
+	samplerCreateInfo.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+	VK_CHECK(vkCreateSampler(VulkanContext::getDevice()->getVkDevice(), &samplerCreateInfo, nullptr, &pTextureInfo->textureSampler));
+
+	// 5. 清理 KTX 纹理
+	ktxTexture_Destroy(ktxTexture);
+	ktxVulkanDeviceInfo_Destruct(&kvdi);
+
+
+	return TextureID(pTextureInfo);
 }
 
 RenderPassID VulkanContext::getRenderPassID()

@@ -10,8 +10,8 @@
 
 class CORE_API Camera : public Compilable {
 public:
-    Camera(glm::vec3 position = glm::vec3(2.0f, 2.0f, 2.0f),
-        glm::vec3 up = glm::vec3(0.0f, 0.0f, 0.1f),
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 5.0f),
+        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
         float yaw = -90.0f, float pitch = 0.0f);
 
     ~Camera();
@@ -30,8 +30,6 @@ public:
 
     glm::vec3 getPosition() const;
 
-    glm::vec3 getFront() const;
-
     void compile() override;
 
     void record() override;
@@ -42,7 +40,8 @@ private:
     void updateCameraVectors();
 
     glm::vec3 position; 
-    glm::vec3 front;    
+    glm::vec3 target;
+    glm::vec3 front;
     glm::vec3 up;       
     glm::vec3 right;    
     glm::vec3 worldUp;  

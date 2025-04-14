@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string_view>
 
 #include "Core/RenderingContextDriver/InitInfo.h"
 #include "Core/RenderingContextDriver/Commons.h"
@@ -60,6 +61,7 @@ public:
 	virtual Extent2D getSurfaceExtent(SurfaceID) = 0;
 
 	virtual PipelineID createPipeline() = 0;
+	virtual PipelineID createSkyboxPipeline() = 0;
 	virtual void freePipeline(PipelineID pipeline) = 0;
 
 	virtual RenderPassID getRenderPassID() = 0;
@@ -108,6 +110,8 @@ public:
 	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data) = 0;
 
 	virtual void cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode) = 0;
+
+	virtual TextureID createKTXTexture(const std::string_view&) = 0;
 protected:
 	RenderingContextDriver() = default;
 	virtual ~RenderingContextDriver() = 0;

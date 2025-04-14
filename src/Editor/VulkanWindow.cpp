@@ -5,12 +5,17 @@
 
 #include "Core/SceneManager.h"
 #include "Core/FrameManager.h"
+#include "Core/Scene.h"
+#include "Core/PipelineManager.h"
+#include "Core/Camera.h"
+#include "Core/SkyboxNode.h"
+#include "Core/Material.h"
 
 #include "Core/Commands/CommandGroup.h"
 
 #include "VulkanContext/VulkanContext.h"
 
-#include "Core/PipelineManager.h"
+#include "IO/ReadNode.h"
 
 VulkanWindow::VulkanWindow()
 {
@@ -41,6 +46,10 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			PipelineManager::instance()->init();
 			FrameManager::instance();
 
+			//auto skybox = readSkyboxNode("E:/code/ModelEditer/build/bin/Debug/models/cube.gltf");
+			//skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/ModelEditer/build/bin/Debug/textures/gcanyon_cube.ktx");
+			//SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
+
 			render();
 		}
 	}
@@ -63,6 +72,51 @@ void VulkanWindow::resizeEvent(QResizeEvent* event)
 void VulkanWindow::closeEvent(QCloseEvent*)
 {
 	
+}
+
+void VulkanWindow::wheelEvent(QWheelEvent* event)
+{
+	SceneManager::instance()->getCurrentScene()->getCurrentCamera()->zoom(event->angleDelta().y() / 100.0);
+}
+
+bool mouseClicked = false;
+static QPoint lastPoint;
+
+void VulkanWindow::mouseMoveEvent(QMouseEvent* event)
+{
+	if (!mouseClicked)
+	{
+		return;
+	}
+
+	QPoint offset = event->pos() - lastPoint;
+	lastPoint = event->pos();
+	SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(-offset.x(), offset.y());
+}
+
+
+
+void VulkanWindow::mousePressEvent(QMouseEvent* event)
+{
+	switch (event->button())
+	{
+	case 
+	Qt::LeftButton:mouseClicked = true;
+		lastPoint = event->pos();
+		break;
+	default:
+		break;
+	} 
+}
+
+void VulkanWindow::mouseReleaseEvent(QMouseEvent* event)
+{
+	switch (event->button())
+	{
+	case Qt::LeftButton:mouseClicked = false;
+	default:
+		break;
+	}
 }
 
 bool VulkanWindow::event(QEvent* event)

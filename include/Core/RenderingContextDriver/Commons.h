@@ -83,6 +83,7 @@ typedef struct Viewport {
 enum class PipelineType
 {
 	Model,
+	Skybox,
 };
 
 enum class BufferType

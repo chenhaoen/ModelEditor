@@ -5,6 +5,7 @@
 
 #include "Core/Mesh.h"
 #include "Core/Node.h"
+#include "Core/SkyboxNode.h"
 #include "Core/Material.h"
 
 #include <assimp/Importer.hpp>
@@ -123,6 +124,30 @@ std::shared_ptr<Node> readNode(const std::string_view& file)
 
     auto image = readImage("E:/code/ModelEditer/build/bin/Debug/models/viking_room.png");
     material->setImage(image);
+    node->setMaterial(material);
+
+    return node;
+}
+
+std::shared_ptr<SkyboxNode> readSkyboxNode(const std::string_view& file)
+{
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(file.data(), aiProcess_Triangulate | aiProcess_FlipUVs);
+
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        return nullptr;
+    }
+
+    auto node = std::make_shared<SkyboxNode>();
+
+    auto mesh = std::make_shared<Mesh>();
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    processNode(mesh, scene->mRootNode, scene);
+    node->setMesh(mesh);
+
+    auto material = std::make_shared<Material>();
     node->setMaterial(material);
 
     return node;

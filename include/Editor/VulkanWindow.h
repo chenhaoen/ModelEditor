@@ -14,6 +14,13 @@ protected:
 
 	void closeEvent(QCloseEvent*) override;
 
+	void wheelEvent(QWheelEvent*) override;
+
+	void mouseMoveEvent(QMouseEvent*) override;
+
+	void mousePressEvent(QMouseEvent*)override;
+	void mouseReleaseEvent(QMouseEvent*)override;
+
 	bool event(QEvent* event) override;
 
 	void render();

@@ -10,12 +10,12 @@
 #include "VulkanContext/DescriptorSetLayout.h"
 #include "VulkanContext/Utils.h"
 
-Pipeline::Pipeline(
+Pipeline::Pipeline(const std::string& vertShaderFile, const std::string& fragShaderFile,
 	DescriptorSetLayout* descriptorSetLayout)
 	: m_descriptorSetLayout(descriptorSetLayout)
 {
-	auto vertShaderCode = readFile("E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv");
-	auto fragShaderCode = readFile("E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv");
+	auto vertShaderCode = readFile(vertShaderFile);
+	auto fragShaderCode = readFile(fragShaderFile);
 
 	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
 	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
@@ -86,7 +86,7 @@ Pipeline::Pipeline(
 	rasterizer.rasterizerDiscardEnable = VK_FALSE;
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
-	rasterizer.cullMode = VK_CULL_MODE_NONE;
+	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 	rasterizer.depthBiasEnable = VK_FALSE;
 	rasterizer.depthBiasConstantFactor = 0.0f; // Optional

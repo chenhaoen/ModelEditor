@@ -16,6 +16,7 @@ Frame::Frame()
 	m_commandBuffer = RenderingContextDriver::instance()->createCommandBuffer();
 
 	m_descriptorSets.emplace(PipelineType::Model, RenderingContextDriver::instance()->createUniformSet(PipelineManager::instance()->getPipeline(PipelineType::Model)->m_id));
+	m_descriptorSets.emplace(PipelineType::Skybox, RenderingContextDriver::instance()->createUniformSet(PipelineManager::instance()->getPipeline(PipelineType::Skybox)->m_id));
 }
 
 Frame::~Frame()
