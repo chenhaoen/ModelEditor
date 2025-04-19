@@ -163,5 +163,4 @@ private:
 	static RenderPass* m_renderPass;
 	static SwapChain* m_swapChain;
 	static CommandPool* m_commandPool;
-	DescriptorPool* m_descriptorPool;
 };

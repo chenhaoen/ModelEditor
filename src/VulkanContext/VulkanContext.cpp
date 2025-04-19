@@ -103,8 +103,6 @@ void VulkanContext::initialize()
 
 	m_commandPool = new CommandPool();
 
-	m_descriptorPool = new DescriptorPool();
-
 #ifndef NDEBUG
 	const auto finish{ std::chrono::steady_clock::now() };
 	const std::chrono::duration<double> elapsed_seconds{ finish - start };
@@ -117,7 +115,6 @@ void VulkanContext::destroy()
 {
 	m_device->wait();
 
-	delete m_descriptorPool;
 	delete m_commandPool;
 	delete m_swapChain;
 	delete m_renderPass;
@@ -406,6 +403,14 @@ struct PipelineInfo
 {
 	Pipeline* pipeline;
 	DescriptorSetLayout* descriptorSetLayout;
+	DescriptorPool* descriptorPool;
+
+	~PipelineInfo()
+	{
+		delete pipeline;
+		delete descriptorSetLayout;
+		delete descriptorPool;
+	}
 };
 
 PipelineID VulkanContext::createPipeline()
@@ -416,6 +421,8 @@ PipelineID VulkanContext::createPipeline()
 		"E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv",
 		"E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv",
 		pipelineInfo->descriptorSetLayout);
+
+	pipelineInfo->descriptorPool = new DescriptorPool();
 	return PipelineID(pipelineInfo);
 }
 
@@ -427,6 +434,7 @@ PipelineID VulkanContext::createSkyboxPipeline()
 		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxVert.spv",
 		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv",
 		pipelineInfo->descriptorSetLayout);
+	pipelineInfo->descriptorPool = new DescriptorPool();
 	return PipelineID(pipelineInfo);
 }
 
@@ -435,8 +443,6 @@ void VulkanContext::freePipeline(PipelineID pipeline)
 {
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
 
-	delete pipelineInfo->descriptorSetLayout;
-	delete pipelineInfo->pipeline;
 	delete pipelineInfo;
 }
 
@@ -689,7 +695,7 @@ UniformSetID VulkanContext::createUniformSet(PipelineID pipeline)
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
 	UniformBufferInfo* bufferInfo = new UniformBufferInfo{};
 
-	bufferInfo->descriptorSet = m_descriptorPool->AllocateDescriptorSet(pipelineInfo->descriptorSetLayout);
+	bufferInfo->descriptorSet = pipelineInfo->descriptorPool->AllocateDescriptorSet(pipelineInfo->descriptorSetLayout);
 
 	return UniformSetID(bufferInfo);
 }
@@ -769,7 +775,6 @@ void VulkanContext::freeUniformSet(UniformSetID uniformSet)
 	}
 
 	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
-	m_descriptorPool->freeDescriptorSets({ bufferInfo->descriptorSet });
 
 	delete bufferInfo;
 }

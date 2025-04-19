@@ -15,11 +15,11 @@ DescriptorPool::DescriptorPool()
 	VkDescriptorPoolSize poolSize{};
 
 	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSize.descriptorCount = static_cast<uint32_t>(FrameManager::maxFrameCount()) * 2;
+	poolSize.descriptorCount = static_cast<uint32_t>(FrameManager::maxFrameCount());
 	poolSizes.emplace_back(poolSize);
 
 	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSize.descriptorCount = static_cast<uint32_t>(FrameManager::maxFrameCount()) * 2;
+	poolSize.descriptorCount = static_cast<uint32_t>(FrameManager::maxFrameCount());
 	poolSizes.emplace_back(poolSize);
 
 	VkDescriptorPoolCreateInfo poolInfo{};
@@ -27,7 +27,7 @@ DescriptorPool::DescriptorPool()
 	poolInfo.poolSizeCount = poolSizes.size();
 	poolInfo.pPoolSizes = poolSizes.data();
 	poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
-	poolInfo.maxSets = static_cast<uint32_t>(FrameManager::maxFrameCount()) * 2;
+	poolInfo.maxSets = static_cast<uint32_t>(FrameManager::maxFrameCount());
 
 	VK_CHECK(vkCreateDescriptorPool(VulkanContext::getDevice()->getVkDevice(), &poolInfo, nullptr, &m_vkDescriptorPool))
 }
