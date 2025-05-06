@@ -1,5 +1,8 @@
 #pragma once
 
+#include <list>
+#include <functional>
+
 #include <QWindow>
 
 class VulkanWindow : public QWindow
@@ -27,4 +30,6 @@ protected:
 
 private:
 	bool m_initialized = false;
+
+	std::list<std::function<void()>> m_listEvent;
 };

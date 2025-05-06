@@ -25,8 +25,8 @@ void PipelineManager::init()
 
 	// skybox
 	{
-		auto pipeline = std::make_shared<Pipeline>(PipelineType::Model);
-		pipeline->m_id = RenderingContextDriver::instance()->createPipeline();
+		auto pipeline = std::make_shared<Pipeline>(PipelineType::Skybox);
+		pipeline->m_id = RenderingContextDriver::instance()->createSkyboxPipeline();
 		addPipeline(PipelineType::Skybox, pipeline);
 	}
 }

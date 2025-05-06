@@ -606,13 +606,13 @@ TextureID VulkanContext::createKTXTexture(const std::string_view& file)
 	VkImageViewCreateInfo viewInfo = {};
 	viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 	viewInfo.image = vulkanTexture.image;
-	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;  // 对于立方体贴图使用 VK_IMAGE_VIEW_TYPE_CUBE
+	viewInfo.viewType = VK_IMAGE_VIEW_TYPE_CUBE;  // 对于立方体贴图使用 VK_IMAGE_VIEW_TYPE_CUBE
 	viewInfo.format = vulkanTexture.imageFormat;
 	viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	viewInfo.subresourceRange.baseMipLevel = 0;
 	viewInfo.subresourceRange.levelCount = ktxTexture->numLevels;
 	viewInfo.subresourceRange.baseArrayLayer = 0;
-	viewInfo.subresourceRange.layerCount = ktxTexture->numLayers;
+	viewInfo.subresourceRange.layerCount = ktxTexture->numFaces;
 
 	VkImageView imageView;
 	if (vkCreateImageView(m_device->getVkDevice(), &viewInfo, nullptr, &imageView) != VK_SUCCESS) {

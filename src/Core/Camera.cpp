@@ -1,4 +1,5 @@
 #include <chrono>
+#include <iostream>
 
 #include "Core/Camera.h"
 
@@ -18,7 +19,18 @@ Camera::~Camera()
 
 // 获取视图矩阵
 glm::mat4 Camera::getViewMatrix() const {
-     return glm::lookAt(position, position + front, up);
+    glm::mat4 result;
+    glm::mat4 rotM = glm::mat4(1.0f);
+    glm::mat4 transM;
+
+    rotM = glm::rotate(rotM, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    rotM = glm::rotate(rotM, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    rotM = glm::rotate(rotM, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    glm::vec3 translation = position;
+    transM = glm::translate(glm::mat4(1.0f), translation);
+    result =  transM * rotM;
+    return result;
 }
 
 // 获取投影矩阵
@@ -42,10 +54,16 @@ void Camera::move(glm::vec3 offset) {
 
 // 旋转摄像机
 void Camera::rotate(float yaw, float pitch) {
-    this->yaw += yaw * 0.1;
-    this->pitch += pitch * 0.1;
+    //this->yaw += yaw * 0.1;
+    //this->pitch += pitch * 0.1;
 
     updateCameraVectors();
+}
+
+void Camera::rotate(const glm::vec3& delta)
+{
+   // std::cout << "x: " << rotation.x << ", y: " << rotation.y << std::endl;
+    this->rotation += delta;
 }
 
 // 缩放视野
@@ -80,7 +98,10 @@ void Camera::record()
     //ubo.model =  glm::scale(glm::mat4(1.0f), glm::vec3(50.0f));
     
     ubo.view = getViewMatrix();
-   // ubo.view = glm::lookAt(glm::vec3(0.0f, 5.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    float radius = 10.0f;
+    float camX = sin(time) * radius;
+    float camZ = cos(time) * radius;
+    //ubo.view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
     
     ubo.proj = glm::perspective(glm::radians(fov), surfaceExtent.width / (float)surfaceExtent.height, 0.1f, 1000.0f);
     
@@ -119,7 +140,7 @@ void Camera::updateCameraVectors() {
     newFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
     newFront.y = sin(glm::radians(pitch));
     newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front = glm::normalize(newFront);
+    front = glm::normalize(position);
     
     // 计算右向量和上向量
     right = glm::normalize(glm::cross(front, worldUp));

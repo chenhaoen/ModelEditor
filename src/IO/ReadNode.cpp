@@ -28,7 +28,7 @@ void processMesh(std::shared_ptr<Mesh> mesh, aiMesh* aiMesh, const aiScene* scen
                 continue;
             }
 
-            vertex.texCoord = glm::vec2(aiMesh->mTextureCoords[j][i].x, aiMesh->mTextureCoords[j][i].y);
+            vertex.texCoord = glm::vec3(aiMesh->mTextureCoords[j][i].x, aiMesh->mTextureCoords[j][i].y, aiMesh->mTextureCoords[j][i].z);
         }
 
         mesh->getVertices().push_back(vertex);
@@ -142,10 +142,14 @@ std::shared_ptr<SkyboxNode> readSkyboxNode(const std::string_view& file)
     auto node = std::make_shared<SkyboxNode>();
 
     auto mesh = std::make_shared<Mesh>();
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
     processNode(mesh, scene->mRootNode, scene);
     node->setMesh(mesh);
+
+    for (auto& vertex : mesh->getVertices())
+    {
+        vertex.pos.y *= -1.0f;
+    }
+
 
     auto material = std::make_shared<Material>();
     node->setMaterial(material);

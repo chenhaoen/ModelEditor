@@ -46,12 +46,6 @@
    <addaction name="menu_Scene"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QDockWidget" name="dockWidget">
-   <attribute name="dockWidgetArea">
-    <number>8</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents"/>
-  </widget>
   <action name="action_Open">
    <property name="text">
     <string>&amp;Open</string>

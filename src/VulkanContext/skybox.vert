@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 inPos;
 layout (location = 1) in vec3 inNormal;
-layout (location = 2) in vec2 inUV;
+layout (location = 2) in vec3 inUV;
 
 layout (binding = 0) uniform UBO 
 {
@@ -21,5 +21,6 @@ out gl_PerVertex
 void main() 
 {
 	outUVW = inPos;
-	gl_Position = ubo.proj * ubo.model * vec4(inPos.xyz, 1.0);
+	mat4 viewMat = mat4(mat3(ubo.view));
+	gl_Position = ubo.proj * viewMat * ubo.model * vec4(inPos.xyz, 1.0);
 }

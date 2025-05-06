@@ -3,6 +3,7 @@
 
 #include "Editor/MainWindow.h"
 #include "Editor/VulkanWindow.h"
+#include "Editor/OutlinerDockWidget.h"
 #include "ui_mainwindow.h"
 
 #include "IO/ReadNode.h"
@@ -19,6 +20,9 @@ MainWindow::MainWindow(QWidget *parent)
     QWindow *vulkanWindow = new VulkanWindow();
     QWidget *wrapper = QWidget::createWindowContainer(vulkanWindow,this);
     setCentralWidget(wrapper);
+
+    OutlinerDockWidget* outlinerDockWidget = new OutlinerDockWidget();
+    this->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, outlinerDockWidget);
 }
 
 MainWindow::~MainWindow()
@@ -48,7 +52,7 @@ void MainWindow::on_actionSceneShoot_triggered(bool)
 
 void MainWindow::on_action_Open_triggered(bool)
 {
-    const QString& fileName = QFileDialog::getOpenFileName(this, tr("Open Model File"), "", "*.obj");
+    const QString& fileName = QFileDialog::getOpenFileName(this, tr("Open Model File"), "", "*.obj;*.gltf");
 
     if (fileName.isEmpty())
     {

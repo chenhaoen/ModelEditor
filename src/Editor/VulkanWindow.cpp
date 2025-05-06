@@ -46,9 +46,9 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			PipelineManager::instance()->init();
 			FrameManager::instance();
 
-			//auto skybox = readSkyboxNode("E:/code/ModelEditer/build/bin/Debug/models/cube.gltf");
-			//skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/ModelEditer/build/bin/Debug/textures/gcanyon_cube.ktx");
-			//SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
+			auto skybox = readSkyboxNode("E:/code/ModelEditer/build/bin/Debug/models/cube.gltf");
+			skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/VulkanSamples/Vulkan/assets/textures/cubemap_vulkan.ktx");
+			SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
 
 			render();
 		}
@@ -91,7 +91,14 @@ void VulkanWindow::mouseMoveEvent(QMouseEvent* event)
 
 	QPoint offset = event->pos() - lastPoint;
 	lastPoint = event->pos();
-	SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(-offset.x(), offset.y());
+
+	if (offset == lastPoint)
+	{
+		return;
+	}
+
+	SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(glm::vec3(offset.y(), offset.x(), 0.0));
+	//SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(-offset.x(), offset.y());
 }
 
 
@@ -121,8 +128,19 @@ void VulkanWindow::mouseReleaseEvent(QMouseEvent* event)
 
 bool VulkanWindow::event(QEvent* event)
 {
+	if (!m_listEvent.empty())
+	{
+		for (auto event : m_listEvent)
+		{
+			event();
+		}
+		m_listEvent.clear();
+	}
+
 	if (event->type() == QEvent::UpdateRequest)
 	{
+
+
 		FrameManager::instance()->beginFrame();
 
 		auto commandGroup = FrameManager::instance()->currentCommandGroup();
@@ -141,10 +159,13 @@ bool VulkanWindow::event(QEvent* event)
 		FrameManager::instance()->endFrame();
 		return true;
 	}
+
 	return QWindow::event(event);
 }
 
 void VulkanWindow::render()
 {
+
+
 	requestUpdate();
 }

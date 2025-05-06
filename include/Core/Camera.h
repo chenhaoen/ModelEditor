@@ -10,8 +10,8 @@
 
 class CORE_API Camera : public Compilable {
 public:
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 5.0f),
-        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, -5.0f),
+        glm::vec3 up = glm::vec3(0.0f, 0.0f, 1.0f),
         float yaw = -90.0f, float pitch = 0.0f);
 
     ~Camera();
@@ -25,6 +25,8 @@ public:
     void move(glm::vec3 offset);
 
     void rotate(float yaw, float pitch);
+
+    void rotate(const glm::vec3& delta);
 
     void zoom(float amount);
 
@@ -45,6 +47,7 @@ private:
     glm::vec3 up;       
     glm::vec3 right;    
     glm::vec3 worldUp;  
+    glm::vec3 rotation = glm::vec3(15.0, 0.0, 0.0);
 
     float yaw;  
     float pitch;
