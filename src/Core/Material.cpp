@@ -32,11 +32,16 @@ void Material::setImage(std::shared_ptr<Image> image)
 
 void Material::record()
 {
+
+}
+
+BoundUniform Material::getBoundUniform() const
+{
 	BoundUniform uniform;
 	uniform.type = UNIFORM_TYPE_SAMPLER_WITH_TEXTURE;
 	uniform.ids.push_back(m_texureID);
 	uniform.binding = 1;
-	PipelineManager::instance()->currentPipeline()->m_boundUniforms.push_back(uniform);
+	return uniform;
 }
 
 void Material::createTexture()

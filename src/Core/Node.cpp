@@ -4,9 +4,11 @@
 #include "Core/PipelineManager.h"
 #include "Core/FrameManager.h"
 #include "Core/SceneManager.h"
+#include "Core/Pipeline.h"
 
 #include "Core/Commands/BindPipelineCommand.h"
 #include "Core/Commands/CommandGroup.h"
+#include <Core/Commands/BindDescriptorSetsCommand.h>
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
@@ -84,10 +86,12 @@ void Node::record()
 {
     if (m_material && m_mesh)
     {
-        PipelineManager::instance()->setCurrentPipeline(PipelineType::Model);
-        FrameManager::instance()->currentCommandGroup()->push(PipelineManager::instance()->getCommands());
-        m_material->record();
-        PipelineManager::instance()->updateDescriptorSets();
+        PipelineManager::instance()->getPipeline(PipelineType::Model)->bind();
+        FrameManager::instance()->currentCommandGroup()->push(std::make_shared<BindPipelineCommand>(PipelineType::Model));
+        FrameManager::instance()->currentCommandGroup()->push(PipelineManager::instance()->getCommands(PipelineType::Model));
+        FrameManager::instance()->currentCommandGroup()->push(std::make_shared<BindDescriptorSetsCommand>(PipelineType::Model));
+        PipelineManager::instance()->getPipeline(PipelineType::Model)->m_boundUniforms.push_back(m_material->getBoundUniform());
+        PipelineManager::instance()->updateDescriptorSets(PipelineType::Model);
         m_mesh->record();
     }
 

@@ -14,9 +14,6 @@ Frame::Frame()
 	m_imageAvailableSemaphore = RenderingContextDriver::instance()->createSemaphore();
 
 	m_commandBuffer = RenderingContextDriver::instance()->createCommandBuffer();
-
-	m_descriptorSets.emplace(PipelineType::Model, RenderingContextDriver::instance()->createUniformSet(PipelineManager::instance()->getPipeline(PipelineType::Model)->m_id));
-	m_descriptorSets.emplace(PipelineType::Skybox, RenderingContextDriver::instance()->createUniformSet(PipelineManager::instance()->getPipeline(PipelineType::Skybox)->m_id));
 }
 
 Frame::~Frame()
@@ -24,11 +21,6 @@ Frame::~Frame()
 	RenderingContextDriver::instance()->freeFence(m_inFlightFence);
 	RenderingContextDriver::instance()->freeSemaphore(m_renderFinishedSemaphore);
 	RenderingContextDriver::instance()->freeSemaphore(m_imageAvailableSemaphore);
-
-	for (auto kv : m_descriptorSets)
-	{
-		RenderingContextDriver::instance()->freeUniformSet(kv.second);
-	}
 }
 
 CommandBufferID Frame::getCommandBuffer() const
@@ -39,11 +31,6 @@ CommandBufferID Frame::getCommandBuffer() const
 std::shared_ptr<CommandGroup> Frame::getCommandGroup() const
 {
 	return m_commandGroup;
-}
-
-UniformSetID Frame::getUniformSet()
-{
-	return m_descriptorSets[PipelineManager::instance()->currentPipeline()->m_type];
 }
 
 void Frame::begin()

@@ -18,15 +18,13 @@ public:
 
 	void init();
 
-	void setCurrentPipeline(const PipelineType type);
-	std::shared_ptr<Pipeline> currentPipeline();
 	std::shared_ptr<Pipeline> getPipeline(const PipelineType type);
 
 	uint32_t pipelineCount() const;
 
-	std::shared_ptr<CommandGroup> getCommands();
+	std::shared_ptr<CommandGroup> getCommands(const PipelineType type);
 
-	void updateDescriptorSets();
+	void updateDescriptorSets(const PipelineType type);
 private:
 	PipelineManager();
 	~PipelineManager();
@@ -36,7 +34,5 @@ private:
 	static PipelineManager* g_instance;
 
 	std::map<PipelineType, std::shared_ptr<Pipeline>> m_pipelines;
-
-	PipelineType m_currentPipeline;
 };
 

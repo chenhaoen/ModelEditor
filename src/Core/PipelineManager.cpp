@@ -19,28 +19,14 @@ void PipelineManager::init()
 {
 	{
 		auto pipeline = std::make_shared<Pipeline>(PipelineType::Model);
-		pipeline->m_id = RenderingContextDriver::instance()->createPipeline();
 		addPipeline(PipelineType::Model, pipeline);
 	}
 
 	// skybox
 	{
 		auto pipeline = std::make_shared<Pipeline>(PipelineType::Skybox);
-		pipeline->m_id = RenderingContextDriver::instance()->createSkyboxPipeline();
 		addPipeline(PipelineType::Skybox, pipeline);
 	}
-}
-
-void PipelineManager::setCurrentPipeline(const PipelineType type)
-{
-	m_currentPipeline = type;
-	m_pipelines[m_currentPipeline]->m_boundUniforms.clear();
-	m_pipelines[m_currentPipeline]->bind();
-}
-
-std::shared_ptr<Pipeline> PipelineManager::currentPipeline()
-{
-	return m_pipelines[m_currentPipeline];
 }
 
 std::shared_ptr<Pipeline> PipelineManager::getPipeline(const PipelineType type)
@@ -59,18 +45,17 @@ uint32_t PipelineManager::pipelineCount() const
 	return m_pipelines.size();
 }
 
-std::shared_ptr<CommandGroup> PipelineManager::getCommands()
+std::shared_ptr<CommandGroup> PipelineManager::getCommands(const PipelineType type)
 {
-	return m_pipelines[m_currentPipeline]->getCommands();
+	return m_pipelines[type]->getCommands();
 }
 
-void PipelineManager::updateDescriptorSets()
+void PipelineManager::updateDescriptorSets(const PipelineType type)
 {
-	m_pipelines[m_currentPipeline]->updateDescriptorSets();
+	m_pipelines[type]->updateDescriptorSets();
 }
 
 PipelineManager::PipelineManager()
-	:m_currentPipeline(PipelineType::Model)
 {
 
 }

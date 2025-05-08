@@ -16,8 +16,6 @@ public:
 
 	std::shared_ptr<CommandGroup> getCommandGroup() const;
 
-	UniformSetID getUniformSet();
-
 	void begin();
 	void end();
 private:
@@ -28,8 +26,6 @@ private:
 	CommandBufferID m_commandBuffer;
 
 	std::shared_ptr<CommandGroup> m_commandGroup;
-
-	std::map<PipelineType,UniformSetID> m_descriptorSets;
 
 	uint32_t m_imageIndex;
 };

@@ -5,7 +5,8 @@
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
-BindDescriptorSetsCommand::BindDescriptorSetsCommand()
+BindDescriptorSetsCommand::BindDescriptorSetsCommand(PipelineType type)
+	:m_type(type)
 {
 }
 
@@ -13,7 +14,7 @@ void BindDescriptorSetsCommand::record()
 {
 	RenderingContextDriver::instance()->cmdBindDescriptorSets(
 		FrameManager::instance()->currentCommandBuffer(),
-		PipelineManager::instance()->currentPipeline()->m_id,
-		FrameManager::instance()->currentUniformSet()
+		PipelineManager::instance()->getPipeline(m_type)->m_id,
+		PipelineManager::instance()->getPipeline(m_type)->m_descriptorSets[FrameManager::instance()->currentFrameIndex()]
 	);
 }

@@ -56,8 +56,3 @@ std::shared_ptr<CommandGroup> FrameManager::currentCommandGroup()
 {
 	return m_frames[m_currentFrame]->getCommandGroup();
 }
-
-UniformSetID FrameManager::currentUniformSet()
-{
-	return m_frames[m_currentFrame]->getUniformSet();
-}

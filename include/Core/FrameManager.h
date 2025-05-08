@@ -17,14 +17,14 @@ public:
 
 	static constexpr int maxFrameCount() { return 2; };
 
+	uint32_t currentFrameIndex() const { return m_currentFrame; };
+
 	void beginFrame();
 	void endFrame();
 
 	CommandBufferID currentCommandBuffer();
 
 	std::shared_ptr<CommandGroup> currentCommandGroup();
-
-	UniformSetID currentUniformSet();
 private:
 	FrameManager();
 	~FrameManager();

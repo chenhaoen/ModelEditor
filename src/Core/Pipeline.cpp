@@ -15,10 +15,29 @@
 Pipeline::Pipeline(PipelineType type)
 	:m_type(type)
 {
+	if (type == PipelineType::Model)
+	{
+		m_id = RenderingContextDriver::instance()->createPipeline();
+	}
+	else
+	{
+		m_id = RenderingContextDriver::instance()->createSkyboxPipeline();
+	}
+
+
+	for (auto& descriptorSet : m_descriptorSets)
+	{
+		descriptorSet = RenderingContextDriver::instance()->createUniformSet(m_id);
+	}
 }
 
 Pipeline::~Pipeline()
 {
+	for (auto& descriptorSet : m_descriptorSets)
+	{
+		RenderingContextDriver::instance()->freeUniformSet(descriptorSet);
+	}
+
 	RenderingContextDriver::instance()->freePipeline(m_id);
 }
 
@@ -33,8 +52,6 @@ std::shared_ptr<CommandGroup> Pipeline::getCommands()
 
 	const Extent2D& surfaceExtent = RenderingContextDriver::instance()->getSurfaceExtent(SurfaceID());
 
-	commandGroup->push(std::make_shared<BindPipelineCommand>());
-
 	Rect2D scissor;
 	scissor.offset = { 0,0 };
 	scissor.extent = surfaceExtent;
@@ -48,14 +65,12 @@ std::shared_ptr<CommandGroup> Pipeline::getCommands()
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	commandGroup->push(std::make_shared<SetViewportCommand>(viewport));
-
-	commandGroup->push(std::make_shared < BindDescriptorSetsCommand>());
-	commandGroup->push(std::make_shared < SetPolygonModeCommand>(SceneManager::instance()->getCurrentScene()->getFillMode()));
+	commandGroup->push(std::make_shared<SetPolygonModeCommand>(SceneManager::instance()->getCurrentScene()->getFillMode()));
 
 	return commandGroup;
 }
 
 void Pipeline::updateDescriptorSets()
 {
-	RenderingContextDriver::instance()->updateUniformSet(FrameManager::instance()->currentUniformSet(), m_boundUniforms);
+	RenderingContextDriver::instance()->updateUniformSet(m_descriptorSets[FrameManager::instance()->currentFrameIndex()], m_boundUniforms);
 }

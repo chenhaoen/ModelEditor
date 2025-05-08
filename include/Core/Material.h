@@ -26,6 +26,8 @@ public:
     void compile() override;
 
     TextureID m_texureID;
+
+    BoundUniform getBoundUniform() const;
 private:
     void createTexture();
 

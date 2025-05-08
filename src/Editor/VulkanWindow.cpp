@@ -97,7 +97,7 @@ void VulkanWindow::mouseMoveEvent(QMouseEvent* event)
 		return;
 	}
 
-	SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(glm::vec3(offset.y(), offset.x(), 0.0));
+	SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(glm::vec3(offset.y() * 0.5, offset.x() * 0.5, 0.0));
 	//SceneManager::instance()->getCurrentScene()->getCurrentCamera()->rotate(-offset.x(), offset.y());
 }
 
@@ -139,8 +139,6 @@ bool VulkanWindow::event(QEvent* event)
 
 	if (event->type() == QEvent::UpdateRequest)
 	{
-
-
 		FrameManager::instance()->beginFrame();
 
 		auto commandGroup = FrameManager::instance()->currentCommandGroup();
