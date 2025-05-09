@@ -1,8 +1,5 @@
 #pragma once
 
-#include <map>
-#include <memory>
-
 #include "Core/RenderingContextDriver/Commons.h"
 
 class CommandGroup;

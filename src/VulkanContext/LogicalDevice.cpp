@@ -1,6 +1,3 @@
-#include <set>
-#include <stdexcept>
-
 #include "VulkanContext/LogicalDevice.h"
 #include "VulkanContext/PhysicalDevice.h"
 #include "VulkanContext/VulkanContext.h"

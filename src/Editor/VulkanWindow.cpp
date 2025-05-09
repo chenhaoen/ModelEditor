@@ -1,6 +1,3 @@
-#include <QResizeEvent>
-#include <QTimer>
-
 #include "Editor/VulkanWindow.h"
 
 #include "Core/SceneManager.h"

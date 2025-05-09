@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "VulkanContext/PhysicalDevice.h"
 #include "VulkanContext/Instance.h"
 #include "VulkanContext/Surface.h"

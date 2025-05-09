@@ -1,15 +1,3 @@
-#include <iostream>
-#include <chrono>
-
-#include <vulkan/vulkan.h>
-
-#include <ktxvulkan.h>
-
-#ifdef _WIN64
-#include <Windows.h>
-#include <vulkan/vulkan_win32.h>
-#endif // _Win64
-
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Instance.h"
 #include "VulkanContext/DebugUtilsMessenger.h"

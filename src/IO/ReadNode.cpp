@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "IO/ReadNode.h"
 #include "IO/ReadImage.h"
 
@@ -7,10 +5,6 @@
 #include "Core/Node.h"
 #include "Core/SkyboxNode.h"
 #include "Core/Material.h"
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 void processMesh(std::shared_ptr<Mesh> mesh, aiMesh* aiMesh, const aiScene* scene)
 {

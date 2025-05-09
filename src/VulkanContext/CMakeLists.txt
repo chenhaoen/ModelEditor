@@ -27,6 +27,15 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 Core
 )
 
+if(MSVC)
+    # MSVC需要特殊处理
+    target_precompile_headers(${PROJECT_NAME} PRIVATE "${VULKANCONTEXT_INCLUDE_DIR}/pch.h")
+else()
+    target_precompile_headers(${PROJECT_NAME} PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:${VULKANCONTEXT_INCLUDE_DIR}/pch.h>"
+    )
+endif()
+
 install(TARGETS ${PROJECT_NAME}
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}

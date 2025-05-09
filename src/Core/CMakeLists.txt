@@ -14,6 +14,15 @@ add_library(${PROJECT_NAME} SHARED
 ${CORE_SOURCES}
 )
 
+if(MSVC)
+    # MSVC需要特殊处理
+    target_precompile_headers(${PROJECT_NAME} PRIVATE "${CORE_INCLUDE_DIR}/pch.h")
+else()
+    target_precompile_headers(${PROJECT_NAME} PRIVATE
+        "$<$<COMPILE_LANGUAGE:CXX>:${CORE_INCLUDE_DIR}/pch.h>"
+    )
+endif()
+
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glm::glm
 )

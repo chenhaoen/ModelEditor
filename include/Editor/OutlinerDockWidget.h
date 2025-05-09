@@ -1,8 +1,6 @@
 #ifndef OUTLINERDOCKWIDGET_H
 #define OUTLINERDOCKWIDGET_H
 
-#include <QDockWidget>
-
 namespace Ui {
 	class OutlinerDockWidget;
 }

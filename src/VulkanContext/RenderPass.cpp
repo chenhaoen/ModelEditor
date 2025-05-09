@@ -1,5 +1,3 @@
-#include <array>
-
 #include "VulkanContext/RenderPass.h"
 #include "VulkanContext/LogicalDevice.h"
 #include "VulkanContext/Surface.h"

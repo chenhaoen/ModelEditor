@@ -1,7 +1,6 @@
 #include "VulkanContext/DescriptorPool.h"
 #include "VulkanContext/LogicalDevice.h"
 #include "VulkanContext/VulkanContext.h"
-#include <vector>
 
 #include "VulkanContext/Utils.h"
 #include "VulkanContext/DescriptorSetLayout.h"

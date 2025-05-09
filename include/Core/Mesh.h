@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "Core/Exports.h"
 #include "Core/Compilable.h"
 

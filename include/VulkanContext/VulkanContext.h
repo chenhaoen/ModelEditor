@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "VulkanContext/Exports.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"

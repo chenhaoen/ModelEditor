@@ -1,6 +1,3 @@
-#include <stdexcept>
-#include <array>
-
 #include "VulkanContext/DescriptorSetLayout.h"
 #include "VulkanContext/LogicalDevice.h"
 #include "VulkanContext/VulkanContext.h"

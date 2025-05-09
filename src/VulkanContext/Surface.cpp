@@ -1,15 +1,8 @@
-
-
 #include "VulkanContext/Surface.h"
 #include "VulkanContext/Instance.h"
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Utils.h"
 #include "VulkanContext/PhysicalDevice.h"
-
-#ifdef _WIN64
-#include <Windows.h>
-#include <vulkan/vulkan_win32.h>
-#endif // _WIN64
 
 Surface::Surface(void* platformWindow)
 {

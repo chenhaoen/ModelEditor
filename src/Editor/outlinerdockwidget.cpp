@@ -1,5 +1,3 @@
-#include <QDir>
-
 #include "Editor/OutlinerDockWidget.h"
 
 #include "IO/ReadNode.h"

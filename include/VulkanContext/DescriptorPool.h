@@ -1,9 +1,5 @@
 #pragma once
 
-#include <vector>
-
-#include <vulkan/vulkan.h>
-
 class DescriptorSetLayout;
 class DescriptorPool
 {

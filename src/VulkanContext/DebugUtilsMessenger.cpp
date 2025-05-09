@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "VulkanContext/DebugUtilsMessenger.h"
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Utils.h"

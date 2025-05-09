@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Core/Commands/BindPipelineCommand.h"
 #include "Core/FrameManager.h"
 #include "Core/PipelineManager.h"

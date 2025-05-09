@@ -1,5 +1,3 @@
-#include <stdexcept>
-
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Image.h"
 #include "VulkanContext/LogicalDevice.h"

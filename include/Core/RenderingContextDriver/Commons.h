@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <vector>
-
 #include <glm/glm.hpp>
 
 struct ID {
@@ -142,4 +139,219 @@ struct BoundUniform {
 	// Flag to indicate  that this is an immutable sampler so it is skipped when creating uniform
 	// sets, as it would be set previously when creating the pipeline layout.
 	bool immutable_sampler = false;
+};
+
+enum RenderPrimitive {
+	RENDER_PRIMITIVE_POINTS,
+	RENDER_PRIMITIVE_LINES,
+	RENDER_PRIMITIVE_LINES_WITH_ADJACENCY,
+	RENDER_PRIMITIVE_LINESTRIPS,
+	RENDER_PRIMITIVE_LINESTRIPS_WITH_ADJACENCY,
+	RENDER_PRIMITIVE_TRIANGLES,
+	RENDER_PRIMITIVE_TRIANGLES_WITH_ADJACENCY,
+	RENDER_PRIMITIVE_TRIANGLE_STRIPS,
+	RENDER_PRIMITIVE_TRIANGLE_STRIPS_WITH_AJACENCY, // TODO: Fix typo in "ADJACENCY" (in 5.0).
+	RENDER_PRIMITIVE_TRIANGLE_STRIPS_WITH_RESTART_INDEX,
+	RENDER_PRIMITIVE_TESSELATION_PATCH,
+	RENDER_PRIMITIVE_MAX
+};
+
+enum PolygonCullMode {
+	POLYGON_CULL_DISABLED,
+	POLYGON_CULL_FRONT,
+	POLYGON_CULL_BACK,
+	POLYGON_CULL_MAX
+};
+
+enum PolygonFrontFace {
+	POLYGON_FRONT_FACE_CLOCKWISE,
+	POLYGON_FRONT_FACE_COUNTER_CLOCKWISE,
+};
+
+enum StencilOperation {
+	STENCIL_OP_KEEP,
+	STENCIL_OP_ZERO,
+	STENCIL_OP_REPLACE,
+	STENCIL_OP_INCREMENT_AND_CLAMP,
+	STENCIL_OP_DECREMENT_AND_CLAMP,
+	STENCIL_OP_INVERT,
+	STENCIL_OP_INCREMENT_AND_WRAP,
+	STENCIL_OP_DECREMENT_AND_WRAP,
+	STENCIL_OP_MAX
+};
+
+enum LogicOperation {
+	LOGIC_OP_CLEAR,
+	LOGIC_OP_AND,
+	LOGIC_OP_AND_REVERSE,
+	LOGIC_OP_COPY,
+	LOGIC_OP_AND_INVERTED,
+	LOGIC_OP_NO_OP,
+	LOGIC_OP_XOR,
+	LOGIC_OP_OR,
+	LOGIC_OP_NOR,
+	LOGIC_OP_EQUIVALENT,
+	LOGIC_OP_INVERT,
+	LOGIC_OP_OR_REVERSE,
+	LOGIC_OP_COPY_INVERTED,
+	LOGIC_OP_OR_INVERTED,
+	LOGIC_OP_NAND,
+	LOGIC_OP_SET,
+	LOGIC_OP_MAX
+};
+
+enum BlendFactor {
+	BLEND_FACTOR_ZERO,
+	BLEND_FACTOR_ONE,
+	BLEND_FACTOR_SRC_COLOR,
+	BLEND_FACTOR_ONE_MINUS_SRC_COLOR,
+	BLEND_FACTOR_DST_COLOR,
+	BLEND_FACTOR_ONE_MINUS_DST_COLOR,
+	BLEND_FACTOR_SRC_ALPHA,
+	BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
+	BLEND_FACTOR_DST_ALPHA,
+	BLEND_FACTOR_ONE_MINUS_DST_ALPHA,
+	BLEND_FACTOR_CONSTANT_COLOR,
+	BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR,
+	BLEND_FACTOR_CONSTANT_ALPHA,
+	BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA,
+	BLEND_FACTOR_SRC_ALPHA_SATURATE,
+	BLEND_FACTOR_SRC1_COLOR,
+	BLEND_FACTOR_ONE_MINUS_SRC1_COLOR,
+	BLEND_FACTOR_SRC1_ALPHA,
+	BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA,
+	BLEND_FACTOR_MAX
+};
+
+enum BlendOperation {
+	BLEND_OP_ADD,
+	BLEND_OP_SUBTRACT,
+	BLEND_OP_REVERSE_SUBTRACT,
+	BLEND_OP_MINIMUM,
+	BLEND_OP_MAXIMUM, // Yes, this one is an actual operator.
+	BLEND_OP_MAX
+};
+
+enum TextureSamples {
+	TEXTURE_SAMPLES_1,
+	TEXTURE_SAMPLES_2,
+	TEXTURE_SAMPLES_4,
+	TEXTURE_SAMPLES_8,
+	TEXTURE_SAMPLES_16,
+	TEXTURE_SAMPLES_32,
+	TEXTURE_SAMPLES_64,
+	TEXTURE_SAMPLES_MAX,
+};
+
+enum CompareOperator {
+	COMPARE_OP_NEVER,
+	COMPARE_OP_LESS,
+	COMPARE_OP_EQUAL,
+	COMPARE_OP_LESS_OR_EQUAL,
+	COMPARE_OP_GREATER,
+	COMPARE_OP_NOT_EQUAL,
+	COMPARE_OP_GREATER_OR_EQUAL,
+	COMPARE_OP_ALWAYS,
+	COMPARE_OP_MAX
+};
+
+struct PipelineRasterizationState {
+	bool enable_depth_clamp = false;
+	bool discard_primitives = false;
+	bool wireframe = false;
+	PolygonCullMode cull_mode = POLYGON_CULL_DISABLED;
+	PolygonFrontFace front_face = POLYGON_FRONT_FACE_CLOCKWISE;
+	bool depth_bias_enabled = false;
+	float depth_bias_constant_factor = 0.0f;
+	float depth_bias_clamp = 0.0f;
+	float depth_bias_slope_factor = 0.0f;
+	float line_width = 1.0f;
+	uint32_t patch_control_points = 1;
+};
+
+struct PipelineMultisampleState {
+	TextureSamples sample_count = TEXTURE_SAMPLES_1;
+	bool enable_sample_shading = false;
+	float min_sample_shading = 0.0f;
+	std::vector<uint32_t> sample_mask;
+	bool enable_alpha_to_coverage = false;
+	bool enable_alpha_to_one = false;
+};
+
+struct PipelineDepthStencilState {
+	bool enable_depth_test = false;
+	bool enable_depth_write = false;
+	CompareOperator depth_compare_operator = COMPARE_OP_ALWAYS;
+	bool enable_depth_range = false;
+	float depth_range_min = 0;
+	float depth_range_max = 0;
+	bool enable_stencil = false;
+
+	struct StencilOperationState {
+		StencilOperation fail = STENCIL_OP_ZERO;
+		StencilOperation pass = STENCIL_OP_ZERO;
+		StencilOperation depth_fail = STENCIL_OP_ZERO;
+		CompareOperator compare = COMPARE_OP_ALWAYS;
+		uint32_t compare_mask = 0;
+		uint32_t write_mask = 0;
+		uint32_t reference = 0;
+	};
+
+	StencilOperationState front_op;
+	StencilOperationState back_op;
+};
+
+struct PipelineColorBlendState {
+	bool enable_logic_op = false;
+	LogicOperation logic_op = LOGIC_OP_CLEAR;
+
+	struct Attachment {
+		bool enable_blend = false;
+		BlendFactor src_color_blend_factor = BLEND_FACTOR_ZERO;
+		BlendFactor dst_color_blend_factor = BLEND_FACTOR_ZERO;
+		BlendOperation color_blend_op = BLEND_OP_ADD;
+		BlendFactor src_alpha_blend_factor = BLEND_FACTOR_ZERO;
+		BlendFactor dst_alpha_blend_factor = BLEND_FACTOR_ZERO;
+		BlendOperation alpha_blend_op = BLEND_OP_ADD;
+		bool write_r = true;
+		bool write_g = true;
+		bool write_b = true;
+		bool write_a = true;
+	};
+
+	static PipelineColorBlendState create_disabled(int p_attachments = 1) {
+		PipelineColorBlendState bs;
+		for (int i = 0; i < p_attachments; i++) {
+			bs.attachments.push_back(Attachment());
+		}
+		return bs;
+	}
+
+	static PipelineColorBlendState create_blend(int p_attachments = 1) {
+		PipelineColorBlendState bs;
+		for (int i = 0; i < p_attachments; i++) {
+			Attachment ba;
+			ba.enable_blend = true;
+			ba.src_color_blend_factor = BLEND_FACTOR_SRC_ALPHA;
+			ba.dst_color_blend_factor = BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			ba.src_alpha_blend_factor = BLEND_FACTOR_SRC_ALPHA;
+			ba.dst_alpha_blend_factor = BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+
+			bs.attachments.push_back(ba);
+		}
+		return bs;
+	}
+
+	std::vector<Attachment> attachments; // One per render target texture.
+	std::array<unsigned char, 4> blend_constant;
+};
+
+enum PipelineDynamicStateFlags {
+	DYNAMIC_STATE_LINE_WIDTH = (1 << 0),
+	DYNAMIC_STATE_DEPTH_BIAS = (1 << 1),
+	DYNAMIC_STATE_BLEND_CONSTANTS = (1 << 2),
+	DYNAMIC_STATE_DEPTH_BOUNDS = (1 << 3),
+	DYNAMIC_STATE_STENCIL_COMPARE_MASK = (1 << 4),
+	DYNAMIC_STATE_STENCIL_WRITE_MASK = (1 << 5),
+	DYNAMIC_STATE_STENCIL_REFERENCE = (1 << 6),
 };

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "Core/Commands/Command.h"
 
 #include "Core/RenderingContextDriver/Commons.h"

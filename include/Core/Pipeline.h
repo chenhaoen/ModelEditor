@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <array>
-
 #include "Core/RenderingContextDriver/Commons.h"
 
 #include "Core/FrameManager.h"

@@ -1,7 +1,5 @@
 #pragma
 
-#include <cstdint>
-
 #include "Core/Exports.h"
 
 class CORE_API Image

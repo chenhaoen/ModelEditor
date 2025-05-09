@@ -1,12 +1,5 @@
 ﻿#pragma once
 
-#include <vector>
-#include <memory>
-#include <string>
-#include <unordered_map>
-
-#include <glm/glm.hpp>
-
 #include "Core/Exports.h"
 
 #include "Core/RenderingContextDriver/Commons.h"

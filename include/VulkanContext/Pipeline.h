@@ -1,10 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
-#include <vulkan/vulkan.h>
-
 class DescriptorSetLayout;
 class Pipeline
 {

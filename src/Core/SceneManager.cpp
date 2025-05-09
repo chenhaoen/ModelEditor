@@ -1,5 +1,3 @@
-#include <stdexcept>
-
 #include "Core/SceneManager.h"
 #include "Core/Scene.h"
 

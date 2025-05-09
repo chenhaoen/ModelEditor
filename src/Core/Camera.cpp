@@ -1,6 +1,3 @@
-#include <chrono>
-#include <iostream>
-
 #include "Core/Camera.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"

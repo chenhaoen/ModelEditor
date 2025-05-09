@@ -1,6 +1,3 @@
-#include <algorithm>
-#include <memory>
-
 #include "Core/FrameManager.h"
 #include "Core/Frame.h"
 

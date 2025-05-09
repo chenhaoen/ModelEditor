@@ -1,10 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <string_view>
-#include <array>
 
-#include <vulkan/vk_enum_string_helper.h>
+
 
 #define VK_CHECK(result)                                                 \
     {                                                                    \

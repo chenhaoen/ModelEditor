@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-
 VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
 
 void createImage(uint32_t width,

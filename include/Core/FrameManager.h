@@ -1,8 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-
 #include "Core/Exports.h"
 
 #include "Core/RenderingContextDriver/Commons.h"

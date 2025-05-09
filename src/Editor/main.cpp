@@ -1,5 +1,3 @@
-#include <QApplication>
-
 #include "Editor/MainWindow.h"
 
 #include "Core/SceneManager.h"
