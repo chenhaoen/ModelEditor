@@ -15,6 +15,14 @@ public:
     VkPipelineLayout getVkPipelineLayout() const;
 
 private:
+    VkPipelineDynamicStateCreateInfo getDynamicStateCreateInfo() const;
+
+    VkPipelineInputAssemblyStateCreateInfo getInputAssemblyStateCreateInfo() const;
+
+    VkPipelineVertexInputStateCreateInfo getVertexInputStateCreateInfo() const;
+
+    VkPipelineViewportStateCreateInfo getViewportStateCreateInfo() const;
+private:
     DescriptorSetLayout *m_descriptorSetLayout;
 
     VkPipelineLayout m_layout;

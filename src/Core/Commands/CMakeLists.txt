@@ -1,14 +1,14 @@
-set(COMMANDS_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME}/Commands)
-set(COMMANDS_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME}/Commands)
+set(COMMANDS_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/Core/Commands)
+set(COMMANDS_SRC_DIR ${MODELEDITOR_SRC_DIR}/Core/Commands)
 
 file(GLOB COMMANDS_INCLUDE_FILES "${COMMANDS_INCLUDE_DIR}/*.h")
-source_group("Header Files\\Commands" FILES ${COMMANDS_INCLUDE_FILES})
-
 file(GLOB COMMANDS_SRC_FILES "${COMMANDS_SRC_DIR}/*.cpp")
-source_group("Source Files\\Commands" FILES ${COMMANDS_SRC_FILES})
 
 target_sources(Core 
   PRIVATE 
     ${COMMANDS_INCLUDE_FILES}
     ${COMMANDS_SRC_FILES}
 )
+
+source_group("Header Files\\Commands" FILES ${COMMANDS_INCLUDE_FILES})
+source_group("Source Files\\Commands" FILES ${COMMANDS_SRC_FILES})

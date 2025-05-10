@@ -6,16 +6,18 @@ find_package(glm)
 set(CORE_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME})
 set(CORE_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME})
 
-file(GLOB CORE_SOURCES "${CORE_SRC_DIR}/*.cpp" "${CORE_INCLUDE_DIR}/*.h")
+file(GLOB CORE_SOURCES "${CORE_SRC_DIR}/*.cpp")
+file(GLOB CORE_HEADERS "${CORE_INCLUDE_DIR}/*.h")
 
 add_compile_definitions(CORE_EXPORT)
 
 add_library(${PROJECT_NAME} SHARED 
 ${CORE_SOURCES}
+${CORE_HEADERS}
 )
 
 if(MSVC)
-    # MSVC需要特殊处理
+    # MSVC锟斤拷要锟斤拷锟解处锟斤拷
     target_precompile_headers(${PROJECT_NAME} PRIVATE "${CORE_INCLUDE_DIR}/pch.h")
 else()
     target_precompile_headers(${PROJECT_NAME} PRIVATE
@@ -33,5 +35,20 @@ install(TARGETS ${PROJECT_NAME}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-add_subdirectory(Pipeline)
-add_subdirectory(Commands)
+function(add_childdirectory child)
+    add_subdirectory(${child})
+
+    set(INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME}/${child})
+    set(SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME}/${child})
+
+    file(GLOB INCLUDE_FILES "${INCLUDE_DIR}/*.h")
+    file(GLOB SRC_FILES "${SRC_DIR}/*.cpp")
+
+    source_group("Header Files\\${child}" FILES ${INCLUDE_FILES})
+    source_group("Source Files\\${child}" FILES ${SRC_FILES})
+endfunction()
+
+
+add_childdirectory(Pipeline)
+add_childdirectory(Commands)
+add_childdirectory(RenderingContextDriver)

@@ -1,14 +1,14 @@
-set(RCD_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME}/RenderingContextDriver)
-set(RCD_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME}/RenderingContextDriver)
+set(PIPELINE_SRC_DIR ${MODELEDITOR_SRC_DIR}/${PROJECT_NAME}/Pipeline)
+set(PIPELINE_INCLUDE_DIR ${MODELEDITOR_INCLUDE_DIR}/${PROJECT_NAME}/Pipeline)
 
-file(GLOB RCD_INCLUDE_FILES "${RCD_INCLUDE_DIR}/*.h")
-source_group("Header Files\\RenderingContextDriver" FILES ${RCD_INCLUDE_FILES})
+file(GLOB PIPELINE_INCLUDE_FILES "${PIPELINE_INCLUDE_DIR}/*.h")
+#source_group("GUI\\Pipeline" FILES ${PIPELINE_INCLUDE_FILES})
 
-file(GLOB RCD_SRC_FILES "${RCD_SRC_DIR}/*.cpp")
-source_group("Source Files\\RenderingContextDriver" FILES ${RCD_SRC_FILES})
+file(GLOB PIPELINE_SRC_FILES "${PIPELINE_SRC_DIR}/*.cpp")
+#source_group("GUI\\Pipeline" FILES ${PIPELINE_SRC_FILES})
 
 target_sources(Core 
   PRIVATE 
-    ${RCD_INCLUDE_FILES}
-    ${RCD_SRC_FILES}
+    ${PIPELINE_INCLUDE_FILES}
+    ${PIPELINE_SRC_FILES}
 )
