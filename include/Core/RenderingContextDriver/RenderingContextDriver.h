@@ -2,6 +2,7 @@
 
 #include "Core/RenderingContextDriver/InitInfo.h"
 #include "Core/RenderingContextDriver/Commons.h"
+#include "Core/Pipeline/PipelineCreateInfo.h"
 
 #include "Core/Exports.h"
 
@@ -57,8 +58,8 @@ public:
 	virtual SurfaceID getSurfaceID() = 0;
 	virtual Extent2D getSurfaceExtent(SurfaceID) = 0;
 
-	virtual PipelineID createPipeline() = 0;
-	virtual PipelineID createSkyboxPipeline() = 0;
+	virtual PipelineID createPipeline(const PipelineCreateInfo&) = 0;
+	virtual PipelineID createSkyboxPipeline(const PipelineCreateInfo&) = 0;
 	virtual void freePipeline(PipelineID pipeline) = 0;
 
 	virtual RenderPassID getRenderPassID() = 0;

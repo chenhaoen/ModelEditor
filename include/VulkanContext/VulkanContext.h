@@ -54,8 +54,8 @@ public:
 	SurfaceID getSurfaceID() override final;
 	Extent2D getSurfaceExtent(SurfaceID) override final;
 
-	PipelineID createPipeline() override final;
-	PipelineID createSkyboxPipeline() override final;
+	PipelineID createPipeline(const PipelineCreateInfo&) override final;
+	PipelineID createSkyboxPipeline(const PipelineCreateInfo&) override final;
 	void freePipeline(PipelineID pipeline) override final;
 
 	RenderPassID getRenderPassID() override final;

@@ -38,7 +38,7 @@ void Material::record()
 BoundUniform Material::getBoundUniform() const
 {
 	BoundUniform uniform;
-	uniform.type = UNIFORM_TYPE_SAMPLER_WITH_TEXTURE;
+	uniform.type = UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE;
 	uniform.ids.push_back(m_texureID);
 	uniform.binding = 1;
 	return uniform;

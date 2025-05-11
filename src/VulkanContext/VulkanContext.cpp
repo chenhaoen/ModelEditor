@@ -401,11 +401,11 @@ struct PipelineInfo
 	}
 };
 
-PipelineID VulkanContext::createPipeline()
+PipelineID VulkanContext::createPipeline(const PipelineCreateInfo& createInfo)
 {
 	PipelineInfo* pipelineInfo = new PipelineInfo();
 	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
-	pipelineInfo->pipeline = new Pipeline(
+	pipelineInfo->pipeline = new Pipeline(createInfo,
 		"E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv",
 		"E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv",
 		pipelineInfo->descriptorSetLayout);
@@ -414,11 +414,11 @@ PipelineID VulkanContext::createPipeline()
 	return PipelineID(pipelineInfo);
 }
 
-PipelineID VulkanContext::createSkyboxPipeline()
+PipelineID VulkanContext::createSkyboxPipeline(const PipelineCreateInfo& createInfo)
 {
 	PipelineInfo* pipelineInfo = new PipelineInfo();
 	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
-	pipelineInfo->pipeline = new Pipeline(
+	pipelineInfo->pipeline = new Pipeline(createInfo,
 		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxVert.spv",
 		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv",
 		pipelineInfo->descriptorSetLayout);
@@ -703,7 +703,7 @@ void VulkanContext::updateUniformSet(UniformSetID uniformSet, const std::vector<
 	{
 		switch (boundUniform.type)
 		{
-		case UNIFORM_TYPE_UNIFORM_BUFFER:
+		case UniformType::UNIFORM_TYPE_UNIFORM_BUFFER:
 		{
 			BufferInfo* UniformBufferInfo = reinterpret_cast<BufferInfo*>(boundUniform.ids[0].id);
 
@@ -725,7 +725,7 @@ void VulkanContext::updateUniformSet(UniformSetID uniformSet, const std::vector<
 			writeDescriptorSets.push_back(descriptorWrite);
 			break;
 		}
-		case UNIFORM_TYPE_SAMPLER_WITH_TEXTURE:
+		case UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE:
 		{
 			TextureInfo* textureInfo = reinterpret_cast<TextureInfo*>(boundUniform.ids[0].id);
 

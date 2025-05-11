@@ -18,13 +18,22 @@ PipelineManager* PipelineManager::instance()
 void PipelineManager::init()
 {
 	{
-		auto pipeline = std::make_shared<Pipeline>(PipelineType::Model);
+		PipelineCreateInfo pipelineCreateInfo;
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::PolygonMode);
+		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
+		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo,PipelineType::Model);
 		addPipeline(PipelineType::Model, pipeline);
 	}
 
 	// skybox
 	{
-		auto pipeline = std::make_shared<Pipeline>(PipelineType::Skybox);
+		PipelineCreateInfo pipelineCreateInfo;
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
+		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
+		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo,PipelineType::Skybox);
 		addPipeline(PipelineType::Skybox, pipeline);
 	}
 }

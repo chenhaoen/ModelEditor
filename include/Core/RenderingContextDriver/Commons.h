@@ -118,7 +118,7 @@ struct UniformBufferObject {
 	glm::mat4 proj = glm::mat4(1.0);
 };
 
-enum UniformType {
+enum class UniformType {
 	UNIFORM_TYPE_SAMPLER, // For sampling only (sampler GLSL type).
 	UNIFORM_TYPE_SAMPLER_WITH_TEXTURE, // For sampling only, but includes a texture, (samplerXX GLSL type), first a sampler then a texture.
 	UNIFORM_TYPE_TEXTURE, // Only texture, (textureXX GLSL type).
@@ -133,7 +133,7 @@ enum UniformType {
 };
 
 struct BoundUniform {
-	UniformType type = UNIFORM_TYPE_MAX;
+	UniformType type = UniformType::UNIFORM_TYPE_MAX;
 	uint32_t binding = 0xffffffff; // Binding index as specified in shader.
 	std::vector<ID> ids;
 	// Flag to indicate  that this is an immutable sampler so it is skipped when creating uniform
@@ -141,7 +141,7 @@ struct BoundUniform {
 	bool immutable_sampler = false;
 };
 
-enum RenderPrimitive {
+enum class RenderPrimitive {
 	RENDER_PRIMITIVE_POINTS,
 	RENDER_PRIMITIVE_LINES,
 	RENDER_PRIMITIVE_LINES_WITH_ADJACENCY,
@@ -156,19 +156,19 @@ enum RenderPrimitive {
 	RENDER_PRIMITIVE_MAX
 };
 
-enum PolygonCullMode {
+enum class PolygonCullMode {
 	POLYGON_CULL_DISABLED,
 	POLYGON_CULL_FRONT,
 	POLYGON_CULL_BACK,
 	POLYGON_CULL_MAX
 };
 
-enum PolygonFrontFace {
+enum class PolygonFrontFace {
 	POLYGON_FRONT_FACE_CLOCKWISE,
 	POLYGON_FRONT_FACE_COUNTER_CLOCKWISE,
 };
 
-enum StencilOperation {
+enum class StencilOperation {
 	STENCIL_OP_KEEP,
 	STENCIL_OP_ZERO,
 	STENCIL_OP_REPLACE,
@@ -180,7 +180,7 @@ enum StencilOperation {
 	STENCIL_OP_MAX
 };
 
-enum LogicOperation {
+enum class LogicOperation {
 	LOGIC_OP_CLEAR,
 	LOGIC_OP_AND,
 	LOGIC_OP_AND_REVERSE,
@@ -200,7 +200,7 @@ enum LogicOperation {
 	LOGIC_OP_MAX
 };
 
-enum BlendFactor {
+enum class BlendFactor {
 	BLEND_FACTOR_ZERO,
 	BLEND_FACTOR_ONE,
 	BLEND_FACTOR_SRC_COLOR,
@@ -223,7 +223,7 @@ enum BlendFactor {
 	BLEND_FACTOR_MAX
 };
 
-enum BlendOperation {
+enum class BlendOperation {
 	BLEND_OP_ADD,
 	BLEND_OP_SUBTRACT,
 	BLEND_OP_REVERSE_SUBTRACT,
@@ -232,7 +232,7 @@ enum BlendOperation {
 	BLEND_OP_MAX
 };
 
-enum TextureSamples {
+enum class TextureSamples {
 	TEXTURE_SAMPLES_1,
 	TEXTURE_SAMPLES_2,
 	TEXTURE_SAMPLES_4,
@@ -243,7 +243,7 @@ enum TextureSamples {
 	TEXTURE_SAMPLES_MAX,
 };
 
-enum CompareOperator {
+enum class CompareOperator {
 	COMPARE_OP_NEVER,
 	COMPARE_OP_LESS,
 	COMPARE_OP_EQUAL,
@@ -259,8 +259,8 @@ struct PipelineRasterizationState {
 	bool enable_depth_clamp = false;
 	bool discard_primitives = false;
 	bool wireframe = false;
-	PolygonCullMode cull_mode = POLYGON_CULL_DISABLED;
-	PolygonFrontFace front_face = POLYGON_FRONT_FACE_CLOCKWISE;
+	PolygonCullMode cull_mode = PolygonCullMode::POLYGON_CULL_DISABLED;
+	PolygonFrontFace front_face = PolygonFrontFace::POLYGON_FRONT_FACE_CLOCKWISE;
 	bool depth_bias_enabled = false;
 	float depth_bias_constant_factor = 0.0f;
 	float depth_bias_clamp = 0.0f;
@@ -270,7 +270,7 @@ struct PipelineRasterizationState {
 };
 
 struct PipelineMultisampleState {
-	TextureSamples sample_count = TEXTURE_SAMPLES_1;
+	TextureSamples sample_count = TextureSamples::TEXTURE_SAMPLES_1;
 	bool enable_sample_shading = false;
 	float min_sample_shading = 0.0f;
 	std::vector<uint32_t> sample_mask;
@@ -281,17 +281,17 @@ struct PipelineMultisampleState {
 struct PipelineDepthStencilState {
 	bool enable_depth_test = false;
 	bool enable_depth_write = false;
-	CompareOperator depth_compare_operator = COMPARE_OP_ALWAYS;
+	CompareOperator depth_compare_operator = CompareOperator::COMPARE_OP_ALWAYS;
 	bool enable_depth_range = false;
 	float depth_range_min = 0;
 	float depth_range_max = 0;
 	bool enable_stencil = false;
 
 	struct StencilOperationState {
-		StencilOperation fail = STENCIL_OP_ZERO;
-		StencilOperation pass = STENCIL_OP_ZERO;
-		StencilOperation depth_fail = STENCIL_OP_ZERO;
-		CompareOperator compare = COMPARE_OP_ALWAYS;
+		StencilOperation fail = StencilOperation::STENCIL_OP_ZERO;
+		StencilOperation pass = StencilOperation::STENCIL_OP_ZERO;
+		StencilOperation depth_fail = StencilOperation::STENCIL_OP_ZERO;
+		CompareOperator compare = CompareOperator::COMPARE_OP_ALWAYS;
 		uint32_t compare_mask = 0;
 		uint32_t write_mask = 0;
 		uint32_t reference = 0;
@@ -303,16 +303,16 @@ struct PipelineDepthStencilState {
 
 struct PipelineColorBlendState {
 	bool enable_logic_op = false;
-	LogicOperation logic_op = LOGIC_OP_CLEAR;
+	LogicOperation logic_op = LogicOperation::LOGIC_OP_CLEAR;
 
 	struct Attachment {
 		bool enable_blend = false;
-		BlendFactor src_color_blend_factor = BLEND_FACTOR_ZERO;
-		BlendFactor dst_color_blend_factor = BLEND_FACTOR_ZERO;
-		BlendOperation color_blend_op = BLEND_OP_ADD;
-		BlendFactor src_alpha_blend_factor = BLEND_FACTOR_ZERO;
-		BlendFactor dst_alpha_blend_factor = BLEND_FACTOR_ZERO;
-		BlendOperation alpha_blend_op = BLEND_OP_ADD;
+		BlendFactor src_color_blend_factor = BlendFactor::BLEND_FACTOR_ZERO;
+		BlendFactor dst_color_blend_factor = BlendFactor::BLEND_FACTOR_ZERO;
+		BlendOperation color_blend_op = BlendOperation::BLEND_OP_ADD;
+		BlendFactor src_alpha_blend_factor = BlendFactor::BLEND_FACTOR_ZERO;
+		BlendFactor dst_alpha_blend_factor = BlendFactor::BLEND_FACTOR_ZERO;
+		BlendOperation alpha_blend_op = BlendOperation::BLEND_OP_ADD;
 		bool write_r = true;
 		bool write_g = true;
 		bool write_b = true;
@@ -332,10 +332,10 @@ struct PipelineColorBlendState {
 		for (int i = 0; i < p_attachments; i++) {
 			Attachment ba;
 			ba.enable_blend = true;
-			ba.src_color_blend_factor = BLEND_FACTOR_SRC_ALPHA;
-			ba.dst_color_blend_factor = BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-			ba.src_alpha_blend_factor = BLEND_FACTOR_SRC_ALPHA;
-			ba.dst_alpha_blend_factor = BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			ba.src_color_blend_factor = BlendFactor::BLEND_FACTOR_SRC_ALPHA;
+			ba.dst_color_blend_factor = BlendFactor::BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+			ba.src_alpha_blend_factor = BlendFactor::BLEND_FACTOR_SRC_ALPHA;
+			ba.dst_alpha_blend_factor = BlendFactor::BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
 
 			bs.attachments.push_back(ba);
 		}

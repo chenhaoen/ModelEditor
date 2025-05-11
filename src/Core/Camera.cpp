@@ -111,7 +111,7 @@ BoundUniform Camera::getUniform() const
 {
     BoundUniform boundUniform;
     boundUniform.binding = 0;
-    boundUniform.type = UNIFORM_TYPE_UNIFORM_BUFFER;
+    boundUniform.type = UniformType::UNIFORM_TYPE_UNIFORM_BUFFER;
     boundUniform.ids.push_back(m_buffer);
     boundUniform.ids.push_back(0);
     boundUniform.ids.push_back(sizeof(UniformBufferObject));
