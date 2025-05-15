@@ -369,6 +369,11 @@ void VulkanContext::freeSemaphore(SemaphoreID p_semaphore)
 	vkDestroySemaphore(VulkanContext::getDevice()->getVkDevice(), reinterpret_cast<VkSemaphore>(p_semaphore.id), nullptr);
 }
 
+ShaderID VulkanContext::createShader(const Shader& shaderInfo)
+{
+	return ShaderID();
+}
+
 uint32_t VulkanContext::getNextImageIndex(SemaphoreID semaphore)
 {
 	return m_swapChain->getNextImageIndex(reinterpret_cast<VkSemaphore>(semaphore.id));
@@ -406,8 +411,6 @@ PipelineID VulkanContext::createPipeline(const PipelineCreateInfo& createInfo)
 	PipelineInfo* pipelineInfo = new PipelineInfo();
 	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
 	pipelineInfo->pipeline = new Pipeline(createInfo,
-		"E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv",
-		"E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv",
 		pipelineInfo->descriptorSetLayout);
 
 	pipelineInfo->descriptorPool = new DescriptorPool();
@@ -419,8 +422,6 @@ PipelineID VulkanContext::createSkyboxPipeline(const PipelineCreateInfo& createI
 	PipelineInfo* pipelineInfo = new PipelineInfo();
 	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
 	pipelineInfo->pipeline = new Pipeline(createInfo,
-		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxVert.spv",
-		"E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv",
 		pipelineInfo->descriptorSetLayout);
 	pipelineInfo->descriptorPool = new DescriptorPool();
 	return PipelineID(pipelineInfo);

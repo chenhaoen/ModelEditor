@@ -1,0 +1,45 @@
+#version 450
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(set = 0, binding = 0) buffer VertexBuffer {
+    vec3 positions[];
+};
+
+layout(set = 0, binding = 1) buffer IndexBuffer {
+    uint indices[];
+};
+
+layout(push_constant) uniform GridParams {
+    uint gridSize;
+    float cellSize;
+} params;
+
+void main() {
+    uint x = gl_GlobalInvocationID.x;
+    uint y = gl_GlobalInvocationID.y;
+    
+    if (x >= params.gridSize || y >= params.gridSize) return;
+    
+    uint vertexIndex = x + y * params.gridSize;
+    
+    // 生成顶点位置
+    positions[vertexIndex] = vec3(
+        x * params.cellSize - (params.gridSize * params.cellSize) / 2.0,
+        0.0,
+        y * params.cellSize - (params.gridSize * params.cellSize) / 2.0
+    );
+    
+    // 生成索引 (每线程处理一个四边形/两个三角形)
+    if (x < params.gridSize - 1 && y < params.gridSize - 1) {
+        uint quadIndex = (x + y * (params.gridSize - 1)) * 6;
+        
+        indices[quadIndex + 0] = vertexIndex;
+        indices[quadIndex + 1] = vertexIndex + params.gridSize;
+        indices[quadIndex + 2] = vertexIndex + 1;
+        
+        indices[quadIndex + 3] = vertexIndex + 1;
+        indices[quadIndex + 4] = vertexIndex + params.gridSize;
+        indices[quadIndex + 5] = vertexIndex + params.gridSize + 1;
+    }
+}

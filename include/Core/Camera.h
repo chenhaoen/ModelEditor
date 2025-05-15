@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include <glm/glm.hpp>
 #include "Core/Compilable.h"
 #include "Core/Exports.h"
 

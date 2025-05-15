@@ -46,3 +46,4 @@ execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/sha
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/shader.frag -o ${CMAKE_CURRENT_LIST_DIR}/frag.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/skybox.frag -o ${CMAKE_CURRENT_LIST_DIR}/skyboxFrag.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/skybox.vert -o ${CMAKE_CURRENT_LIST_DIR}/skyboxVert.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/grids.comp -o ${CMAKE_CURRENT_LIST_DIR}/grids.spv)

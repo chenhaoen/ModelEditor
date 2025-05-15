@@ -6,13 +6,8 @@ class DescriptorSetLayout;
 class Pipeline
 {
 public:
-    Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
-        const std::string& vertShaderFile, const std::string& fragShaderFile, DescriptorSetLayout *descriptorSetLayout);
+    Pipeline(const PipelineCreateInfo& pipelineCreateInfo, DescriptorSetLayout *descriptorSetLayout);
     ~Pipeline();
-
-    static std::vector<char> readFile(const std::string &filename);
-
-    VkShaderModule createShaderModule(const std::vector<char> &code);
 
     VkPipeline getVkPipeline() const;
     VkPipelineLayout getVkPipelineLayout() const;

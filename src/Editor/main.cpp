@@ -5,6 +5,7 @@
 #include "Core/Camera.h"
 #include "Core/FrameManager.h"
 #include "Core/PipelineManager.h"
+#include "Core/Shader/ShaderManager.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
@@ -14,6 +15,7 @@ int main(int argc, char **argv)
 
     SceneManager::instance();
     PipelineManager::instance();
+    ShaderManager::instance();
     auto scene = std::make_shared<Scene>();
     auto camera = std::make_shared<Camera>();
     scene->addCamera(MAIN_CAMERA_NAME, camera);

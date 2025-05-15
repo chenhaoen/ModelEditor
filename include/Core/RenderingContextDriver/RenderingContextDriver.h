@@ -3,6 +3,7 @@
 #include "Core/RenderingContextDriver/InitInfo.h"
 #include "Core/RenderingContextDriver/Commons.h"
 #include "Core/Pipeline/PipelineCreateInfo.h"
+#include "Core/Shader/Shader.h"
 
 #include "Core/Exports.h"
 
@@ -52,6 +53,8 @@ public:
 
 	virtual SemaphoreID createSemaphore() = 0;
 	virtual void freeSemaphore(SemaphoreID p_semaphore) = 0;
+
+	virtual ShaderID createShader(const Shader& shaderInfo) = 0;
 
 	virtual uint32_t getNextImageIndex(SemaphoreID semaphore) = 0;
 

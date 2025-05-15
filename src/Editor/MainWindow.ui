@@ -41,6 +41,8 @@
     <addaction name="action_Point"/>
     <addaction name="separator"/>
     <addaction name="actionSceneShoot"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_Grids"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Scene"/>
@@ -79,6 +81,17 @@
   <action name="actionSceneShoot">
    <property name="text">
     <string>ScreenShot</string>
+   </property>
+  </action>
+  <action name="actionShow_Grids">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Grids</string>
    </property>
   </action>
  </widget>

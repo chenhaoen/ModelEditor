@@ -49,6 +49,8 @@ public:
 	SemaphoreID createSemaphore() override final;
 	void freeSemaphore(SemaphoreID p_semaphore) override final;
 
+	ShaderID createShader(const Shader& shaderInfo) override final;
+
 	uint32_t getNextImageIndex(SemaphoreID semaphore) override final;
 
 	SurfaceID getSurfaceID() override final;

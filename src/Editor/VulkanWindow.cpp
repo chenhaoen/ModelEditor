@@ -43,9 +43,9 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			PipelineManager::instance()->init();
 			FrameManager::instance();
 
-			auto skybox = readSkyboxNode("E:/code/ModelEditer/build/bin/Debug/models/cube.gltf");
-			skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/VulkanSamples/Vulkan/assets/textures/cubemap_vulkan.ktx");
-			SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
+			//auto skybox = readSkyboxNode("E:/code/ModelEditer/build/bin/Debug/models/cube.gltf");
+			//skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/VulkanSamples/Vulkan/assets/textures/cubemap_vulkan.ktx");
+			//SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
 
 			render();
 		}

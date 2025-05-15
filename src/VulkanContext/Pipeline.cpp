@@ -6,6 +6,8 @@
 #include "VulkanContext/DescriptorSetLayout.h"
 #include "VulkanContext/Utils.h"
 
+#include "Core/Shader/Shader.h"
+
 namespace {
 	static const VkPrimitiveTopology RD_TO_VK_PRIMITIVE[static_cast<int>(RenderPrimitive::RENDER_PRIMITIVE_MAX)] = {
 	VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
@@ -23,29 +25,41 @@ namespace {
 }
 
 Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo, 
-	const std::string& vertShaderFile, const std::string& fragShaderFile,
 	DescriptorSetLayout* descriptorSetLayout)
 	: m_descriptorSetLayout(descriptorSetLayout)
 {
-	auto vertShaderCode = readFile(vertShaderFile);
-	auto fragShaderCode = readFile(fragShaderFile);
+	std::vector<VkPipelineShaderStageCreateInfo> shaderStageCreateInfos;
+	std::vector<VkShaderModule> shaderModules;
+	for (auto shader : pipelineCreateInfo.m_shaders)
+	{
+		auto shaderCode = readFile(shader->getFileName());
 
-	VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
-	VkShaderModule fragShaderModule = createShaderModule(fragShaderCode);
+		VkShaderModule shaderModule = createShaderModule(shaderCode);
 
-	VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
-	vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-	vertShaderStageInfo.module = vertShaderModule;
-	vertShaderStageInfo.pName = "main";
+		VkPipelineShaderStageCreateInfo shaderStageInfo{};
+		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 
-	VkPipelineShaderStageCreateInfo fragShaderStageInfo{};
-	fragShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-	fragShaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-	fragShaderStageInfo.module = fragShaderModule;
-	fragShaderStageInfo.pName = "main";
+		switch (shader->getType())
+		{
+		case ShaderType::Vertex: 
+			shaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
+			break;
+		case ShaderType::Fragment:
+			shaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+			break;
+		case ShaderType::Compute:
+			shaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+			break;
+		default:
+			break;
+		}
 
-	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+		shaderStageInfo.module = shaderModule;
+		shaderStageInfo.pName = shader->getFuncName().data();
+
+		shaderModules.push_back(shaderModule);
+		shaderStageCreateInfos.push_back(shaderStageInfo);
+	}
 	
 	VkPipelineRasterizationStateCreateInfo rasterizer{};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -109,8 +123,8 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 
 	VkGraphicsPipelineCreateInfo pipelineInfo{};
 	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-	pipelineInfo.stageCount = 2;
-	pipelineInfo.pStages = shaderStages;
+	pipelineInfo.stageCount = shaderStageCreateInfos.size();
+	pipelineInfo.pStages = shaderStageCreateInfos.data();
 
 	VkPipelineDepthStencilStateCreateInfo depthStencil{};
 	depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -200,44 +214,16 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 
 	VK_CHECK(vkCreateGraphicsPipelines(VulkanContext::getDevice()->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline));
 
-	vkDestroyShaderModule(VulkanContext::getDevice()->getVkDevice(), fragShaderModule, nullptr);
-	vkDestroyShaderModule(VulkanContext::getDevice()->getVkDevice(), vertShaderModule, nullptr);
+	for (auto shaderModule : shaderModules)
+	{
+		vkDestroyShaderModule(VulkanContext::getDevice()->getVkDevice(), shaderModule, nullptr);
+	}
 }
 
 Pipeline::~Pipeline()
 {
 	vkDestroyPipeline(VulkanContext::getDevice()->getVkDevice(), m_graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(VulkanContext::getDevice()->getVkDevice(), m_layout, nullptr);
-}
-
-std::vector<char> Pipeline::readFile(const std::string& filename)
-{
-	std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-	if (!file.is_open())
-	{
-		throw std::runtime_error("failed to open file!");
-	}
-
-	size_t fileSize = (size_t)file.tellg();
-	std::vector<char> buffer(fileSize);
-	file.seekg(0);
-	file.read(buffer.data(), fileSize);
-	file.close();
-
-	return buffer;
-}
-
-VkShaderModule Pipeline::createShaderModule(const std::vector<char>& code)
-{
-	VkShaderModuleCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-	VkShaderModule shaderModule;
-	VK_CHECK(vkCreateShaderModule(VulkanContext::getDevice()->getVkDevice(), &createInfo, nullptr, &shaderModule));
-	return shaderModule;
 }
 
 VkPipeline Pipeline::getVkPipeline() const
