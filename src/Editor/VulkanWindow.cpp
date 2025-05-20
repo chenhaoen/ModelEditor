@@ -7,6 +7,7 @@
 #include "Core/Camera.h"
 #include "Core/SkyboxNode.h"
 #include "Core/Material.h"
+#include "Core/GridNode.h"
 
 #include "Core/Commands/CommandGroup.h"
 
@@ -46,6 +47,9 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			//auto skybox = readSkyboxNode("E:/code/ModelEditer/build/bin/Debug/models/cube.gltf");
 			//skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/VulkanSamples/Vulkan/assets/textures/cubemap_vulkan.ktx");
 			//SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
+
+			auto gridNode = std::make_shared<GridNode>();
+			SceneManager::instance()->getCurrentScene()->setGrid(gridNode);
 
 			render();
 		}

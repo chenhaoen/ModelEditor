@@ -1,5 +1,6 @@
 #include "Core/PipelineManager.h"
 #include "Core/Pipeline.h"
+#include "Core/Shader/ShaderManager.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
@@ -17,24 +18,16 @@ PipelineManager* PipelineManager::instance()
 
 void PipelineManager::init()
 {
+	ShaderManager::instance()->init();
+
 	{
 		PipelineCreateInfo pipelineCreateInfo;
 
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::PolygonMode);
-
-		std::shared_ptr<Shader> vertexShader = std::make_shared<Shader>();
-		vertexShader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv");
-		vertexShader->setfuncName("main");
-		vertexShader->setType(ShaderType::Vertex);
-		pipelineCreateInfo.m_shaders.push_back(vertexShader);
-
-		std::shared_ptr<Shader> fragmentShader = std::make_shared<Shader>();
-		fragmentShader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv");
-		fragmentShader->setfuncName("main");
-		fragmentShader->setType(ShaderType::Fragment);
-		pipelineCreateInfo.m_shaders.push_back(fragmentShader);
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("Model.vert"));
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("Model.frag"));
 
 		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
 		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo,PipelineType::Model);
@@ -45,17 +38,8 @@ void PipelineManager::init()
 	{
 		PipelineCreateInfo pipelineCreateInfo;
 		
-		std::shared_ptr<Shader> vertexShader = std::make_shared<Shader>();
-		vertexShader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/skyboxVert.spv");
-		vertexShader->setfuncName("main");
-		vertexShader->setType(ShaderType::Vertex);
-		pipelineCreateInfo.m_shaders.push_back(vertexShader);
-
-		std::shared_ptr<Shader> fragmentShader = std::make_shared<Shader>();
-		fragmentShader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv");
-		fragmentShader->setfuncName("main");
-		fragmentShader->setType(ShaderType::Fragment);
-		pipelineCreateInfo.m_shaders.push_back(fragmentShader);
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("skybox.vert"));
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("skybox.frag"));
 
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);

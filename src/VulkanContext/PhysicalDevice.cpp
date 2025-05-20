@@ -6,6 +6,7 @@ PhysicalDevice::PhysicalDevice(
 	VkPhysicalDevice vkPhysicalDevice)
 	:m_vkPhysicalDevice(vkPhysicalDevice)
 	, m_graphicsFamilyIndex(UINT32_MAX)
+	, m_computeFamilyIndex(UINT32_MAX)
 {
 	vkGetPhysicalDeviceProperties(m_vkPhysicalDevice, &m_deviceProperties);
 	vkGetPhysicalDeviceFeatures(m_vkPhysicalDevice, &m_deviceFeatures);
@@ -40,7 +41,7 @@ PhysicalDevice::PhysicalDevice(
 
 		if (m_graphicsFamilyIndex == UINT32_MAX)
 		{
-			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+			if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT && queueFamily.queueFlags & VK_QUEUE_COMPUTE_BIT) {
 				m_graphicsFamilyIndex = i;
 			}
 		}

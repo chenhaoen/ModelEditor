@@ -3,23 +3,24 @@
 #include "VulkanContext/VulkanContext.h"
 #include "VulkanContext/Utils.h"
 
-DescriptorSetLayout::DescriptorSetLayout()
+#include "Core/Shader/Descriptor.h"
+
+DescriptorSetLayout::DescriptorSetLayout(const std::list<std::shared_ptr<Shader>>& shaders)
 {
-    VkDescriptorSetLayoutBinding uboLayoutBinding{};
-    uboLayoutBinding.binding = 0;
-    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-    uboLayoutBinding.descriptorCount = 1;
-    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    uboLayoutBinding.pImmutableSamplers = nullptr; // Optional
-
-    VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-    samplerLayoutBinding.binding = 1;
-    samplerLayoutBinding.descriptorCount = 1;
-    samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-    samplerLayoutBinding.pImmutableSamplers = nullptr;
-    samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-
-    std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding,samplerLayoutBinding};
+    std::vector<VkDescriptorSetLayoutBinding> bindings;
+    for (auto shader : shaders)
+    {
+        for (auto descriptor : shader->getDescriptors())
+        {
+            VkDescriptorSetLayoutBinding binding{};
+            binding.binding = descriptor->getBinding();
+            binding.descriptorType = UniformTypeToVK(descriptor->getUniformType());
+            binding.descriptorCount = 1;
+            binding.stageFlags = ShaderTypeToVk(shader->getType());
+            binding.pImmutableSamplers = nullptr; // Optional
+            bindings.push_back(binding);
+        }
+    }
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;

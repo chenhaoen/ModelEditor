@@ -38,22 +38,7 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo{};
 		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-
-		switch (shader->getType())
-		{
-		case ShaderType::Vertex: 
-			shaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-			break;
-		case ShaderType::Fragment:
-			shaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-			break;
-		case ShaderType::Compute:
-			shaderStageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-			break;
-		default:
-			break;
-		}
-
+		shaderStageInfo.stage = ShaderTypeToVk(shader->getType());
 		shaderStageInfo.module = shaderModule;
 		shaderStageInfo.pName = shader->getFuncName().data();
 
@@ -197,7 +182,7 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 	viewportState.viewportCount = 1;
 	viewportState.pViewports = &viewport;
 	viewportState.scissorCount = 1;
-	viewportState.pScissors = &scissor;
+	viewportState.pScissors = &scissor; 
 
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;

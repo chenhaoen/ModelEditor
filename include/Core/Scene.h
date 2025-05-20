@@ -8,6 +8,7 @@ class Node;
 class Light;
 class Camera;
 class SkyboxNode;
+class GridNode;
 
 class CORE_API Scene {
 public:
@@ -19,6 +20,8 @@ public:
     void removeNode(const std::string& name);
 
     void setSkyBox(std::shared_ptr<SkyboxNode>);
+
+    void setGrid(std::shared_ptr<GridNode>);
 
     std::shared_ptr<Node> getNode(const std::string& name);
 
@@ -45,6 +48,8 @@ private:
     std::shared_ptr<Node> rootNode;
 
     std::shared_ptr<SkyboxNode> m_skyboxNode;
+
+    std::shared_ptr<GridNode> m_gridNode;
 
     std::unordered_map<std::string, std::shared_ptr<Node>> nodes;
 

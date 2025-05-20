@@ -100,3 +100,58 @@ VkShaderModule createShaderModule(const std::vector<char>& code)
     VK_CHECK(vkCreateShaderModule(VulkanContext::getDevice()->getVkDevice(), &createInfo, nullptr, &shaderModule));
     return shaderModule;
 }
+
+VkShaderStageFlagBits ShaderTypeToVk(ShaderType shaderType)
+{
+    switch (shaderType)
+    {
+    case ShaderType::Vertex:
+        return VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT;
+        break;
+    case ShaderType::Fragment:
+        return VkShaderStageFlagBits::VK_SHADER_STAGE_FRAGMENT_BIT;
+        break;
+    case ShaderType::Compute:
+        return VkShaderStageFlagBits::VK_SHADER_STAGE_COMPUTE_BIT;
+        break;
+    default:
+        break;
+    }
+
+    return VkShaderStageFlagBits::VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+}
+
+VkDescriptorType UniformTypeToVK(UniformType uniformType)
+{
+    switch (uniformType)
+    {
+    case UniformType::UNIFORM_TYPE_SAMPLER:
+        break;
+    case UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE:
+        return VkDescriptorType::VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        break;
+    case UniformType::UNIFORM_TYPE_TEXTURE:
+        break;
+    case UniformType::UNIFORM_TYPE_IMAGE:
+        break;
+    case UniformType::UNIFORM_TYPE_TEXTURE_BUFFER:
+        break;
+    case UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE_BUFFER:
+        break;
+    case UniformType::UNIFORM_TYPE_IMAGE_BUFFER:
+        break;
+    case UniformType::UNIFORM_TYPE_UNIFORM_BUFFER:
+        return VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        break;
+    case UniformType::UNIFORM_TYPE_STORAGE_BUFFER:
+        break;
+    case UniformType::UNIFORM_TYPE_INPUT_ATTACHMENT:
+        break;
+    case UniformType::UNIFORM_TYPE_MAX:
+        break;
+    default:
+        break;
+    }
+
+    return VkDescriptorType::VK_DESCRIPTOR_TYPE_MAX_ENUM;
+}

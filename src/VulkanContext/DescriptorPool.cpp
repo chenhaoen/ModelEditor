@@ -6,20 +6,40 @@
 #include "VulkanContext/DescriptorSetLayout.h"
 
 #include "Core/FrameManager.h"
+#include "Core/Shader/Shader.h"
+#include "Core/Shader/Descriptor.h"
 
-DescriptorPool::DescriptorPool()
+DescriptorPool::DescriptorPool(const std::list<std::shared_ptr<Shader>>& shaders)
 {
+
+
+	std::map<VkDescriptorType, uint32_t> descriptorCount;
+	for (auto shader : shaders)
+	{
+		for (auto descriptor : shader->getDescriptors())
+		{
+			VkDescriptorType type = UniformTypeToVK(descriptor->getUniformType());
+
+			auto itor = descriptorCount.find(type);
+			if (itor == descriptorCount.end())
+			{
+				descriptorCount.emplace(type, 1);
+			}
+			else
+			{
+				itor->second++;
+			}
+		}
+	}
+
 	std::vector<VkDescriptorPoolSize> poolSizes{};
-
 	VkDescriptorPoolSize poolSize{};
-
-	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSize.descriptorCount = static_cast<uint32_t>(FrameManager::maxFrameCount());
-	poolSizes.emplace_back(poolSize);
-
-	poolSize.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-	poolSize.descriptorCount = static_cast<uint32_t>(FrameManager::maxFrameCount());
-	poolSizes.emplace_back(poolSize);
+	for (const auto& kv : descriptorCount)
+	{
+		poolSize.type = kv.first;
+		poolSize.descriptorCount = kv.second;
+		poolSizes.emplace_back(poolSize);
+	}
 
 	VkDescriptorPoolCreateInfo poolInfo{};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;

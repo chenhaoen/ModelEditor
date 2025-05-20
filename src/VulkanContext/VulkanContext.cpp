@@ -409,21 +409,22 @@ struct PipelineInfo
 PipelineID VulkanContext::createPipeline(const PipelineCreateInfo& createInfo)
 {
 	PipelineInfo* pipelineInfo = new PipelineInfo();
-	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
+
+	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout(createInfo.m_shaders);
 	pipelineInfo->pipeline = new Pipeline(createInfo,
 		pipelineInfo->descriptorSetLayout);
 
-	pipelineInfo->descriptorPool = new DescriptorPool();
+	pipelineInfo->descriptorPool = new DescriptorPool(createInfo.m_shaders);
 	return PipelineID(pipelineInfo);
 }
 
 PipelineID VulkanContext::createSkyboxPipeline(const PipelineCreateInfo& createInfo)
 {
 	PipelineInfo* pipelineInfo = new PipelineInfo();
-	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout();
+	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout(createInfo.m_shaders);
 	pipelineInfo->pipeline = new Pipeline(createInfo,
 		pipelineInfo->descriptorSetLayout);
-	pipelineInfo->descriptorPool = new DescriptorPool();
+	pipelineInfo->descriptorPool = new DescriptorPool(createInfo.m_shaders);
 	return PipelineID(pipelineInfo);
 }
 

@@ -2,7 +2,9 @@
 
 #include "Core/Node.h"
 
-class GridNode :
+#include "Core/Exports.h"
+
+class CORE_API GridNode :
     public Node
 {
 public:

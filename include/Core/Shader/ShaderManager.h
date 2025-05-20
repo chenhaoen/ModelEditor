@@ -10,6 +10,8 @@ public:
 	static ShaderManager* instance();
 
 	void init();
+
+	std::shared_ptr<Shader> getShader(const std::string_view& shaderName);
 private:
 	ShaderManager();
 	~ShaderManager();

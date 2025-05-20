@@ -1,7 +1,6 @@
 #pragma once
 
-
-
+#include "Core/Shader/Shader.h"
 
 #define VK_CHECK(result)                                                 \
     {                                                                    \
@@ -24,3 +23,7 @@ void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 std::vector<char> readFile(const std::string_view& filename);
 
 VkShaderModule createShaderModule(const std::vector<char>& code);
+
+VkShaderStageFlagBits ShaderTypeToVk(ShaderType shaderType);
+
+VkDescriptorType UniformTypeToVK(UniformType uniformType);

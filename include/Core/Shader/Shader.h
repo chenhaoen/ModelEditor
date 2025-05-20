@@ -11,6 +11,8 @@ enum class ShaderType
 	Compute
 };
 
+class Descriptor;
+
 class CORE_API Shader
 {
 public:
@@ -28,6 +30,9 @@ public:
 
 	void setfuncName(const std::string_view& funcName);
 	const std::string_view& getFuncName() const;
+
+	const std::list<std::shared_ptr<Descriptor>>& getDescriptors();
+	void addDescriptor(std::shared_ptr<Descriptor>);
 private:
 	std::string_view m_fileName;
 
@@ -36,5 +41,7 @@ private:
 	std::string_view m_funcName;
 
 	ShaderType m_type;
+
+	std::list<std::shared_ptr<Descriptor>> m_descriptors;
 };
 

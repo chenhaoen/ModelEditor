@@ -1,10 +1,12 @@
 #pragma once
 
 class DescriptorSetLayout;
+class Shader;
+
 class DescriptorPool
 {
 public:
-    DescriptorPool();
+    DescriptorPool(const std::list<std::shared_ptr<Shader>>&);
     ~DescriptorPool();
 
     VkDescriptorPool getVkDescriptorPool() const;

@@ -22,8 +22,4 @@ void GridNode::record()
 
 void GridNode::compile()
 {
-    if (m_mesh)
-    {
-        m_mesh->compile();
-    }
 }

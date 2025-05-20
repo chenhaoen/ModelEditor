@@ -3,6 +3,7 @@
 #include "Core/Camera.h"
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 #include "Core/SkyboxNode.h"
+#include "Core/GridNode.h"
 
 #include "IO/ReadNode.h"
 
@@ -36,6 +37,11 @@ void Scene::removeNode(const std::string& name) {
 void Scene::setSkyBox(std::shared_ptr<SkyboxNode> node)
 {
     m_skyboxNode = node;
+}
+
+void Scene::setGrid(std::shared_ptr<GridNode> node)
+{
+    m_gridNode = node;
 }
 
 // 获取节点
@@ -119,6 +125,11 @@ void Scene::compile()
         m_skyboxNode->compile();
     }
 
+    if (m_gridNode)
+    {
+        m_gridNode->compile();
+    }
+
     rootNode->compile();
 }
 
@@ -131,6 +142,11 @@ void Scene::record()
     if (m_skyboxNode)
     {
         m_skyboxNode->record();
+    }
+
+    if (m_gridNode)
+    {
+        m_gridNode->record();
     }
 
     rootNode->record();

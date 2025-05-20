@@ -22,5 +22,7 @@ private:
 	VkPhysicalDeviceFeatures m_deviceFeatures;
 
 	uint32_t m_graphicsFamilyIndex;
+
+	uint32_t m_computeFamilyIndex;
 };
 

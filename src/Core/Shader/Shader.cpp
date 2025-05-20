@@ -46,3 +46,13 @@ const std::string_view& Shader::getFuncName() const
 {
 	return m_funcName;
 }
+
+const std::list<std::shared_ptr<Descriptor>>& Shader::getDescriptors()
+{
+	return m_descriptors;
+}
+
+void Shader::addDescriptor(std::shared_ptr<Descriptor> descriptor)
+{
+	m_descriptors.push_back(descriptor);
+}
