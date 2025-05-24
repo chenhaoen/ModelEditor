@@ -16,4 +16,6 @@ public:
 	std::list<DynamicStateType> m_dynamicStates;
 
 	std::list<std::shared_ptr<Shader>> m_shaders;
+
+	PipelineType m_type;
 };

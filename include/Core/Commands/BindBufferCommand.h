@@ -10,7 +10,7 @@ class BindBufferCommand :
 public:
     BindBufferCommand(BufferID buffer, BufferType type);
     
-    void record() override final;
+    void record(CommandBufferID) override final;
 private:
     BufferID m_buffer;
     BufferType m_bufferType;

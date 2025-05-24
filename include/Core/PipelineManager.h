@@ -15,21 +15,21 @@ public:
 
 	void init();
 
-	std::shared_ptr<Pipeline> getPipeline(const PipelineType type);
+	std::shared_ptr<Pipeline> getPipeline(const PipelineName);
 
 	uint32_t pipelineCount() const;
 
-	std::shared_ptr<CommandGroup> getCommands(const PipelineType type);
+	std::shared_ptr<CommandGroup> getCommands(const PipelineName);
 
-	void updateDescriptorSets(const PipelineType type);
+	void updateDescriptorSets(const PipelineName);
 private:
 	PipelineManager();
 	~PipelineManager();
 
-	void addPipeline(const PipelineType type, std::shared_ptr<Pipeline> pipeline);
+	void addPipeline(const PipelineName type, std::shared_ptr<Pipeline> pipeline);
 
 	static PipelineManager* g_instance;
 
-	std::map<PipelineType, std::shared_ptr<Pipeline>> m_pipelines;
+	std::map<PipelineName, std::shared_ptr<Pipeline>> m_pipelines;
 };
 

@@ -11,7 +11,7 @@ class CORE_API SetViewportCommand :
 public:
     SetViewportCommand(const Viewport&);
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 
 private:
     Viewport m_viewport;

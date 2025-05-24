@@ -1,14 +1,13 @@
 #include "Core/Commands/SetPolygonModeCommand.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
-#include "Core/FrameManager.h"
 
 SetPolygonModeCommand::SetPolygonModeCommand(FillMode fillMode)
 	:m_fillMode(fillMode)
 {
 }
 
-void SetPolygonModeCommand::record()
+void SetPolygonModeCommand::record(CommandBufferID commandBuffer)
 {
-	RenderingContextDriver::instance()->cmdSetPolygonMode(FrameManager::instance()->currentCommandBuffer(), m_fillMode);
+	RenderingContextDriver::instance()->cmdSetPolygonMode(commandBuffer, m_fillMode);
 }

@@ -8,11 +8,11 @@ class BindDescriptorSetsCommand :
     public Command
 {
 public:
-    BindDescriptorSetsCommand(PipelineType type);
+    BindDescriptorSetsCommand(PipelineName);
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 
 private:
-    PipelineType m_type;
+    PipelineName m_name;
 };
 

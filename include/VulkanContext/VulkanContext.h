@@ -34,15 +34,15 @@ public:
 	void endCommandBuffer(CommandBufferID commandBuffer) override final;
 
 	BufferID createUniformBuffer() override final;
-	BufferID createVertexBuffer(const std::vector<Vertex>& vertices) override final;
-	BufferID createIndexBuffer(const std::vector<uint32_t>& indices) override final;
+	BufferID createBuffer(const uint64_t bufferSize, void* data, BufferUsageBits) override final;
+	BufferID createStorageBuffer(const uint64_t bufferSize, BufferUsageBits) override final;
 	void freeBuffer(BufferID buffer) override final;
 	void updateUniformBuffer(BufferID uniformBuffer, void* data, uint32_t size) override final;
 
 	TextureID createTexture(const uint32_t width, const uint32_t height, const uint32_t channels, const unsigned char* data) override final;
 	void freeTexture(TextureID buffer) override final;
 
-	FenceID createFence() override final;
+	FenceID createFence(bool) override final;
 	void waitFence(FenceID p_fence) override final;
 	void freeFence(FenceID p_fence) override final;
 
@@ -57,7 +57,6 @@ public:
 	Extent2D getSurfaceExtent(SurfaceID) override final;
 
 	PipelineID createPipeline(const PipelineCreateInfo&) override final;
-	PipelineID createSkyboxPipeline(const PipelineCreateInfo&) override final;
 	void freePipeline(PipelineID pipeline) override final;
 
 	RenderPassID getRenderPassID() override final;
@@ -102,7 +101,9 @@ public:
 
 	void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) override final;
 
-	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data)override final;
+	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderType shaderType)override final;
+
+	void cmdDispatch(CommandBufferID p_cmd_buffer, uint32_t x, uint32_t y, uint32_t z) override final;
 
 	void cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode) override final;
 

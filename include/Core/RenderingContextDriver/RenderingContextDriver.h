@@ -39,15 +39,15 @@ public:
 	virtual void endCommandBuffer(CommandBufferID commandBuffer) = 0;
 
 	virtual BufferID createUniformBuffer() = 0;
-	virtual BufferID createVertexBuffer(const std::vector<Vertex>& vertices) = 0;
-	virtual BufferID createIndexBuffer(const std::vector<uint32_t>& indices) = 0;
+	virtual BufferID createBuffer(const uint64_t bufferSize, void* data, BufferUsageBits) = 0;
+	virtual BufferID createStorageBuffer(const uint64_t bufferSize, BufferUsageBits) = 0;
 	virtual void updateUniformBuffer(BufferID uniformBuffer, void* data, uint32_t size) = 0;
 	virtual void freeBuffer(BufferID buffer) = 0;
 
 	virtual TextureID createTexture(const uint32_t width, const uint32_t height, const uint32_t channels, const unsigned char* data) = 0;
 	virtual void freeTexture(TextureID buffer) = 0;
 
-	virtual FenceID createFence() = 0;
+	virtual FenceID createFence(bool) = 0;
 	virtual void waitFence(FenceID p_fence) = 0;
 	virtual void freeFence(FenceID p_fence) = 0;
 
@@ -62,7 +62,6 @@ public:
 	virtual Extent2D getSurfaceExtent(SurfaceID) = 0;
 
 	virtual PipelineID createPipeline(const PipelineCreateInfo&) = 0;
-	virtual PipelineID createSkyboxPipeline(const PipelineCreateInfo&) = 0;
 	virtual void freePipeline(PipelineID pipeline) = 0;
 
 	virtual RenderPassID getRenderPassID() = 0;
@@ -108,7 +107,9 @@ public:
 
 	virtual void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) = 0;
 
-	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data) = 0;
+	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderType shaderType) = 0;
+
+	virtual void cmdDispatch(CommandBufferID p_cmd_buffer, uint32_t x, uint32_t y, uint32_t z) = 0;
 
 	virtual void cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode) = 0;
 

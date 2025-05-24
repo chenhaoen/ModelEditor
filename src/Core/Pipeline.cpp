@@ -9,22 +9,14 @@
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
-Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo, PipelineType type)
-	:m_type(type)
+Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo)
 {
 	for (auto type : pipelineCreateInfo.m_dynamicStates)
 	{
 		m_dynamicStates.push_back(std::make_shared<DynamicState>(type));
 	}
 
-	if (type == PipelineType::Model)
-	{
-		m_id = RenderingContextDriver::instance()->createPipeline(pipelineCreateInfo);
-	}
-	else
-	{
-		m_id = RenderingContextDriver::instance()->createSkyboxPipeline(pipelineCreateInfo);
-	}
+	m_id = RenderingContextDriver::instance()->createPipeline(pipelineCreateInfo);
 
 
 	for (auto& descriptorSet : m_descriptorSets)

@@ -86,12 +86,12 @@ void Node::record()
 {
     if (m_material && m_mesh)
     {
-        PipelineManager::instance()->getPipeline(PipelineType::Model)->bind();
-        FrameManager::instance()->currentCommandGroup()->push(std::make_shared<BindPipelineCommand>(PipelineType::Model));
-        FrameManager::instance()->currentCommandGroup()->push(PipelineManager::instance()->getCommands(PipelineType::Model));
-        FrameManager::instance()->currentCommandGroup()->push(std::make_shared<BindDescriptorSetsCommand>(PipelineType::Model));
-        PipelineManager::instance()->getPipeline(PipelineType::Model)->m_boundUniforms.push_back(m_material->getBoundUniform());
-        PipelineManager::instance()->updateDescriptorSets(PipelineType::Model);
+        PipelineManager::instance()->getPipeline(PipelineName::Model)->bind();
+        FrameManager::instance()->currentCommandGroup()->push(std::make_shared<BindPipelineCommand>(PipelineName::Model));
+        FrameManager::instance()->currentCommandGroup()->push(PipelineManager::instance()->getCommands(PipelineName::Model));
+        FrameManager::instance()->currentCommandGroup()->push(std::make_shared<BindDescriptorSetsCommand>(PipelineName::Model));
+        PipelineManager::instance()->getPipeline(PipelineName::Model)->m_boundUniforms.push_back(m_material->getBoundUniform());
+        PipelineManager::instance()->updateDescriptorSets(PipelineName::Model);
         m_mesh->record();
     }
 

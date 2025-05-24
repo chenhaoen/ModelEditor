@@ -33,7 +33,6 @@ void ShaderManager::init()
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(0);
-		descriptor->setShaderType(ShaderType::Vertex);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
 		shader->addDescriptor(descriptor);
 
@@ -48,7 +47,6 @@ void ShaderManager::init()
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(1);
-		descriptor->setShaderType(ShaderType::Fragment);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE);
 		shader->addDescriptor(descriptor);
 
@@ -64,7 +62,6 @@ void ShaderManager::init()
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(0);
-		descriptor->setShaderType(ShaderType::Vertex);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
 		shader->addDescriptor(descriptor);
 
@@ -79,7 +76,6 @@ void ShaderManager::init()
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(1);
-		descriptor->setShaderType(ShaderType::Fragment);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE);
 		shader->addDescriptor(descriptor);
 
@@ -89,9 +85,25 @@ void ShaderManager::init()
 	// grids
 	{
 		auto shader = std::make_shared<Shader>();
-		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv");
+		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/grids.spv");
 		shader->setfuncName("main");
 		shader->setType(ShaderType::Compute);
+
+		{
+			auto descriptor = std::make_shared<Descriptor>();
+			descriptor->setBinding(0);
+			descriptor->setUniformType(UniformType::UNIFORM_TYPE_STORAGE_BUFFER);
+			shader->addDescriptor(descriptor);
+		}
+
+		{
+			auto descriptor = std::make_shared<Descriptor>();
+			descriptor->setBinding(1);
+			descriptor->setUniformType(UniformType::UNIFORM_TYPE_STORAGE_BUFFER);
+			shader->addDescriptor(descriptor);
+		}
+
+
 		m_shaders.emplace("grids.compute", shader);
 	}
 }

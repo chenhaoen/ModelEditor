@@ -11,7 +11,7 @@ class CORE_API SetScissorCommand :
 public:
     SetScissorCommand(const Rect2D&);
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 
 private:
     Rect2D m_scissor;

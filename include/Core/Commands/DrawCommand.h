@@ -17,7 +17,7 @@ public:
         uint32_t firstInstance);
     ~DrawCommand() override final;
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 
 private:
     DrawMode m_mode;

@@ -20,6 +20,7 @@ void PipelineManager::init()
 {
 	ShaderManager::instance()->init();
 
+	//Model
 	{
 		PipelineCreateInfo pipelineCreateInfo;
 
@@ -30,8 +31,8 @@ void PipelineManager::init()
 		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("Model.frag"));
 
 		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
-		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo,PipelineType::Model);
-		addPipeline(PipelineType::Model, pipeline);
+		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
+		addPipeline(PipelineName::Model, pipeline);
 	}
 
 	// skybox
@@ -44,14 +45,27 @@ void PipelineManager::init()
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
 		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
-		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo,PipelineType::Skybox);
-		addPipeline(PipelineType::Skybox, pipeline);
+		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
+		addPipeline(PipelineName::Skybox, pipeline);
+	}
+
+	// Grids
+	{
+		PipelineCreateInfo pipelineCreateInfo;
+
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("grids.compute"));
+		pipelineCreateInfo.m_type = PipelineType::Compute;
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
+		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
+		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
+		addPipeline(PipelineName::Grids, pipeline);
 	}
 }
 
-std::shared_ptr<Pipeline> PipelineManager::getPipeline(const PipelineType type)
+std::shared_ptr<Pipeline> PipelineManager::getPipeline(const PipelineName name)
 {
-	return m_pipelines[type];
+	return m_pipelines[name];
 }
 
 void PipelineManager::destroy()
@@ -65,14 +79,14 @@ uint32_t PipelineManager::pipelineCount() const
 	return m_pipelines.size();
 }
 
-std::shared_ptr<CommandGroup> PipelineManager::getCommands(const PipelineType type)
+std::shared_ptr<CommandGroup> PipelineManager::getCommands(const PipelineName name)
 {
-	return m_pipelines[type]->getCommands();
+	return m_pipelines[name]->getCommands();
 }
 
-void PipelineManager::updateDescriptorSets(const PipelineType type)
+void PipelineManager::updateDescriptorSets(const PipelineName name)
 {
-	m_pipelines[type]->updateDescriptorSets();
+	m_pipelines[name]->updateDescriptorSets();
 }
 
 PipelineManager::PipelineManager()
@@ -84,7 +98,7 @@ PipelineManager::~PipelineManager()
 {
 }
 
-void PipelineManager::addPipeline(const PipelineType type, std::shared_ptr<Pipeline> pipeline)
+void PipelineManager::addPipeline(const PipelineName name, std::shared_ptr<Pipeline> pipeline)
 {
-	m_pipelines.emplace(type, pipeline);
+	m_pipelines.emplace(name, pipeline);
 }

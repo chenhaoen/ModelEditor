@@ -8,11 +8,11 @@ class BindPipelineCommand :
     public Command
 {
 public:
-    BindPipelineCommand(PipelineType type);
+    BindPipelineCommand(PipelineName name);
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 
 private:
-    PipelineType m_type;
+    PipelineName m_name;
 };
 

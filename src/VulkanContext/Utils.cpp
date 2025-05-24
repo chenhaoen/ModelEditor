@@ -37,7 +37,7 @@ std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions() {
     return attributeDescriptions;
 }
 
-void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+void createVKBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 {
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -144,6 +144,7 @@ VkDescriptorType UniformTypeToVK(UniformType uniformType)
         return VkDescriptorType::VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         break;
     case UniformType::UNIFORM_TYPE_STORAGE_BUFFER:
+        return VkDescriptorType::VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         break;
     case UniformType::UNIFORM_TYPE_INPUT_ATTACHMENT:
         break;

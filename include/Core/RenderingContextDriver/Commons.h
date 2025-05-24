@@ -77,10 +77,17 @@ typedef struct Viewport {
 	float    maxDepth;
 } Viewport;
 
-enum class PipelineType
+enum class PipelineName
 {
 	Model,
 	Skybox,
+	Grids,
+};
+
+enum class PipelineType
+{
+	Graphics,
+	Compute
 };
 
 enum class BufferType
@@ -131,6 +138,35 @@ enum class UniformType {
 	UNIFORM_TYPE_INPUT_ATTACHMENT, // Used for sub-pass read/write, for mobile mostly.
 	UNIFORM_TYPE_MAX
 };
+
+enum class BufferUsageBits : uint32_t {
+	BUFFER_USAGE_TRANSFER_FROM_BIT = (1 << 0),
+	BUFFER_USAGE_TRANSFER_TO_BIT = (1 << 1),
+	BUFFER_USAGE_TEXEL_BIT = (1 << 2),
+	BUFFER_USAGE_UNIFORM_BIT = (1 << 4),
+	BUFFER_USAGE_STORAGE_BIT = (1 << 5),
+	BUFFER_USAGE_INDEX_BIT = (1 << 6),
+	BUFFER_USAGE_VERTEX_BIT = (1 << 7),
+	BUFFER_USAGE_INDIRECT_BIT = (1 << 8),
+	BUFFER_USAGE_DEVICE_ADDRESS_BIT = (1 << 17),
+};
+
+inline BufferUsageBits operator|(BufferUsageBits a, BufferUsageBits b) {
+	return static_cast<BufferUsageBits>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
+
+inline BufferUsageBits operator&(BufferUsageBits a, BufferUsageBits b) {
+	return static_cast<BufferUsageBits>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+}
+
+inline BufferUsageBits operator~(BufferUsageBits a) {
+	return static_cast<BufferUsageBits>(~static_cast<uint32_t>(a));
+}
+
+inline BufferUsageBits& operator|=(BufferUsageBits& a, BufferUsageBits b) {
+	a = a | b;
+	return a;
+}
 
 struct BoundUniform {
 	UniformType type = UniformType::UNIFORM_TYPE_MAX;

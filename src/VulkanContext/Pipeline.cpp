@@ -27,6 +27,47 @@ namespace {
 Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo, 
 	DescriptorSetLayout* descriptorSetLayout)
 	: m_descriptorSetLayout(descriptorSetLayout)
+	, m_type(pipelineCreateInfo.m_type)
+	, m_pipeline(nullptr)
+	, m_layout(nullptr)
+{
+	switch (pipelineCreateInfo.m_type)
+	{
+	case PipelineType::Graphics:
+		createGraphicsPipeline(pipelineCreateInfo,descriptorSetLayout);
+		break;
+	case PipelineType::Compute:
+		createComputePipeline(pipelineCreateInfo, descriptorSetLayout);
+		break;
+	default:
+		break;
+	}
+
+	
+}
+
+Pipeline::~Pipeline()
+{
+	vkDestroyPipeline(VulkanContext::getDevice()->getVkDevice(), m_pipeline, nullptr);
+	vkDestroyPipelineLayout(VulkanContext::getDevice()->getVkDevice(), m_layout, nullptr);
+}
+
+VkPipeline Pipeline::getVkPipeline() const
+{
+	return m_pipeline;
+}
+
+VkPipelineLayout Pipeline::getVkPipelineLayout() const
+{
+	return m_layout;
+}
+
+PipelineType Pipeline::getType() const
+{
+	return m_type;
+}
+
+void Pipeline::createGraphicsPipeline(const PipelineCreateInfo& pipelineCreateInfo, DescriptorSetLayout* descriptorSetLayout)
 {
 	std::vector<VkPipelineShaderStageCreateInfo> shaderStageCreateInfos;
 	std::vector<VkShaderModule> shaderModules;
@@ -45,7 +86,7 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 		shaderModules.push_back(shaderModule);
 		shaderStageCreateInfos.push_back(shaderStageInfo);
 	}
-	
+
 	VkPipelineRasterizationStateCreateInfo rasterizer{};
 	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 	rasterizer.depthClampEnable = VK_FALSE;
@@ -124,7 +165,7 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 	depthStencil.back = {};  // Optional
 
 	std::vector<VkDynamicState> dynamicStates;
-	 
+
 	for (auto type : pipelineCreateInfo.m_dynamicStates)
 	{
 		switch (type)
@@ -182,7 +223,7 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 	viewportState.viewportCount = 1;
 	viewportState.pViewports = &viewport;
 	viewportState.scissorCount = 1;
-	viewportState.pScissors = &scissor; 
+	viewportState.pScissors = &scissor;
 
 	pipelineInfo.pVertexInputState = &vertexInputInfo;
 	pipelineInfo.pInputAssemblyState = &inputAssembly;
@@ -197,7 +238,7 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 	pipelineInfo.renderPass = VulkanContext::getRenderPass()->getVkRenderPass();
 	pipelineInfo.subpass = 0;
 
-	VK_CHECK(vkCreateGraphicsPipelines(VulkanContext::getDevice()->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline));
+	VK_CHECK(vkCreateGraphicsPipelines(VulkanContext::getDevice()->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_pipeline));
 
 	for (auto shaderModule : shaderModules)
 	{
@@ -205,18 +246,56 @@ Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo,
 	}
 }
 
-Pipeline::~Pipeline()
+void Pipeline::createComputePipeline(const PipelineCreateInfo& pipelineCreateInfo, DescriptorSetLayout* descriptorSetLayout)
 {
-	vkDestroyPipeline(VulkanContext::getDevice()->getVkDevice(), m_graphicsPipeline, nullptr);
-	vkDestroyPipelineLayout(VulkanContext::getDevice()->getVkDevice(), m_layout, nullptr);
-}
+	// 1. 加载计算着色器
+	std::vector<VkPipelineShaderStageCreateInfo> shaderStageCreateInfos;
+	std::vector<VkShaderModule> shaderModules;
+	for (auto shader : pipelineCreateInfo.m_shaders)
+	{
+		auto shaderCode = readFile(shader->getFileName());
 
-VkPipeline Pipeline::getVkPipeline() const
-{
-	return m_graphicsPipeline;
-}
+		VkShaderModule shaderModule = createShaderModule(shaderCode);
 
-VkPipelineLayout Pipeline::getVkPipelineLayout() const
-{
-	return m_layout;
+		VkPipelineShaderStageCreateInfo shaderStageInfo{};
+		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		shaderStageInfo.stage = ShaderTypeToVk(shader->getType());
+		shaderStageInfo.module = shaderModule;
+		shaderStageInfo.pName = shader->getFuncName().data();
+
+		shaderModules.push_back(shaderModule);
+		shaderStageCreateInfos.push_back(shaderStageInfo);
+	}
+
+	std::vector<VkDescriptorSetLayout> setLayouts;
+	setLayouts.push_back(m_descriptorSetLayout->getVkDescriptorSetLayout());
+
+	// 4. 创建管线布局
+	VkPushConstantRange pushConstantRange{};
+	pushConstantRange.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+	pushConstantRange.offset = 0;
+	pushConstantRange.size = sizeof(uint32_t) + sizeof(float); // gridSize + cellSize
+
+	VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	pipelineLayoutInfo.setLayoutCount = setLayouts.size();
+	pipelineLayoutInfo.pSetLayouts = setLayouts.data();
+	pipelineLayoutInfo.pushConstantRangeCount = 1;
+	pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
+
+	VK_CHECK(vkCreatePipelineLayout(VulkanContext::getDevice()->getVkDevice(), &pipelineLayoutInfo, nullptr, &m_layout))
+
+	// 5. 创建计算管线
+	VkComputePipelineCreateInfo pipelineInfo{};
+	pipelineInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+	pipelineInfo.stage = shaderStageCreateInfos.front();
+	pipelineInfo.layout = m_layout;
+
+	VK_CHECK(vkCreateComputePipelines(VulkanContext::getDevice()->getVkDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_pipeline));
+
+	// 清理着色器模块
+	for (auto shaderModule : shaderModules)
+	{
+		vkDestroyShaderModule(VulkanContext::getDevice()->getVkDevice(), shaderModule, nullptr);
+	}
 }

@@ -2,5 +2,6 @@
 
 PipelineCreateInfo::PipelineCreateInfo()
 	:m_renderPrimitive(RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES)
+	, m_type(PipelineType::Graphics)
 {
 }

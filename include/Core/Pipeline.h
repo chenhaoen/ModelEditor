@@ -11,7 +11,7 @@ class Pipeline
 {
 public:
 
-	Pipeline(const PipelineCreateInfo& pipelineCreateInfo, PipelineType type);
+	Pipeline(const PipelineCreateInfo& pipelineCreateInfo);
 	~Pipeline();
 
 	void bind();
@@ -27,7 +27,5 @@ public:
 	std::list<std::shared_ptr<DynamicState>> m_dynamicStates;
 
 	std::array<UniformSetID, FrameManager::maxFrameCount()> m_descriptorSets;
-
-	PipelineType m_type;
 };
 

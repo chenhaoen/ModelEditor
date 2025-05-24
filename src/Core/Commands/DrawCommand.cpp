@@ -23,7 +23,7 @@ DrawCommand::~DrawCommand()
 {
 }
 
-void DrawCommand::record()
+void DrawCommand::record(CommandBufferID commandBuffer)
 {
 	switch (m_mode)
 	{

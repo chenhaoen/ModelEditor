@@ -10,7 +10,7 @@ class SetPolygonModeCommand :
 public:
     SetPolygonModeCommand(FillMode fillMode);
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 private:
     FillMode m_fillMode;
 };

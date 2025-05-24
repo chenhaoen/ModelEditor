@@ -50,6 +50,7 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 
 			auto gridNode = std::make_shared<GridNode>();
 			SceneManager::instance()->getCurrentScene()->setGrid(gridNode);
+			gridNode->compile();
 
 			render();
 		}
@@ -153,7 +154,7 @@ bool VulkanWindow::event(QEvent* event)
 
 		SceneManager::instance()->record();
 
-		commandGroup->record();
+		commandGroup->record(currentCommandBuffer);
 
 		FrameManager::instance()->endFrame();
 		return true;

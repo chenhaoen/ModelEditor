@@ -11,7 +11,7 @@ public:
 
     void clear();
 
-    void record() override final;
+    void record(CommandBufferID) override final;
 private:
     std::vector<std::shared_ptr<Command>> m_commands;
 };

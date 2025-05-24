@@ -10,10 +10,10 @@ void CommandGroup::clear()
 	m_commands.clear();
 }
 
-void CommandGroup::record()
+void CommandGroup::record(CommandBufferID commandBuffer)
 {
 	for (auto command : m_commands)
 	{
-		command->record();
+		command->record(commandBuffer);
 	}
 }

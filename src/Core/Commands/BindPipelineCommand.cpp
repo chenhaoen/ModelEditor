@@ -5,13 +5,13 @@
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
-BindPipelineCommand::BindPipelineCommand(PipelineType type)
+BindPipelineCommand::BindPipelineCommand(PipelineName name)
 	:Command(),
-	m_type(type)
+	m_name(name)
 {
 }
 
-void BindPipelineCommand::record()
+void BindPipelineCommand::record(CommandBufferID commandBuffer)
 {
-	RenderingContextDriver::instance()->cmdBindPipeline(FrameManager::instance()->currentCommandBuffer(), PipelineManager::instance()->getPipeline(m_type)->m_id);
+	RenderingContextDriver::instance()->cmdBindPipeline(commandBuffer, PipelineManager::instance()->getPipeline(m_name)->m_id);
 }

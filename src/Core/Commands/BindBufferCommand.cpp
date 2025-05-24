@@ -9,15 +9,15 @@ BindBufferCommand::BindBufferCommand(BufferID buffer, BufferType type)
 {
 }
 
-void BindBufferCommand::record()
+void BindBufferCommand::record(CommandBufferID commandBuffer)
 {
 	switch (m_bufferType)
 	{
 	case BufferType::Vertex: 
-		RenderingContextDriver::instance()->cmdBindVertexBuffer(FrameManager::instance()->currentCommandBuffer(), m_buffer);
+		RenderingContextDriver::instance()->cmdBindVertexBuffer(commandBuffer, m_buffer);
 		break;
 	case BufferType::Index:
-		RenderingContextDriver::instance()->cmdBindIndexBuffer(FrameManager::instance()->currentCommandBuffer(), m_buffer);
+		RenderingContextDriver::instance()->cmdBindIndexBuffer(commandBuffer, m_buffer);
 		break;
 	default:
 		break;

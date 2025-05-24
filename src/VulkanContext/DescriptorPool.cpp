@@ -11,8 +11,6 @@
 
 DescriptorPool::DescriptorPool(const std::list<std::shared_ptr<Shader>>& shaders)
 {
-
-
 	std::map<VkDescriptorType, uint32_t> descriptorCount;
 	for (auto shader : shaders)
 	{

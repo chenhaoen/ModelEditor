@@ -1,5 +1,4 @@
 #include "Core/Commands/SetScissorCommand.h"
-#include "Core/FrameManager.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
@@ -9,7 +8,7 @@ SetScissorCommand::SetScissorCommand(const Rect2D& scissor)
 
 }
 
-void SetScissorCommand::record()
+void SetScissorCommand::record(CommandBufferID commandBuffer)
 {
-	RenderingContextDriver::instance()->cmdSetScissor(FrameManager::instance()->currentCommandBuffer(), m_scissor);
+	RenderingContextDriver::instance()->cmdSetScissor(commandBuffer, m_scissor);
 }

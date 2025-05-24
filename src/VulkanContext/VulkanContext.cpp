@@ -169,31 +169,56 @@ BufferID VulkanContext::createUniformBuffer()
 {
 	BufferInfo* bufferInfo = new BufferInfo;
 	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
-	createBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+	createVKBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, bufferInfo->buffer, bufferInfo->memory);
 
 	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->memory, 0, bufferSize, 0, &bufferInfo->mapped);
 	return BufferID(bufferInfo);
 }
 
-BufferID VulkanContext::createVertexBuffer(const std::vector<Vertex>& vertices)
+BufferID VulkanContext::createBuffer(const uint64_t inBufferSize, void* inData, BufferUsageBits bufferUsageBits)
 {
 	BufferInfo* bufferInfo = new BufferInfo{};
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
 
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	VkDeviceSize bufferSize = inBufferSize;
+	createVKBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 		stagingBuffer, stagingBufferMemory);
 
 	void* data;
 	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
+	memcpy(data, inData, (size_t)bufferSize);
 	vkUnmapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory);
 
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+
+	switch (bufferUsageBits)
+	{
+	case BufferUsageBits::BUFFER_USAGE_TRANSFER_FROM_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_TRANSFER_TO_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_TEXEL_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_UNIFORM_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_STORAGE_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_INDEX_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_VERTEX_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_INDIRECT_BIT:
+		break;
+	case BufferUsageBits::BUFFER_USAGE_DEVICE_ADDRESS_BIT:
+		break;
+	default:
+		break;
+	}
+	
+	createVKBuffer(bufferSize, (VkBufferUsageFlagBits)bufferUsageBits,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		bufferInfo->buffer, bufferInfo->memory);
 
@@ -205,31 +230,14 @@ BufferID VulkanContext::createVertexBuffer(const std::vector<Vertex>& vertices)
 	return BufferID(bufferInfo);
 }
 
-BufferID VulkanContext::createIndexBuffer(const std::vector<uint32_t>& indices)
+BufferID VulkanContext::createStorageBuffer(const uint64_t inBufferSize, BufferUsageBits bufferUsageBits)
 {
 	BufferInfo* bufferInfo = new BufferInfo{};
 
-	VkBuffer stagingBuffer;
-	VkDeviceMemory stagingBufferMemory;
-
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-		stagingBuffer, stagingBufferMemory);
-
-	void* data;
-	vkMapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)bufferSize);
-	vkUnmapMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory);
-
-	createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT,
+	VkDeviceSize bufferSize = inBufferSize;
+	createVKBuffer(bufferSize, (VkBufferUsageFlagBits)bufferUsageBits,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		bufferInfo->buffer, bufferInfo->memory);
-
-	copyBuffer(stagingBuffer, bufferInfo->buffer, bufferSize);
-
-	vkDestroyBuffer(VulkanContext::getDevice()->getVkDevice(), stagingBuffer, nullptr);
-	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), stagingBufferMemory, nullptr);
 
 	return BufferID(bufferInfo);
 }
@@ -264,7 +272,7 @@ TextureID VulkanContext::createTexture(const uint32_t width, const uint32_t heig
 
 	TextureInfo* pTextureInfo = new TextureInfo();
 	VkDeviceSize imageSize = width * height * channels;
-	createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+	createVKBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 		stagingBuffer, stagingBufferMemory);
 
@@ -329,11 +337,15 @@ void VulkanContext::freeTexture(TextureID buffer)
 	vkFreeMemory(VulkanContext::getDevice()->getVkDevice(), bufferInfo->textureImageMemory, nullptr);
 }
 
-FenceID VulkanContext::createFence()
+FenceID VulkanContext::createFence(bool create_signaled)
 {
 	VkFenceCreateInfo fenceInfo{};
 	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+	if (create_signaled)
+	{
+		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+	}
 
 	VkFence fence;
 	VK_CHECK(vkCreateFence(VulkanContext::getDevice()->getVkDevice(), &fenceInfo, nullptr, &fence));
@@ -418,17 +430,6 @@ PipelineID VulkanContext::createPipeline(const PipelineCreateInfo& createInfo)
 	return PipelineID(pipelineInfo);
 }
 
-PipelineID VulkanContext::createSkyboxPipeline(const PipelineCreateInfo& createInfo)
-{
-	PipelineInfo* pipelineInfo = new PipelineInfo();
-	pipelineInfo->descriptorSetLayout = new DescriptorSetLayout(createInfo.m_shaders);
-	pipelineInfo->pipeline = new Pipeline(createInfo,
-		pipelineInfo->descriptorSetLayout);
-	pipelineInfo->descriptorPool = new DescriptorPool(createInfo.m_shaders);
-	return PipelineID(pipelineInfo);
-}
-
-
 void VulkanContext::freePipeline(PipelineID pipeline)
 {
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
@@ -439,8 +440,23 @@ void VulkanContext::freePipeline(PipelineID pipeline)
 void VulkanContext::cmdBindPipeline(CommandBufferID p_cmd_buffer, PipelineID p_pipeline)
 {
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(p_pipeline.id);
+
+	VkPipelineBindPoint bindPoint;
+	switch (pipelineInfo->pipeline->getType())
+	{
+	case PipelineType::Graphics:
+		bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		break;
+	case PipelineType::Compute:
+		bindPoint = VK_PIPELINE_BIND_POINT_COMPUTE;
+		break;
+	default:
+		break;
+	}
+
+
 	vkCmdBindPipeline(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
-		VK_PIPELINE_BIND_POINT_GRAPHICS, reinterpret_cast<Pipeline*>(pipelineInfo->pipeline)->getVkPipeline());
+		bindPoint, reinterpret_cast<Pipeline*>(pipelineInfo->pipeline)->getVkPipeline());
 }
 
 void VulkanContext::cmdDraw(CommandBufferID p_cmd_buffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstanc)
@@ -512,27 +528,60 @@ void VulkanContext::cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, Pipeline
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
 	UniformBufferInfo* bufferInfo = reinterpret_cast<UniformBufferInfo*>(uniformSet.id);
 
+	VkPipelineBindPoint bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+	switch (pipelineInfo->pipeline->getType())
+	{
+	case PipelineType::Graphics:
+		bindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		break;
+	case PipelineType::Compute:
+		bindPoint = VK_PIPELINE_BIND_POINT_COMPUTE;
+		break;
+	default:
+		break;
+	}
+
 	vkCmdBindDescriptorSets(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id),
-		VK_PIPELINE_BIND_POINT_GRAPHICS,
+		bindPoint,
 		pipelineInfo->pipeline->getVkPipelineLayout(),
 		0, 1,
 		&bufferInfo->descriptorSet, 0, nullptr);
 }
 
-void VulkanContext::cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data)
+void VulkanContext::cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderType shaderType)
 {
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
+
+	VkShaderStageFlagBits shaderStage;
+	switch (shaderType)
+	{
+	case ShaderType::Vertex:
+		shaderStage = VK_SHADER_STAGE_VERTEX_BIT;
+		break;
+	case ShaderType::Fragment:
+		shaderStage = VK_SHADER_STAGE_FRAGMENT_BIT;
+		break;
+	case ShaderType::Compute:
+		shaderStage = VK_SHADER_STAGE_COMPUTE_BIT;
+		break;
+	default:
+		break;
+	}
+
 	vkCmdPushConstants(
 		reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), // 命令缓冲区
 		pipelineInfo->pipeline->getVkPipelineLayout(),
-		VK_SHADER_STAGE_VERTEX_BIT, // 着色器阶段
+		shaderStage, // 着色器阶段
 		0, // 偏移量
 		size, // 数据大小
 		data // 数据
 	);
 }
 
-
+void VulkanContext::cmdDispatch(CommandBufferID p_cmd_buffer, uint32_t x, uint32_t y, uint32_t z)
+{
+	vkCmdDispatch(reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), x, y, z);
+}
 
 void VulkanContext::cmdSetPolygonMode(CommandBufferID p_cmd_buffer, FillMode fillMode)
 {
@@ -749,6 +798,28 @@ void VulkanContext::updateUniformSet(UniformSetID uniformSet, const std::vector<
 			descriptorWrite.pTexelBufferView = nullptr; // Optional
 			writeDescriptorSets.push_back(descriptorWrite);
 		}
+		break;
+		case UniformType::UNIFORM_TYPE_STORAGE_BUFFER:
+		{
+			BufferInfo* tempBufferInfo = reinterpret_cast<BufferInfo*>(boundUniform.ids[0].id);
+
+			VkDescriptorBufferInfo descriptorBufferInfo;
+			descriptorBufferInfo.buffer = tempBufferInfo->buffer;
+			descriptorBufferInfo.offset = 0;
+			descriptorBufferInfo.range = VK_WHOLE_SIZE;
+
+			VkWriteDescriptorSet descriptorWrite{};
+			descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrite.dstSet = bufferInfo->descriptorSet;
+			descriptorWrite.dstBinding = boundUniform.binding;
+			descriptorWrite.dstArrayElement = 0;
+			descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+			descriptorWrite.descriptorCount = 1;
+
+			descriptorWrite.pBufferInfo = &descriptorBufferInfo; // Optional
+			writeDescriptorSets.push_back(descriptorWrite);
+		}
+		break;
 		default:
 			break;
 		}

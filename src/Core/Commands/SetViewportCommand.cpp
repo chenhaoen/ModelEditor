@@ -1,5 +1,4 @@
 #include "Core/Commands/SetViewportCommand.h"
-#include "Core/FrameManager.h"
 
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
@@ -8,7 +7,7 @@ SetViewportCommand::SetViewportCommand(const Viewport& viewport)
 {
 }
 
-void SetViewportCommand::record()
+void SetViewportCommand::record(CommandBufferID commandBuffer)
 {
-	RenderingContextDriver::instance()->cmdSetViewport(FrameManager::instance()->currentCommandBuffer(), m_viewport);
+	RenderingContextDriver::instance()->cmdSetViewport(commandBuffer, m_viewport);
 }

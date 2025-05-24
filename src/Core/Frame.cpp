@@ -9,7 +9,7 @@ Frame::Frame()
 	: m_imageIndex(0)
 	, m_commandGroup(new CommandGroup())
 {
-	m_inFlightFence = RenderingContextDriver::instance()->createFence();
+	m_inFlightFence = RenderingContextDriver::instance()->createFence(true);
 	m_renderFinishedSemaphore = RenderingContextDriver::instance()->createSemaphore();
 	m_imageAvailableSemaphore = RenderingContextDriver::instance()->createSemaphore();
 

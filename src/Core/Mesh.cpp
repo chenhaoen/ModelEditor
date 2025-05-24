@@ -83,7 +83,8 @@ void Mesh::createVertexBuffer()
 		return;
 	}
 
-	m_vertexBuffer = RenderingContextDriver::instance()->createVertexBuffer(m_vertices);
+	m_vertexBuffer = RenderingContextDriver::instance()->createBuffer(m_vertices.size()* sizeof(Vertex), m_vertices.data(),
+		BufferUsageBits::BUFFER_USAGE_TRANSFER_TO_BIT | BufferUsageBits::BUFFER_USAGE_VERTEX_BIT);
 }
 
 void Mesh::freeVertexBuffer()
@@ -98,7 +99,8 @@ void Mesh::createIndexBuffer()
 		return;
 	}
 
-	m_indexBuffer = RenderingContextDriver::instance()->createIndexBuffer(m_indices);
+	m_indexBuffer = RenderingContextDriver::instance()->createBuffer(m_indices.size() * sizeof(uint32_t), m_indices.data(),
+		BufferUsageBits::BUFFER_USAGE_TRANSFER_TO_BIT | BufferUsageBits::BUFFER_USAGE_INDEX_BIT);
 }
 
 void Mesh::freeIndexBuffer()
