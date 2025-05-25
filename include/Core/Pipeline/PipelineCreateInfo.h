@@ -18,4 +18,8 @@ public:
 	std::list<std::shared_ptr<Shader>> m_shaders;
 
 	PipelineType m_type;
+
+	PipelineRasterizationState m_rasterizationState;
+
+	PipelineMultisampleState m_multrsampleState;
 };

@@ -48,9 +48,9 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			//skybox->getMaterial()->m_texureID = RenderingContextDriver::instance()->createKTXTexture("E:/code/VulkanSamples/Vulkan/assets/textures/cubemap_vulkan.ktx");
 			//SceneManager::instance()->getCurrentScene()->setSkyBox(skybox);
 
-			auto gridNode = std::make_shared<GridNode>();
-			SceneManager::instance()->getCurrentScene()->setGrid(gridNode);
-			gridNode->compile();
+			//auto gridNode = std::make_shared<GridNode>();
+			//SceneManager::instance()->getCurrentScene()->setGrid(gridNode);
+			//gridNode->compile();
 
 			render();
 		}

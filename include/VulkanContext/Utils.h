@@ -27,3 +27,9 @@ VkShaderModule createShaderModule(const std::vector<char>& code);
 VkShaderStageFlagBits ShaderTypeToVk(ShaderType shaderType);
 
 VkDescriptorType UniformTypeToVK(UniformType uniformType);
+
+void RasterizationStateToVK(VkPipelineRasterizationStateCreateInfo& , const PipelineRasterizationState& );
+
+void InputAssemblyStateToVK(VkPipelineInputAssemblyStateCreateInfo& , const RenderPrimitive);
+
+void MultisampleStateToVK(VkPipelineMultisampleStateCreateInfo&, const PipelineMultisampleState&);

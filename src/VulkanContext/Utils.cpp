@@ -6,6 +6,22 @@
 
 #include "Core/RenderingContextDriver/Commons.h"
 
+namespace {
+    static const VkPrimitiveTopology RD_TO_VK_PRIMITIVE[static_cast<int>(RenderPrimitive::RENDER_PRIMITIVE_MAX)] = {
+    VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
+    VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
+    VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY,
+    VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,
+    VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY,
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY,
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY,
+    VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
+    VK_PRIMITIVE_TOPOLOGY_PATCH_LIST,
+    };
+}
+
 VkVertexInputBindingDescription getBindingDescription()
 {
     VkVertexInputBindingDescription bindingDescription{};
@@ -155,4 +171,69 @@ VkDescriptorType UniformTypeToVK(UniformType uniformType)
     }
 
     return VkDescriptorType::VK_DESCRIPTOR_TYPE_MAX_ENUM;
+}
+
+void RasterizationStateToVK(VkPipelineRasterizationStateCreateInfo& createInfo, const PipelineRasterizationState& rasterizationState)
+{
+    createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    createInfo.depthClampEnable = rasterizationState.enable_depth_clamp;
+    createInfo.rasterizerDiscardEnable = rasterizationState.discard_primitives;
+    createInfo.polygonMode = rasterizationState.wireframe ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL;
+    createInfo.lineWidth = rasterizationState.line_width;
+
+    switch (rasterizationState.cull_mode)
+    {
+    case PolygonCullMode::POLYGON_CULL_DISABLED:
+        createInfo.cullMode = VK_CULL_MODE_NONE;
+        break;
+    case PolygonCullMode::POLYGON_CULL_FRONT:
+        createInfo.cullMode = VK_CULL_MODE_FRONT_BIT;
+        break;
+    case PolygonCullMode::POLYGON_CULL_BACK:
+        createInfo.cullMode = VK_CULL_MODE_BACK_BIT;
+        break;
+    case PolygonCullMode::POLYGON_CULL_MAX:
+        createInfo.cullMode = VK_CULL_MODE_FRONT_AND_BACK;
+        break;
+    default:
+        break;
+    }
+
+    switch (rasterizationState.front_face)
+    {
+    case PolygonFrontFace::POLYGON_FRONT_FACE_CLOCKWISE:
+        createInfo.frontFace = VK_FRONT_FACE_CLOCKWISE;
+        break;
+    case PolygonFrontFace::POLYGON_FRONT_FACE_COUNTER_CLOCKWISE:
+        createInfo.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+        break;
+    default:
+        break;
+    }
+
+    createInfo.depthBiasEnable = rasterizationState.depth_bias_enabled;
+    createInfo.depthBiasConstantFactor = rasterizationState.depth_bias_constant_factor; // Optional
+    createInfo.depthBiasClamp = rasterizationState.depth_bias_clamp;          // Optional
+    createInfo.depthBiasSlopeFactor = rasterizationState.depth_bias_slope_factor;    // Optional
+}
+
+void InputAssemblyStateToVK(VkPipelineInputAssemblyStateCreateInfo& createInfo, const RenderPrimitive renderPrimitive)
+{
+    createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    createInfo.topology = RD_TO_VK_PRIMITIVE[static_cast<int>(renderPrimitive)];
+    createInfo.primitiveRestartEnable = (renderPrimitive == RenderPrimitive::RENDER_PRIMITIVE_TRIANGLE_STRIPS_WITH_RESTART_INDEX);
+}
+
+void MultisampleStateToVK(VkPipelineMultisampleStateCreateInfo& createInfo, const PipelineMultisampleState& multisampleState)
+{
+    createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    createInfo.sampleShadingEnable = multisampleState.enable_sample_shading;
+    createInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    createInfo.minSampleShading = multisampleState.min_sample_shading;          // Optional
+    createInfo.pSampleMask = multisampleState.sample_mask.data();            // Optional
+    createInfo.alphaToCoverageEnable = multisampleState.enable_alpha_to_coverage; // Optional
+    createInfo.alphaToOneEnable = multisampleState.enable_alpha_to_one;      // Optional
 }

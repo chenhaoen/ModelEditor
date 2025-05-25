@@ -8,22 +8,6 @@
 
 #include "Core/Shader/Shader.h"
 
-namespace {
-	static const VkPrimitiveTopology RD_TO_VK_PRIMITIVE[static_cast<int>(RenderPrimitive::RENDER_PRIMITIVE_MAX)] = {
-	VK_PRIMITIVE_TOPOLOGY_POINT_LIST,
-	VK_PRIMITIVE_TOPOLOGY_LINE_LIST,
-	VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY,
-	VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,
-	VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY,
-	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,
-	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY,
-	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
-	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY,
-	VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,
-	VK_PRIMITIVE_TOPOLOGY_PATCH_LIST,
-	};
-}
-
 Pipeline::Pipeline(const PipelineCreateInfo& pipelineCreateInfo, 
 	DescriptorSetLayout* descriptorSetLayout)
 	: m_descriptorSetLayout(descriptorSetLayout)
@@ -88,26 +72,10 @@ void Pipeline::createGraphicsPipeline(const PipelineCreateInfo& pipelineCreateIn
 	}
 
 	VkPipelineRasterizationStateCreateInfo rasterizer{};
-	rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-	rasterizer.depthClampEnable = VK_FALSE;
-	rasterizer.rasterizerDiscardEnable = VK_FALSE;
-	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-	rasterizer.lineWidth = 1.0f;
-	rasterizer.cullMode = VK_CULL_MODE_NONE;
-	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-	rasterizer.depthBiasEnable = VK_FALSE;
-	rasterizer.depthBiasConstantFactor = 0.0f; // Optional
-	rasterizer.depthBiasClamp = 0.0f;          // Optional
-	rasterizer.depthBiasSlopeFactor = 0.0f;    // Optional
+	RasterizationStateToVK(rasterizer, pipelineCreateInfo.m_rasterizationState);
 
 	VkPipelineMultisampleStateCreateInfo multisampling{};
-	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-	multisampling.sampleShadingEnable = VK_FALSE;
-	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-	multisampling.minSampleShading = 1.0f;          // Optional
-	multisampling.pSampleMask = nullptr;            // Optional
-	multisampling.alphaToCoverageEnable = VK_FALSE; // Optional
-	multisampling.alphaToOneEnable = VK_FALSE;      // Optional
+	MultisampleStateToVK(multisampling, pipelineCreateInfo.m_multrsampleState);
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 	colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
@@ -190,9 +158,7 @@ void Pipeline::createGraphicsPipeline(const PipelineCreateInfo& pipelineCreateIn
 	dynamicState.pDynamicStates = dynamicStates.data();
 
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
-	inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-	inputAssembly.topology = RD_TO_VK_PRIMITIVE[static_cast<int>(pipelineCreateInfo.m_renderPrimitive)];
-	inputAssembly.primitiveRestartEnable = (pipelineCreateInfo.m_renderPrimitive == RenderPrimitive::RENDER_PRIMITIVE_TRIANGLE_STRIPS_WITH_RESTART_INDEX);
+	InputAssemblyStateToVK(inputAssembly, pipelineCreateInfo.m_renderPrimitive);
 
 	auto bindingDescription = getBindingDescription();
 	auto attributeDescriptions = getAttributeDescriptions();
