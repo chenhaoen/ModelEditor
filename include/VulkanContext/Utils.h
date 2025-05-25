@@ -12,10 +12,6 @@
         }                                                                \
     }
 
-VkVertexInputBindingDescription getBindingDescription();
-
-std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions();
-
 void createVKBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
 void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
@@ -33,3 +29,6 @@ void RasterizationStateToVK(VkPipelineRasterizationStateCreateInfo& , const Pipe
 void InputAssemblyStateToVK(VkPipelineInputAssemblyStateCreateInfo& , const RenderPrimitive);
 
 void MultisampleStateToVK(VkPipelineMultisampleStateCreateInfo&, const PipelineMultisampleState&);
+
+void VertexInputStateToVK(std::vector<VkVertexInputBindingDescription>& bindings,
+std::vector<VkVertexInputAttributeDescription>& attributes, const VertexInputState&);

@@ -160,15 +160,15 @@ void Pipeline::createGraphicsPipeline(const PipelineCreateInfo& pipelineCreateIn
 	VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 	InputAssemblyStateToVK(inputAssembly, pipelineCreateInfo.m_renderPrimitive);
 
-	auto bindingDescription = getBindingDescription();
-	auto attributeDescriptions = getAttributeDescriptions();
-
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+	std::vector<VkVertexInputBindingDescription> bindings;
+	std::vector<VkVertexInputAttributeDescription> attributes;
+	VertexInputStateToVK(bindings, attributes, pipelineCreateInfo.m_vertexInputState);
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-	vertexInputInfo.vertexAttributeDescriptionCount = attributeDescriptions.size();
-	vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-	vertexInputInfo.vertexBindingDescriptionCount = 1;
-	vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+	vertexInputInfo.vertexAttributeDescriptionCount = attributes.size();
+	vertexInputInfo.pVertexAttributeDescriptions = attributes.data();
+	vertexInputInfo.vertexBindingDescriptionCount = bindings.size();
+	vertexInputInfo.pVertexBindingDescriptions = bindings.data();
 
 	VkExtent2D swapChainExtent = VulkanContext::getSurface()->getExtent();
 

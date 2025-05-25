@@ -22,4 +22,6 @@ public:
 	PipelineRasterizationState m_rasterizationState;
 
 	PipelineMultisampleState m_multrsampleState;
+
+	VertexInputState m_vertexInputState;
 };

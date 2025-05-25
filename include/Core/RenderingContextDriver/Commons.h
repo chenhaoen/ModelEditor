@@ -522,8 +522,14 @@ struct VertexAttribute {
 	uint32_t location = 0; // Shader location.
 	uint32_t offset = 0;
 	DataFormat format = DataFormat::DATA_FORMAT_MAX;
+};
+
+struct VertexBinding
+{
+	uint32_t binding = 0;
 	uint32_t stride = 0;
 	VertexFrequency frequency = VertexFrequency::VERTEX_FREQUENCY_VERTEX;
+	std::vector< VertexAttribute> vertexAttributes;
 };
 
 struct PipelineRasterizationState {
@@ -547,6 +553,11 @@ struct PipelineMultisampleState {
 	std::vector<uint32_t> sample_mask;
 	bool enable_alpha_to_coverage = false;
 	bool enable_alpha_to_one = false;
+};
+
+struct VertexInputState
+{
+	std::vector<VertexBinding> bindings;
 };
 
 struct PipelineDepthStencilState {
