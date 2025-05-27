@@ -82,6 +82,7 @@ enum class PipelineName
 	Model,
 	Skybox,
 	Grids,
+	GridsGraphics,
 };
 
 enum class PipelineType

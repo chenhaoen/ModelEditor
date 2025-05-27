@@ -108,6 +108,46 @@ void PipelineManager::init()
 		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
 		addPipeline(PipelineName::Grids, pipeline);
 	}
+
+	// Grids
+	{
+		PipelineCreateInfo pipelineCreateInfo;
+
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("grids.vert"));
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("grids.frag"));
+		pipelineCreateInfo.m_type = PipelineType::Graphics;
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
+		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_LINES;
+		pipelineCreateInfo.m_rasterizationState.wireframe = true;
+
+		VertexBinding binding;
+		binding.binding = 0;
+		binding.stride = sizeof(Vertex);
+
+		VertexAttribute attribute;
+
+		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+		attribute.location = 0;
+		attribute.offset = offsetof(Vertex, pos);
+		binding.vertexAttributes.push_back(attribute);
+
+		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+		attribute.location = 1;
+		attribute.offset = offsetof(Vertex, color);
+		binding.vertexAttributes.push_back(attribute);
+
+		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+		attribute.location = 2;
+		attribute.offset = offsetof(Vertex, texCoord);
+		binding.vertexAttributes.push_back(attribute);
+
+		pipelineCreateInfo.m_vertexInputState.bindings.push_back(binding);
+		pipelineCreateInfo.m_rasterizationState.front_face = PolygonFrontFace::POLYGON_FRONT_FACE_COUNTER_CLOCKWISE;
+		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_LINES;
+		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
+		addPipeline(PipelineName::GridsGraphics, pipeline);
+	}
 }
 
 std::shared_ptr<Pipeline> PipelineManager::getPipeline(const PipelineName name)
