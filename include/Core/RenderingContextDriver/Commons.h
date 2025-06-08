@@ -83,6 +83,7 @@ enum class PipelineName
 	Skybox,
 	Grids,
 	GridsGraphics,
+	Background,
 };
 
 enum class PipelineType

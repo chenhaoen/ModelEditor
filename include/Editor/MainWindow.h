@@ -5,6 +5,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class OutlinerDockWidget;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -19,9 +21,12 @@ private slots:
     void on_action_Mesh_triggered(bool);
     void on_action_Point_triggered(bool);
     void on_actionSceneShoot_triggered(bool);
+    void on_actionCube_triggered(bool);
 
 private:
     Ui::MainWindow *ui;
+
+    OutlinerDockWidget* m_outlinerWidget;
 };
 
 #endif // MAINWINDOW_H

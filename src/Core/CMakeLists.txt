@@ -48,7 +48,6 @@ function(add_childdirectory child)
     source_group("Source Files\\${child}" FILES ${SRC_FILES})
 endfunction()
 
-
 add_childdirectory(Pipeline)
 add_childdirectory(Commands)
 add_childdirectory(RenderingContextDriver)

@@ -4,6 +4,8 @@
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 #include "Core/SkyboxNode.h"
 #include "Core/GridNode.h"
+#include "Core/BackgroundNode.h"
+#include "Core/NodeTree.h"
 
 #include "IO/ReadNode.h"
 
@@ -12,6 +14,8 @@ Scene::Scene()
     :m_fillMode(FillMode::SOLID)
 {
     rootNode = std::make_shared<Node>("Root");
+
+    m_nodeTree = std::make_shared<NodeTree>();
 }
 
 // 析构函数
@@ -23,6 +27,8 @@ Scene::~Scene() {
 void Scene::addNode(const std::string& name, std::shared_ptr<Node> node) {
     nodes[name] = node;
     rootNode->addChild(node);
+
+    m_nodeTree->addNode(node);
 }
 
 // 移除节点
@@ -34,6 +40,11 @@ void Scene::removeNode(const std::string& name) {
     }
 }
 
+std::shared_ptr<NodeTree> Scene::getNodeTree()
+{
+    return m_nodeTree;
+}
+
 void Scene::setSkyBox(std::shared_ptr<SkyboxNode> node)
 {
     m_skyboxNode = node;
@@ -42,6 +53,11 @@ void Scene::setSkyBox(std::shared_ptr<SkyboxNode> node)
 void Scene::setGrid(std::shared_ptr<GridNode> node)
 {
     m_gridNode = node;
+}
+
+void Scene::setBackground(std::shared_ptr<BackgroundNode> node)
+{
+    m_backgroundNode = node;
 }
 
 // 获取节点
@@ -130,6 +146,11 @@ void Scene::compile()
         m_gridNode->compile();
     }
 
+    if (m_backgroundNode)
+    {
+        m_backgroundNode->compile();
+    }
+
     rootNode->compile();
 }
 
@@ -137,6 +158,11 @@ void Scene::record()
 {
     if (currentCamera) {
         currentCamera->record();
+    }
+
+    if (m_backgroundNode)
+    {
+        m_backgroundNode->record();
     }
 
     if (m_skyboxNode)

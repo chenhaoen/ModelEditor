@@ -128,6 +128,24 @@ void ShaderManager::init()
 
 		m_shaders.emplace("grids.frag", shader);
 	}
+
+	{
+		auto shader = std::make_shared<Shader>();
+		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/backgroundVert.spv");
+		shader->setfuncName("main");
+		shader->setType(ShaderType::Vertex);
+
+		m_shaders.emplace("background.vert", shader);
+	}
+
+	{
+		auto shader = std::make_shared<Shader>();
+		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/backgroundFrag.spv");
+		shader->setfuncName("main");
+		shader->setType(ShaderType::Fragment);
+
+		m_shaders.emplace("background.frag", shader);
+	}
 }
 
 std::shared_ptr<Shader> ShaderManager::getShader(const std::string_view& shaderName)

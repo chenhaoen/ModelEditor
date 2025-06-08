@@ -72,54 +72,6 @@ std::shared_ptr<Node> readNode(const std::string_view& file)
     processNode(mesh, scene->mRootNode, scene);
     node->setMesh(mesh);
 
-    auto material = std::make_shared<Material>();
-    for (unsigned int i = 0; i < scene->mNumMaterials; ++i) {
-        const aiMaterial* material = scene->mMaterials[i];
-
-        aiString name;
-        if (material->Get(AI_MATKEY_NAME, name) == AI_SUCCESS) {
-            std::cout << "  Name: " << name.C_Str() << std::endl;
-        }
-
-        // 读取漫反射颜色
-        aiColor3D diffuseColor;
-        if (material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor) == AI_SUCCESS) {
-            std::cout << "  Diffuse Color: (" << diffuseColor.r << ", " << diffuseColor.g << ", " << diffuseColor.b << ")" << std::endl;
-        }
-
-        // 读取镜面反射颜色
-        aiColor3D specularColor;
-        if (material->Get(AI_MATKEY_COLOR_SPECULAR, specularColor) == AI_SUCCESS) {
-            std::cout << "  Specular Color: (" << specularColor.r << ", " << specularColor.g << ", " << specularColor.b << ")" << std::endl;
-        }
-
-        // 读取光泽度
-        float shininess;
-        if (material->Get(AI_MATKEY_SHININESS, shininess) == AI_SUCCESS) {
-            std::cout << "  Shininess: " << shininess << std::endl;
-        }
-
-        // 读取漫反射纹理路径
-        aiString texturePath;
-        if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == AI_SUCCESS) {
-            std::cout << "  Diffuse Texture: " << texturePath.C_Str() << std::endl;
-        }
-
-        // 读取法线纹理路径
-        if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == AI_SUCCESS) {
-            std::cout << "  Normal Texture: " << texturePath.C_Str() << std::endl;
-        }
-
-        // 读取其他纹理（如镜面反射、环境光等）
-        if (material->GetTexture(aiTextureType_SPECULAR, 0, &texturePath) == AI_SUCCESS) {
-            std::cout << "  Specular Texture: " << texturePath.C_Str() << std::endl;
-        }
-    }
-
-    auto image = readImage("E:/code/ModelEditer/build/bin/Debug/models/viking_room.png");
-    material->setImage(image);
-    node->setMaterial(material);
-
     return node;
 }
 
@@ -138,13 +90,6 @@ std::shared_ptr<SkyboxNode> readSkyboxNode(const std::string_view& file)
     auto mesh = std::make_shared<Mesh>();
     processNode(mesh, scene->mRootNode, scene);
     node->setMesh(mesh);
-
-    for (auto& vertex : mesh->getVertices())
-    {
-        vertex.pos.y *= -1.0f;
-    }
-
-
     auto material = std::make_shared<Material>();
     node->setMaterial(material);
 

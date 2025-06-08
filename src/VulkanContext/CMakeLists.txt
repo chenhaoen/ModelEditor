@@ -49,3 +49,5 @@ execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/sky
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/grids.comp -o ${CMAKE_CURRENT_LIST_DIR}/gridsCompute.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/grids.vert -o ${CMAKE_CURRENT_LIST_DIR}/gridsVert.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/grids.frag -o ${CMAKE_CURRENT_LIST_DIR}/gridsFrag.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/background.vert -o ${CMAKE_CURRENT_LIST_DIR}/backgroundVert.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/background.frag -o ${CMAKE_CURRENT_LIST_DIR}/backgroundFrag.spv)

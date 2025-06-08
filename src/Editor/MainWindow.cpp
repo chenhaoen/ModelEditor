@@ -18,8 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget *wrapper = QWidget::createWindowContainer(vulkanWindow,this);
     setCentralWidget(wrapper);
 
-    OutlinerDockWidget* outlinerDockWidget = new OutlinerDockWidget();
-    this->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, outlinerDockWidget);
+    m_outlinerWidget = new OutlinerDockWidget();
+    this->addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea, m_outlinerWidget);
 }
 
 MainWindow::~MainWindow()
@@ -45,6 +45,17 @@ void MainWindow::on_action_Point_triggered(bool)
 void MainWindow::on_actionSceneShoot_triggered(bool)
 {
     SceneManager::instance()->getCurrentScene();
+}
+
+void MainWindow::on_actionCube_triggered(bool)
+{
+    const QString& appFilePath = qApp->applicationFilePath();
+
+    std::filesystem::path filePath = appFilePath.toStdString();
+    std::filesystem::path dirPath = filePath.parent_path();
+
+    auto node = readNode(dirPath.string() + "/models/cube.gltf");
+    m_outlinerWidget->addNode(node);
 }
 
 void MainWindow::on_action_Open_triggered(bool)

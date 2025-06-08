@@ -11,8 +11,6 @@ PhysicalDevice::PhysicalDevice(
 	vkGetPhysicalDeviceProperties(m_vkPhysicalDevice, &m_deviceProperties);
 	vkGetPhysicalDeviceFeatures(m_vkPhysicalDevice, &m_deviceFeatures);
 
-	uint32_t maxPushConstantsSize = m_deviceProperties.limits.maxPushConstantsSize;
-	std::cout << "Max Push Constants Size: " << maxPushConstantsSize << " bytes" << std::endl;
 
 	VkPhysicalDevicePushDescriptorPropertiesKHR pushDescriptorProperties = {};
 	pushDescriptorProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PUSH_DESCRIPTOR_PROPERTIES_KHR;
@@ -24,11 +22,6 @@ PhysicalDevice::PhysicalDevice(
 	features2.pNext = &dynamicStateFeatures;
 	vkGetPhysicalDeviceFeatures2(m_vkPhysicalDevice, &features2);
 
-	if (!dynamicStateFeatures.extendedDynamicState) {
-		// 设备不支持动态多边形模式，回退到多管线方案
-	}
-
-	std::cout << "Max Push Descriptors: " << pushDescriptorProperties.maxPushDescriptors << std::endl;
 
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties(m_vkPhysicalDevice, &queueFamilyCount, nullptr);

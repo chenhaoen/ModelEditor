@@ -1,6 +1,6 @@
 #include "Editor/OutlinerDockWidget.h"
+#include "Editor/NodeListModel.h"
 
-#include "IO/ReadNode.h"
 
 #include "Core/Node.h"
 #include "Core/SceneManager.h"
@@ -14,7 +14,8 @@ OutlinerDockWidget::OutlinerDockWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->toolButton, &QToolButton::clicked, this, &OutlinerDockWidget::AddCube_triggered);
+    m_nodelistModel = new NodeListModel(SceneManager::instance()->getCurrentScene()->getNodeTree(), this);
+    ui->listView->setModel(m_nodelistModel);
 }
 
 OutlinerDockWidget::~OutlinerDockWidget()
@@ -22,12 +23,7 @@ OutlinerDockWidget::~OutlinerDockWidget()
     delete ui;
 }
 
-void OutlinerDockWidget::AddCube_triggered(bool)
+void OutlinerDockWidget::addNode(std::shared_ptr<Node> node)
 {
-    const QString& absolutePath = QCoreApplication::applicationDirPath();
-    const QString& relativePath = "Models/cube.gltf";
-
-    const QString& combined = QDir::cleanPath(absolutePath + QDir::separator() + relativePath);
-    auto node = readNode(combined.toStdString());
-    SceneManager::instance()->getCurrentScene()->addNode(node->getName(), node);
+    m_nodelistModel->addNode(node);
 }

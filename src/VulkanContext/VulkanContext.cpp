@@ -704,7 +704,7 @@ void VulkanContext::beginRenderPass(CommandBufferID commandBuffer, FramebufferID
 
 	std::array<VkClearValue, 2> clearValues{};
 
-	clearValues[0] = { 135.0 / 255.0,206.0 / 255.0,250.0 / 255.0 };
+	clearValues[0] = { 0.05 ,0.05,0.05,1.0 };
 	clearValues[1] = { 1.0f, 0 };
 	renderPassInfo.clearValueCount = clearValues.size();
 	renderPassInfo.pClearValues = clearValues.data();

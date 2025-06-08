@@ -8,6 +8,7 @@
 #include "Core/SkyboxNode.h"
 #include "Core/Material.h"
 #include "Core/GridNode.h"
+#include "Core/BackgroundNode.h"
 
 #include "Core/Commands/CommandGroup.h"
 
@@ -51,6 +52,9 @@ void VulkanWindow::exposeEvent(QExposeEvent*)
 			auto gridNode = std::make_shared<GridNode>();
 			SceneManager::instance()->getCurrentScene()->setGrid(gridNode);
 			gridNode->compile();
+
+			//auto backgroundNode = std::make_shared<BackgroundNode>();
+			//SceneManager::instance()->getCurrentScene()->setBackground(backgroundNode);
 
 			render();
 		}
