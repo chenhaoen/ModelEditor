@@ -9,6 +9,10 @@ public:
 	void addNode(std::shared_ptr<Node>);
 
 	uint32_t size() const;
+
+	void record();
+
+	void compile();
 private:
 	std::list<std::shared_ptr<Node>> m_nodes;
 };

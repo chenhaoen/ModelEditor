@@ -2,7 +2,8 @@
 
 Descriptor::Descriptor()
 	:m_binding(0)
-	,m_uniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER)
+	, m_uniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER)
+	, m_shaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT)
 {
 }
 
@@ -28,4 +29,14 @@ void Descriptor::setUniformType(UniformType uniformType)
 UniformType Descriptor::getUniformType() const
 {
 	return m_uniformType;
+}
+
+void Descriptor::setShaderStageFlags(ShaderStageFlags shaderStageFlags)
+{
+	m_shaderStageFlags = shaderStageFlags;
+}
+
+ShaderStageFlags Descriptor::getShaderStageFlags() const
+{
+	return m_shaderStageFlags;
 }

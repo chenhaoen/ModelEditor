@@ -91,8 +91,8 @@ void Camera::record()
     const Extent2D& surfaceExtent = RenderingContextDriver::instance()->getSurfaceExtent(SurfaceID());
     
     UniformBufferObject ubo{};
-    ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    //ubo.model =  glm::scale(glm::mat4(1.0f), glm::vec3(50.0f));
+    //ubo.model = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    ubo.model =  glm::scale(glm::mat4(1.0f), glm::vec3(1.0f));
     
     ubo.view = getViewMatrix();
     float radius = 10.0f;
@@ -103,6 +103,24 @@ void Camera::record()
     ubo.proj = glm::perspective(glm::radians(fov), surfaceExtent.width / (float)surfaceExtent.height, 0.1f, 1000.0f);
     
     ubo.proj[1][1] *= -1;
+
+    ubo.cameraPos = glm::vec4(position, 0.0);;
+
+    {
+        const float p = 15.0f;
+        ubo.lights[0] = glm::vec4(-p, -p * 0.5f, -p, 1.0f);
+        ubo.lights[1] = glm::vec4(-p, -p * 0.5f, p, 1.0f);
+        ubo.lights[2] = glm::vec4(p, -p * 0.5f, p, 1.0f);
+        ubo.lights[3] = glm::vec4(p, -p * 0.5f, -p, 1.0f);
+    }
+
+    {
+        ubo.material.r = 1.0;
+        ubo.material.g = 1.0;
+        ubo.color.r = 1.0f;
+        ubo.color.g = 0.765557f;
+        ubo.color.b = 0.336057f;
+    }
     
     RenderingContextDriver::instance()->updateUniformBuffer(m_buffer, &ubo, sizeof(UniformBufferObject));
 }
@@ -127,7 +145,7 @@ void Camera::compile()
 
     m_compiled = true;
 
-    m_buffer = RenderingContextDriver::instance()->createUniformBuffer();
+    m_buffer = RenderingContextDriver::instance()->createUniformBuffer(sizeof(UniformBufferObject));
 }
 
 // 更新摄像机的坐标系

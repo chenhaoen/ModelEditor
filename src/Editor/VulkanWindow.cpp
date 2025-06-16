@@ -169,7 +169,5 @@ bool VulkanWindow::event(QEvent* event)
 
 void VulkanWindow::render()
 {
-
-
 	requestUpdate();
 }

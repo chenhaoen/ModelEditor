@@ -7,7 +7,7 @@ class NodeListModel :
     public QAbstractListModel
 {
 public:
-    NodeListModel(std::shared_ptr<NodeTree> nodeTree, QObject* parent = nullptr);
+    NodeListModel(std::weak_ptr<NodeTree> nodeTree, QObject* parent = nullptr);
 
     void addNode(std::shared_ptr<Node>);
 
@@ -21,6 +21,6 @@ public:
     //bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex()) override;
 
 private:
-    std::shared_ptr<NodeTree> m_nodeTree;
+    std::weak_ptr<NodeTree> m_nodeTree;
 };
 

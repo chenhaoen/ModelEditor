@@ -3,7 +3,7 @@
 #include "Core/RenderingContextDriver/RenderingContextDriver.h"
 
 Shader::Shader()
-	:m_type(ShaderType::Vertex)
+	:m_type(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT)
 {
 }
 
@@ -27,12 +27,12 @@ const std::string_view& Shader::getFileName() const
 	return m_fileName;
 }
 
-void Shader::setType(const ShaderType type)
+void Shader::setShaderStageFlags(const ShaderStageFlags type)
 {
 	m_type = type;
 }
 
-ShaderType Shader::getType() const
+ShaderStageFlags Shader::getShaderStageFlags() const
 {
 	return m_type;
 }

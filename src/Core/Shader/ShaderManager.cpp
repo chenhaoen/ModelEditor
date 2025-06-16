@@ -26,43 +26,53 @@ void ShaderManager::init()
 {
 	// Model
 	{
-		auto shader = std::make_shared<Shader>();
-		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv");
-		shader->setfuncName("main");
-		shader->setType(ShaderType::Vertex);
 
-		auto descriptor = std::make_shared<Descriptor>();
-		descriptor->setBinding(0);
-		descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
-		shader->addDescriptor(descriptor);
 
-		m_shaders.emplace("Model.vert", shader);
+		{
+			auto shader = std::make_shared<Shader>();
+			shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/vert.spv");
+			shader->setfuncName("main");
+			shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
+
+			auto descriptor = std::make_shared<Descriptor>();
+			descriptor->setBinding(0);
+			descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
+			descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
+			shader->addDescriptor(descriptor);
+
+			m_shaders.emplace("Model.vert", shader);
+		}
+
+		{
+			auto shader = std::make_shared<Shader>();
+			shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv");
+			shader->setfuncName("main");
+			shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
+
+			auto descriptor = std::make_shared<Descriptor>();
+			descriptor->setBinding(1);
+			descriptor->setUniformType(UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE);
+			descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
+			shader->addDescriptor(descriptor);
+
+			m_shaders.emplace("Model.frag", shader);
+		}
 	}
+	
 
-	{
-		auto shader = std::make_shared<Shader>();
-		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/frag.spv");
-		shader->setfuncName("main");
-		shader->setType(ShaderType::Fragment);
-
-		auto descriptor = std::make_shared<Descriptor>();
-		descriptor->setBinding(1);
-		descriptor->setUniformType(UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE);
-		shader->addDescriptor(descriptor);
-
-		m_shaders.emplace("Model.frag", shader);
-	}
+	
 
 	// sky box
 	{
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/skyboxVert.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Vertex);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(0);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
+		descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
 		shader->addDescriptor(descriptor);
 
 		m_shaders.emplace("skybox.vert", shader);
@@ -72,11 +82,12 @@ void ShaderManager::init()
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/skyboxFrag.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Fragment);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(1);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_SAMPLER_WITH_TEXTURE);
+		descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
 		shader->addDescriptor(descriptor);
 
 		m_shaders.emplace("skybox.frag", shader);
@@ -87,12 +98,13 @@ void ShaderManager::init()
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/gridsCompute.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Compute);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_COMPUTE_BIT);
 
 		{
 			auto descriptor = std::make_shared<Descriptor>();
 			descriptor->setBinding(0);
 			descriptor->setUniformType(UniformType::UNIFORM_TYPE_STORAGE_BUFFER);
+			descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_COMPUTE_BIT);
 			shader->addDescriptor(descriptor);
 		}
 
@@ -100,6 +112,7 @@ void ShaderManager::init()
 			auto descriptor = std::make_shared<Descriptor>();
 			descriptor->setBinding(1);
 			descriptor->setUniformType(UniformType::UNIFORM_TYPE_STORAGE_BUFFER);
+			descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_COMPUTE_BIT);
 			shader->addDescriptor(descriptor);
 		}
 
@@ -110,11 +123,12 @@ void ShaderManager::init()
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/gridsVert.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Vertex);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
 
 		auto descriptor = std::make_shared<Descriptor>();
 		descriptor->setBinding(0);
 		descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
+		descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
 		shader->addDescriptor(descriptor);
 
 		m_shaders.emplace("grids.vert", shader);
@@ -124,7 +138,7 @@ void ShaderManager::init()
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/gridsFrag.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Fragment);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
 
 		m_shaders.emplace("grids.frag", shader);
 	}
@@ -133,7 +147,7 @@ void ShaderManager::init()
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/backgroundVert.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Vertex);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
 
 		m_shaders.emplace("background.vert", shader);
 	}
@@ -142,10 +156,42 @@ void ShaderManager::init()
 		auto shader = std::make_shared<Shader>();
 		shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/backgroundFrag.spv");
 		shader->setfuncName("main");
-		shader->setType(ShaderType::Fragment);
+		shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
 
 		m_shaders.emplace("background.frag", shader);
 	}
+
+	// pbr
+	{
+		auto descriptor = std::make_shared<Descriptor>();
+		descriptor->setBinding(0);
+		descriptor->setUniformType(UniformType::UNIFORM_TYPE_UNIFORM_BUFFER);
+		descriptor->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT | ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
+
+		//pbr vertex
+		{
+			auto shader = std::make_shared<Shader>();
+			shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/pbrVert.spv");
+			shader->setfuncName("main");
+			shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_VERTEX_BIT);
+			shader->addDescriptor(descriptor);
+
+			m_shaders.emplace("pbr.vert", shader);
+		}
+
+		//pbr fragment
+		{
+			auto shader = std::make_shared<Shader>();
+			shader->setFileName("E:/code/ModelEditer/build/bin/Debug/shaders/pbrFrag.spv");
+			shader->setfuncName("main");
+			shader->setShaderStageFlags(ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT);
+
+			shader->addDescriptor(descriptor);
+
+			m_shaders.emplace("pbr.frag", shader);
+		}
+	}
+	
 }
 
 std::shared_ptr<Shader> ShaderManager::getShader(const std::string_view& shaderName)

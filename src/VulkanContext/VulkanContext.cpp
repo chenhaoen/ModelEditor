@@ -165,10 +165,10 @@ struct BufferInfo
 	void* mapped;
 };
 
-BufferID VulkanContext::createUniformBuffer()
+BufferID VulkanContext::createUniformBuffer(uint64_t size)
 {
 	BufferInfo* bufferInfo = new BufferInfo;
-	VkDeviceSize bufferSize = sizeof(UniformBufferObject);
+	VkDeviceSize bufferSize = size;
 	createVKBuffer(bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, bufferInfo->buffer, bufferInfo->memory);
 
@@ -548,30 +548,14 @@ void VulkanContext::cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, Pipeline
 		&bufferInfo->descriptorSet, 0, nullptr);
 }
 
-void VulkanContext::cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderType shaderType)
+void VulkanContext::cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderStageFlags shaderType)
 {
 	PipelineInfo* pipelineInfo = reinterpret_cast<PipelineInfo*>(pipeline.id);
-
-	VkShaderStageFlagBits shaderStage;
-	switch (shaderType)
-	{
-	case ShaderType::Vertex:
-		shaderStage = VK_SHADER_STAGE_VERTEX_BIT;
-		break;
-	case ShaderType::Fragment:
-		shaderStage = VK_SHADER_STAGE_FRAGMENT_BIT;
-		break;
-	case ShaderType::Compute:
-		shaderStage = VK_SHADER_STAGE_COMPUTE_BIT;
-		break;
-	default:
-		break;
-	}
 
 	vkCmdPushConstants(
 		reinterpret_cast<VkCommandBuffer>(p_cmd_buffer.id), // 命令缓冲区
 		pipelineInfo->pipeline->getVkPipelineLayout(),
-		shaderStage, // 着色器阶段
+		ShaderStageFlagToVk(shaderType), // 着色器阶段
 		0, // 偏移量
 		size, // 数据大小
 		data // 数据

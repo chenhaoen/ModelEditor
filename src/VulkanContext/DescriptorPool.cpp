@@ -12,21 +12,29 @@
 DescriptorPool::DescriptorPool(const std::list<std::shared_ptr<Shader>>& shaders)
 {
 	std::map<VkDescriptorType, uint32_t> descriptorCount;
+
+	std::set<std::shared_ptr<Descriptor>> setDescriptor;
+
 	for (auto shader : shaders)
 	{
 		for (auto descriptor : shader->getDescriptors())
 		{
-			VkDescriptorType type = UniformTypeToVK(descriptor->getUniformType());
+			setDescriptor.insert(descriptor);
+		}
+	}
 
-			auto itor = descriptorCount.find(type);
-			if (itor == descriptorCount.end())
-			{
-				descriptorCount.emplace(type, 1);
-			}
-			else
-			{
-				itor->second++;
-			}
+	for (auto descriptor : setDescriptor)
+	{
+		VkDescriptorType type = UniformTypeToVK(descriptor->getUniformType());
+
+		auto itor = descriptorCount.find(type);
+		if (itor == descriptorCount.end())
+		{
+			descriptorCount.emplace(type, 1);
+		}
+		else
+		{
+			itor->second++;
 		}
 	}
 

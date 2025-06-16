@@ -3,6 +3,8 @@
 #include "Core/Exports.h"
 #include "Core/Compilable.h"
 
+#include "Core/RenderingContextDriver/Commons.h"
+
 class Mesh;
 class Material;
 
@@ -41,4 +43,7 @@ private:
 protected:
     std::shared_ptr<Mesh> m_mesh;
     std::shared_ptr<Material> m_material;
+
+    BufferID m_lightBuffer;
+    BufferID m_materialBuffer;
 };

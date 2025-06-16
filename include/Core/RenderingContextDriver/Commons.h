@@ -84,6 +84,7 @@ enum class PipelineName
 	Grids,
 	GridsGraphics,
 	Background,
+	PBR,
 };
 
 enum class PipelineType
@@ -119,12 +120,17 @@ struct Vertex {
 	glm::vec3 pos;
 	glm::vec3 color;
 	glm::vec3 texCoord;
+	glm::vec3 normal;
 };
 
 struct UniformBufferObject {
 	glm::mat4 model = glm::mat4(1.0);
 	glm::mat4 view = glm::mat4(1.0);
 	glm::mat4 proj = glm::mat4(1.0);
+	glm::vec4 cameraPos = glm::vec4(0.0);
+	glm::vec4 lights[4] = {};
+	glm::vec4 material = {};
+	glm::vec4 color = {};
 };
 
 enum class UniformType {
@@ -639,3 +645,31 @@ enum PipelineDynamicStateFlags {
 	DYNAMIC_STATE_STENCIL_WRITE_MASK = (1 << 5),
 	DYNAMIC_STATE_STENCIL_REFERENCE = (1 << 6),
 };
+
+enum class ShaderStageFlags : uint32_t {
+	SHADER_STAGE_VERTEX_BIT = 0x00000001,
+	SHADER_STAGE_TESSELLATION_CONTROL_BIT = 0x00000002,
+	SHADER_STAGE_TESSELLATION_EVALUATION_BIT = 0x00000004,
+	SHADER_STAGE_GEOMETRY_BIT = 0x00000008,
+	SHADER_STAGE_FRAGMENT_BIT = 0x00000010,
+	SHADER_STAGE_COMPUTE_BIT = 0x00000020,
+	SHADER_STAGE_ALL_GRAPHICS = 0x0000001F,
+	SHADER_STAGE_ALL = 0x7FFFFFFF,
+};
+
+inline ShaderStageFlags operator|(ShaderStageFlags a, ShaderStageFlags b) {
+	return static_cast<ShaderStageFlags>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
+
+inline ShaderStageFlags operator&(ShaderStageFlags a, ShaderStageFlags b) {
+	return static_cast<ShaderStageFlags>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+}
+
+inline ShaderStageFlags operator~(ShaderStageFlags a) {
+	return static_cast<ShaderStageFlags>(~static_cast<uint32_t>(a));
+}
+
+inline ShaderStageFlags& operator|=(ShaderStageFlags& a, ShaderStageFlags b) {
+	a = a | b;
+	return a;
+}

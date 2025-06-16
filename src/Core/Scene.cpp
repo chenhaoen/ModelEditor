@@ -151,7 +151,7 @@ void Scene::compile()
         m_backgroundNode->compile();
     }
 
-    rootNode->compile();
+    m_nodeTree->compile();
 }
 
 void Scene::record()
@@ -175,5 +175,7 @@ void Scene::record()
         m_gridNode->record();
     }
 
-    rootNode->record();
+
+    m_nodeTree->record();
+   // rootNode->record();
 }

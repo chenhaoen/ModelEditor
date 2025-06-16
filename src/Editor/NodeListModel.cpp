@@ -2,7 +2,7 @@
 
 #include "Core/NodeTree.h"
 
-NodeListModel::NodeListModel(std::shared_ptr<NodeTree> nodeTree, QObject* parent)
+NodeListModel::NodeListModel(std::weak_ptr<NodeTree> nodeTree, QObject* parent)
     :m_nodeTree(nodeTree)
 {
 }
@@ -10,18 +10,19 @@ NodeListModel::NodeListModel(std::shared_ptr<NodeTree> nodeTree, QObject* parent
 void NodeListModel::addNode(std::shared_ptr<Node> node)
 {
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_nodeTree->addNode(node);
+    m_nodeTree.lock()->addNode(node);
+    
     endInsertRows();
 }
 
 int NodeListModel::rowCount(const QModelIndex& parent) const
 {
-    return m_nodeTree->size(); // 返回数据容器的大小
+    return  m_nodeTree.lock()->size(); // 返回数据容器的大小
 }
 
 QVariant NodeListModel::data(const QModelIndex& index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_nodeTree->size())
+    if (!index.isValid() || index.row() >= m_nodeTree.lock()->size())
         return QVariant();
 
     if (role == Qt::DisplayRole )

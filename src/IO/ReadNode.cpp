@@ -12,6 +12,7 @@ void processMesh(std::shared_ptr<Mesh> mesh, aiMesh* aiMesh, const aiScene* scen
     {
         Vertex vertex;
         vertex.pos = glm::vec3(aiMesh->mVertices[i].x, aiMesh->mVertices[i].y, aiMesh->mVertices[i].z);
+        vertex.normal = glm::vec3(aiMesh->mNormals[i].x, aiMesh->mNormals[i].y, aiMesh->mNormals[i].z);
 
         for (uint32_t j = 0; j < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++j)
         {
@@ -67,8 +68,6 @@ std::shared_ptr<Node> readNode(const std::string_view& file)
     auto node = std::make_shared<Node>(scene->mRootNode->mName.C_Str());
 
     auto mesh = std::make_shared<Mesh>();
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
     processNode(mesh, scene->mRootNode, scene);
     node->setMesh(mesh);
 

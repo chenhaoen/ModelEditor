@@ -8,18 +8,35 @@
 DescriptorSetLayout::DescriptorSetLayout(const std::list<std::shared_ptr<Shader>>& shaders)
 {
     std::vector<VkDescriptorSetLayoutBinding> bindings;
+
+    std::set<std::shared_ptr<Descriptor>> setDescriptor;
+
     for (auto shader : shaders)
     {
         for (auto descriptor : shader->getDescriptors())
         {
-            VkDescriptorSetLayoutBinding binding{};
-            binding.binding = descriptor->getBinding();
-            binding.descriptorType = UniformTypeToVK(descriptor->getUniformType());
-            binding.descriptorCount = 1;
-            binding.stageFlags = ShaderTypeToVk(shader->getType());
-            binding.pImmutableSamplers = nullptr; // Optional
-            bindings.push_back(binding);
+            setDescriptor.insert(descriptor);
         }
+    }
+
+    std::vector< std::shared_ptr<Descriptor>> vecDescriptor;
+    vecDescriptor.resize(setDescriptor.size());
+    for (auto descriptor : setDescriptor)
+    {
+        vecDescriptor[descriptor->getBinding()] = descriptor;
+    }
+
+    for (auto descriptor : vecDescriptor)
+    {
+        VkDescriptorType type = UniformTypeToVK(descriptor->getUniformType());
+
+        VkDescriptorSetLayoutBinding binding{};
+        binding.binding = descriptor->getBinding();
+        binding.descriptorType = UniformTypeToVK(descriptor->getUniformType());
+        binding.descriptorCount = 1;
+        binding.stageFlags = ShaderStageFlagToVk(descriptor->getShaderStageFlags());
+        binding.pImmutableSamplers = nullptr; // Optional
+        bindings.push_back(binding);
     }
 
     VkDescriptorSetLayoutCreateInfo layoutInfo{};

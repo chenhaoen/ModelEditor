@@ -38,7 +38,7 @@ public:
 	virtual void beginCommandBuffer(CommandBufferID commandBuffer) = 0;
 	virtual void endCommandBuffer(CommandBufferID commandBuffer) = 0;
 
-	virtual BufferID createUniformBuffer() = 0;
+	virtual BufferID createUniformBuffer(uint64_t size) = 0;
 	virtual BufferID createBuffer(const uint64_t bufferSize, void* data, BufferUsageBits) = 0;
 	virtual BufferID createStorageBuffer(const uint64_t bufferSize, BufferUsageBits) = 0;
 	virtual void updateUniformBuffer(BufferID uniformBuffer, void* data, uint32_t size) = 0;
@@ -107,7 +107,7 @@ public:
 
 	virtual void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) = 0;
 
-	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderType shaderType) = 0;
+	virtual void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderStageFlags shaderType) = 0;
 
 	virtual void cmdDispatch(CommandBufferID p_cmd_buffer, uint32_t x, uint32_t y, uint32_t z) = 0;
 

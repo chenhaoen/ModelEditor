@@ -33,7 +33,7 @@ public:
 	void beginCommandBuffer(CommandBufferID commandBuffer) override final;
 	void endCommandBuffer(CommandBufferID commandBuffer) override final;
 
-	BufferID createUniformBuffer() override final;
+	BufferID createUniformBuffer(uint64_t) override final;
 	BufferID createBuffer(const uint64_t bufferSize, void* data, BufferUsageBits) override final;
 	BufferID createStorageBuffer(const uint64_t bufferSize, BufferUsageBits) override final;
 	void freeBuffer(BufferID buffer) override final;
@@ -101,7 +101,7 @@ public:
 
 	void cmdBindDescriptorSets(CommandBufferID p_cmd_buffer, PipelineID pipeline, UniformSetID uniformSet) override final;
 
-	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderType shaderType)override final;
+	void cmdPushConstants(CommandBufferID p_cmd_buffer, PipelineID pipeline, int32_t size, void* data, ShaderStageFlags shaderType)override final;
 
 	void cmdDispatch(CommandBufferID p_cmd_buffer, uint32_t x, uint32_t y, uint32_t z) override final;
 

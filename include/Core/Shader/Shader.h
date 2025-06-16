@@ -4,13 +4,6 @@
 
 #include "Core/Exports.h"
 
-enum class ShaderType
-{
-	Vertex,
-	Fragment,
-	Compute
-};
-
 class Descriptor;
 
 class CORE_API Shader
@@ -25,8 +18,8 @@ public:
 	void setFileName(const std::string_view& fileName);
 	const std::string_view& getFileName() const;
 
-	void setType(const ShaderType type);
-	ShaderType getType() const;
+	void setShaderStageFlags(const ShaderStageFlags type);
+	ShaderStageFlags getShaderStageFlags() const;
 
 	void setfuncName(const std::string_view& funcName);
 	const std::string_view& getFuncName() const;
@@ -40,7 +33,7 @@ private:
 
 	std::string_view m_funcName;
 
-	ShaderType m_type;
+	ShaderStageFlags m_type;
 
 	std::list<std::shared_ptr<Descriptor>> m_descriptors;
 };

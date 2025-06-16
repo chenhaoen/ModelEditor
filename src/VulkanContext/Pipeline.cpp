@@ -63,7 +63,7 @@ void Pipeline::createGraphicsPipeline(const PipelineCreateInfo& pipelineCreateIn
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo{};
 		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		shaderStageInfo.stage = ShaderTypeToVk(shader->getType());
+		shaderStageInfo.stage = ShaderStageFlagToVk(shader->getShaderStageFlags());
 		shaderStageInfo.module = shaderModule;
 		shaderStageInfo.pName = shader->getFuncName().data();
 
@@ -225,7 +225,7 @@ void Pipeline::createComputePipeline(const PipelineCreateInfo& pipelineCreateInf
 
 		VkPipelineShaderStageCreateInfo shaderStageInfo{};
 		shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		shaderStageInfo.stage = ShaderTypeToVk(shader->getType());
+		shaderStageInfo.stage = ShaderStageFlagToVk(shader->getShaderStageFlags());
 		shaderStageInfo.module = shaderModule;
 		shaderStageInfo.pName = shader->getFuncName().data();
 

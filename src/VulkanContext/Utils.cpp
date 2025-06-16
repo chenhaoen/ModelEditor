@@ -86,24 +86,26 @@ VkShaderModule createShaderModule(const std::vector<char>& code)
 	return shaderModule;
 }
 
-VkShaderStageFlagBits ShaderTypeToVk(ShaderType shaderType)
+VkShaderStageFlagBits ShaderStageFlagToVk(ShaderStageFlags shaderType)
 {
-	switch (shaderType)
+	uint32_t result{ 0 };
+
+	if (static_cast<uint32_t>(shaderType & ShaderStageFlags::SHADER_STAGE_VERTEX_BIT))
 	{
-	case ShaderType::Vertex:
-		return VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT;
-		break;
-	case ShaderType::Fragment:
-		return VkShaderStageFlagBits::VK_SHADER_STAGE_FRAGMENT_BIT;
-		break;
-	case ShaderType::Compute:
-		return VkShaderStageFlagBits::VK_SHADER_STAGE_COMPUTE_BIT;
-		break;
-	default:
-		break;
+		result |= VkShaderStageFlagBits::VK_SHADER_STAGE_VERTEX_BIT;
 	}
 
-	return VkShaderStageFlagBits::VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM;
+	if (static_cast<uint32_t>(shaderType & ShaderStageFlags::SHADER_STAGE_FRAGMENT_BIT))
+	{
+		result |= VkShaderStageFlagBits::VK_SHADER_STAGE_FRAGMENT_BIT;
+	}
+
+	if (static_cast<uint32_t>(shaderType & ShaderStageFlags::SHADER_STAGE_COMPUTE_BIT))
+	{
+		result |= VkShaderStageFlagBits::VK_SHADER_STAGE_COMPUTE_BIT;
+	}
+
+	return  VkShaderStageFlagBits(result);
 }
 
 VkDescriptorType UniformTypeToVK(UniformType uniformType)

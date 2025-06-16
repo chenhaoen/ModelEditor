@@ -20,7 +20,7 @@ std::vector<char> readFile(const std::string_view& filename);
 
 VkShaderModule createShaderModule(const std::vector<char>& code);
 
-VkShaderStageFlagBits ShaderTypeToVk(ShaderType shaderType);
+VkShaderStageFlagBits ShaderStageFlagToVk(ShaderStageFlags shaderType);
 
 VkDescriptorType UniformTypeToVK(UniformType uniformType);
 

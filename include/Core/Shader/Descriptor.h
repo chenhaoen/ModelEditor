@@ -14,9 +14,14 @@ public:
 
 	void setUniformType(UniformType uniformType);
 	UniformType getUniformType() const;
+
+	void setShaderStageFlags(ShaderStageFlags);
+	ShaderStageFlags getShaderStageFlags() const;
 private:
 	uint32_t m_binding;
 
 	UniformType m_uniformType;
+
+	ShaderStageFlags m_shaderStageFlags;
 };
 

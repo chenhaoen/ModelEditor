@@ -51,3 +51,5 @@ execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/gri
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/grids.frag -o ${CMAKE_CURRENT_LIST_DIR}/gridsFrag.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/background.vert -o ${CMAKE_CURRENT_LIST_DIR}/backgroundVert.spv)
 execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/background.frag -o ${CMAKE_CURRENT_LIST_DIR}/backgroundFrag.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/pbr.vert -o ${CMAKE_CURRENT_LIST_DIR}/pbrVert.spv)
+execute_process(COMMAND ${Vulkan_GLSLC_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/pbr.frag -o ${CMAKE_CURRENT_LIST_DIR}/pbrFrag.spv)

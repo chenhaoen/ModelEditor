@@ -54,7 +54,7 @@ void MainWindow::on_actionCube_triggered(bool)
     std::filesystem::path filePath = appFilePath.toStdString();
     std::filesystem::path dirPath = filePath.parent_path();
 
-    auto node = readNode(dirPath.string() + "/models/cube.gltf");
+    auto node = readNode(dirPath.string() + "/models/sphere.gltf");
     m_outlinerWidget->addNode(node);
 }
 

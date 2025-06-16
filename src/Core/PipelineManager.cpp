@@ -23,75 +23,80 @@ void PipelineManager::init()
 	//Model
 	{
 		PipelineCreateInfo pipelineCreateInfo;
-
+	
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::PolygonMode);
 		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("Model.vert"));
 		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("Model.frag"));
-
+	
 		VertexBinding binding;
 		binding.binding = 0;
 		binding.stride = sizeof(Vertex);
-
+	
 		VertexAttribute attribute;
-
+	
 		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
 		attribute.location = 0;
 		attribute.offset = offsetof(Vertex, pos);
 		binding.vertexAttributes.push_back(attribute);
-
+	
 		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
 		attribute.location = 1;
 		attribute.offset = offsetof(Vertex, color);
 		binding.vertexAttributes.push_back(attribute);
-
+	
 		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
 		attribute.location = 2;
 		attribute.offset = offsetof(Vertex, texCoord);
 		binding.vertexAttributes.push_back(attribute);
 
+		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+		attribute.location = 3;
+		attribute.offset = offsetof(Vertex, normal);
+		binding.vertexAttributes.push_back(attribute);
+	
 		pipelineCreateInfo.m_vertexInputState.bindings.push_back(binding);
-
+	
 		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
 		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
 		addPipeline(PipelineName::Model, pipeline);
 	}
-
+	
 	// skybox
 	{
 		PipelineCreateInfo pipelineCreateInfo;
 		
 		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("skybox.vert"));
 		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("skybox.frag"));
-
+	
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
 		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
-
+	
 		VertexBinding binding;
 		binding.binding = 0;
 		binding.stride = sizeof(Vertex);
-
+	
 		VertexAttribute attribute;
-
+	
 		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
 		attribute.location = 0;
 		attribute.offset = offsetof(Vertex, pos);
 		binding.vertexAttributes.push_back(attribute);
-
+	
 		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
 		attribute.location = 1;
 		attribute.offset = offsetof(Vertex, color);
 		binding.vertexAttributes.push_back(attribute);
-
+	
 		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
 		attribute.location = 2;
 		attribute.offset = offsetof(Vertex, texCoord);
 		binding.vertexAttributes.push_back(attribute);
-
+	
 		pipelineCreateInfo.m_vertexInputState.bindings.push_back(binding);
-
+	
 		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
 		addPipeline(PipelineName::Skybox, pipeline);
 	}
@@ -150,14 +155,54 @@ void PipelineManager::init()
 	}
 
 	// background
+	//{
+	//	PipelineCreateInfo pipelineCreateInfo;
+	//
+	//	pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("background.vert"));
+	//	pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("background.frag"));
+	//	pipelineCreateInfo.m_type = PipelineType::Graphics;
+	//	pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
+	//	pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
+	//
+	//	VertexBinding binding;
+	//	binding.binding = 0;
+	//	binding.stride = sizeof(Vertex);
+	//
+	//	VertexAttribute attribute;
+	//
+	//	attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+	//	attribute.location = 0;
+	//	attribute.offset = offsetof(Vertex, pos);
+	//	binding.vertexAttributes.push_back(attribute);
+	//
+	//	attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+	//	attribute.location = 1;
+	//	attribute.offset = offsetof(Vertex, color);
+	//	binding.vertexAttributes.push_back(attribute);
+	//
+	//	attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+	//	attribute.location = 2;
+	//	attribute.offset = offsetof(Vertex, texCoord);
+	//	binding.vertexAttributes.push_back(attribute);
+	//
+	//	pipelineCreateInfo.m_vertexInputState.bindings.push_back(binding);
+	//	pipelineCreateInfo.m_rasterizationState.front_face = PolygonFrontFace::POLYGON_FRONT_FACE_COUNTER_CLOCKWISE;
+	//	pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
+	//	auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
+	//	addPipeline(PipelineName::Background, pipeline);
+	//}
+
+	// PBR
 	{
 		PipelineCreateInfo pipelineCreateInfo;
 
-		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("background.vert"));
-		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("background.frag"));
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("pbr.vert"));
+		pipelineCreateInfo.m_shaders.push_back(ShaderManager::instance()->getShader("pbr.frag"));
+
 		pipelineCreateInfo.m_type = PipelineType::Graphics;
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Scissor);
 		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::Viewport);
+		pipelineCreateInfo.m_dynamicStates.push_back(DynamicStateType::PolygonMode);
 
 		VertexBinding binding;
 		binding.binding = 0;
@@ -180,11 +225,15 @@ void PipelineManager::init()
 		attribute.offset = offsetof(Vertex, texCoord);
 		binding.vertexAttributes.push_back(attribute);
 
+		attribute.format = DataFormat::DATA_FORMAT_R8G8B8_UNORM;
+		attribute.location = 3;
+		attribute.offset = offsetof(Vertex, normal);
+		binding.vertexAttributes.push_back(attribute);
+
 		pipelineCreateInfo.m_vertexInputState.bindings.push_back(binding);
-		pipelineCreateInfo.m_rasterizationState.front_face = PolygonFrontFace::POLYGON_FRONT_FACE_COUNTER_CLOCKWISE;
 		pipelineCreateInfo.m_renderPrimitive = RenderPrimitive::RENDER_PRIMITIVE_TRIANGLES;
 		auto pipeline = std::make_shared<Pipeline>(pipelineCreateInfo);
-		addPipeline(PipelineName::Background, pipeline);
+		addPipeline(PipelineName::PBR, pipeline);
 	}
 }
 
