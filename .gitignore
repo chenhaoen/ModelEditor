@@ -368,3 +368,5 @@ FodyWeavers.xsd
 /install/lib
 /src/VulkanContext/frag.spv
 /src/VulkanContext/vert.spv
+/src/VulkanContext/pbrFrag.spv
+/src/VulkanContext/pbrVert.spv
